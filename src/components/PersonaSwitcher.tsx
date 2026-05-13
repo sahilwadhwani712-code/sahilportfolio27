@@ -27,6 +27,49 @@ export type Persona = {
   socials?: { icon: LucideIcon; label: string; href: string }[];
 };
 
+/* Per-persona PNG placement on the HOME / outside switcher.
+   Each asset has different dimensions, so we tune them individually
+   so nothing gets cut and they sit cleanly lower-right. */
+const HOME_PLACEMENT: Record<
+  string,
+  {
+    // mobile (below md)
+    mobileH: string;       // Tailwind height class, e.g. "h-[62svh]"
+    mobileRight: string;   // Tailwind right offset, e.g. "right-[-6%]"
+    mobileBottom: string;
+    // desktop (md+)
+    desktopH: string;
+    desktopRight: string;
+    desktopBottom: string;
+  }
+> = {
+  developer: {
+    mobileH: "h-[64svh]",
+    mobileRight: "right-[-8%]",
+    mobileBottom: "bottom-0",
+    desktopH: "md:h-[96svh] lg:h-[104svh]",
+    desktopRight: "md:right-[2%] lg:right-[4%]",
+    desktopBottom: "md:bottom-0",
+  },
+  friend: {
+    mobileH: "h-[60svh]",
+    mobileRight: "right-[-4%]",
+    mobileBottom: "bottom-0",
+    desktopH: "md:h-[92svh] lg:h-[100svh]",
+    desktopRight: "md:right-[4%] lg:right-[6%]",
+    desktopBottom: "md:bottom-0",
+  },
+  gamer: {
+    // wider asset (nunchuks) — give it more horizontal room
+    mobileH: "h-[58svh]",
+    mobileRight: "right-[-10%]",
+    mobileBottom: "bottom-2",
+    desktopH: "md:h-[88svh] lg:h-[96svh]",
+    desktopRight: "md:right-[1%] lg:right-[3%]",
+    desktopBottom: "md:bottom-2",
+  },
+};
+
 /* Cursive name — single line, viral feel */
 const CursiveName = ({ text, accent }: { text: string; accent: string }) => {
   const letters = Array.from(text);
