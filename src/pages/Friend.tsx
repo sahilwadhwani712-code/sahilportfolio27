@@ -28,17 +28,17 @@ const Friend = () => {
       <Navbar />
 
       <section className="relative min-h-[100svh] w-full overflow-hidden flex items-end sm:items-center">
-        <div className="absolute inset-0 bg-gradient-to-br from-background via-[hsl(28_30%_7%)] to-background" />
-        <div className="absolute -top-32 -right-24 w-[60vw] h-[60vw] max-w-[720px] max-h-[720px] rounded-full pointer-events-none blur-[140px]" style={{ background: PERSONA.accent, opacity: 0.22 }} />
-        <div className="absolute -bottom-32 -left-24 w-[55vw] h-[55vw] max-w-[640px] max-h-[640px] rounded-full pointer-events-none blur-[150px]" style={{ background: PERSONA.accent, opacity: 0.14 }} />
-        <div className="absolute inset-0 gradient-blinds opacity-30 pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/30 pointer-events-none" />
+        {/* Soft white-to-cream gradient — bright, editorial */}
+        <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, hsl(36 100% 97%) 0%, hsl(28 60% 92%) 45%, hsl(20 40% 86%) 100%)" }} />
+        <div className="absolute -top-32 -right-24 w-[60vw] h-[60vw] max-w-[720px] max-h-[720px] rounded-full pointer-events-none blur-[140px]" style={{ background: PERSONA.accent, opacity: 0.18 }} />
+        <div className="absolute -bottom-32 -left-24 w-[55vw] h-[55vw] max-w-[640px] max-h-[640px] rounded-full pointer-events-none blur-[150px]" style={{ background: "hsl(36 100% 80%)", opacity: 0.35 }} />
+        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 70% 60%, transparent 40%, hsl(28 30% 80% / 0.35) 100%)" }} />
 
         <img
           src={PERSONA.png}
           alt={PERSONA.title}
-          className="pointer-events-none select-none absolute bottom-0 right-0 sm:right-2 md:right-[3%] h-[78svh] sm:h-[92svh] md:h-[104svh] lg:h-[112svh] w-auto object-contain object-bottom z-10"
-          style={{ filter: "drop-shadow(0 30px 60px hsl(0 0% 0% / 0.7))" }}
+          className="pointer-events-none select-none absolute bottom-0 right-[6%] sm:right-[8%] md:right-[10%] h-[68svh] sm:h-[82svh] md:h-[92svh] lg:h-[98svh] w-auto object-contain object-bottom z-10"
+          style={{ filter: "drop-shadow(0 24px 48px hsl(28 30% 30% / 0.35))" }}
           loading="eager" draggable={false}
         />
 
@@ -46,7 +46,7 @@ const Friend = () => {
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
             <div className="md:col-span-6 md:col-start-1 md:text-left">
               <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
-                <Link to="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm mb-6">
+                <Link to="/" className="inline-flex items-center gap-2 text-stone-700 hover:text-stone-900 transition-colors text-sm mb-6">
                   <ArrowLeft className="w-4 h-4" /> Back to Home
                 </Link>
               </motion.div>
@@ -56,15 +56,15 @@ const Friend = () => {
                 </span>
               </motion.div>
               <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                className="font-display font-black text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight leading-[0.9] mb-4 text-foreground">
+                className="font-display font-black text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight leading-[0.9] mb-4 text-stone-900">
                 {PERSONA.title}
               </motion.h1>
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-                className="font-display text-sm sm:text-lg font-semibold text-foreground/80 mb-3">
+                className="font-display text-sm sm:text-lg font-semibold text-stone-800 mb-3">
                 {PERSONA.subtitle}
               </motion.p>
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
-                className="font-body text-xs sm:text-sm text-muted-foreground md:ml-auto max-w-md leading-relaxed">
+                className="font-body text-xs sm:text-sm text-stone-700 md:ml-auto max-w-md leading-relaxed">
                 {PERSONA.description}
               </motion.p>
             </div>
