@@ -125,10 +125,11 @@ const GamerInner = () => {
         <div className="absolute inset-0 gradient-blinds opacity-30 pointer-events-none" />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/30 pointer-events-none" />
 
+        {/* Inside page → anchored lower-CENTER. Wider asset (nunchuks) → slightly smaller heights */}
         <img
           src={PERSONA.png}
           alt={PERSONA.title}
-          className="pointer-events-none select-none absolute -bottom-2 sm:-bottom-3 right-0 sm:right-2 md:right-[3%] h-[68svh] sm:h-[82svh] md:h-[92svh] lg:h-[100svh] w-auto object-contain object-bottom z-10"
+          className="pointer-events-none select-none absolute bottom-0 left-1/2 -translate-x-1/2 h-[54svh] sm:h-[72svh] md:h-[84svh] lg:h-[92svh] w-auto max-w-[110vw] object-contain object-bottom z-10"
           style={{ filter: "drop-shadow(0 30px 60px hsl(0 0% 0% / 0.7))" }}
           loading="eager" draggable={false}
         />
