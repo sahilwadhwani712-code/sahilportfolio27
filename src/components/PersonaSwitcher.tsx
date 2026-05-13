@@ -75,13 +75,13 @@ const CursiveName = ({ text, accent }: { text: string; accent: string }) => {
   const letters = Array.from(text);
   return (
     <h1
-      className="leading-[0.9] text-foreground md:whitespace-nowrap"
+      className="leading-[0.9] text-stone-900 md:whitespace-nowrap"
       style={{
         fontFamily: "'Italianno', 'Caveat', cursive",
         fontWeight: 400,
         fontStyle: "italic",
           fontSize: "clamp(2.6rem, 7.4vw, 7.5rem)",
-        textShadow: `0 18px 70px ${accent}66, 0 2px 0 ${accent}22`,
+        textShadow: `0 14px 50px ${accent}55, 0 1px 0 ${accent}22`,
         letterSpacing: "-0.01em",
         wordSpacing: "0.12em",
       }}
@@ -124,9 +124,9 @@ const EnterPill = ({
     <div className="inline-block">
       <Link
         to={to}
-        className="group relative inline-flex items-center gap-3 sm:gap-4 pl-5 sm:pl-6 pr-2 py-2 sm:py-2.5 rounded-full font-display font-medium text-[11px] sm:text-xs uppercase tracking-[0.24em] text-foreground overflow-hidden"
+        className="group relative inline-flex items-center gap-3 sm:gap-4 pl-5 sm:pl-6 pr-2 py-2 sm:py-2.5 rounded-full font-display font-medium text-[11px] sm:text-xs uppercase tracking-[0.24em] text-stone-900 overflow-hidden"
         style={{
-          background: "hsl(0 0% 100% / 0.05)",
+          background: "hsl(0 0% 100% / 0.55)",
           backdropFilter: "blur(14px)",
           WebkitBackdropFilter: "blur(14px)",
         }}
