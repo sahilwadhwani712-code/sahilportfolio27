@@ -34,10 +34,11 @@ const Friend = () => {
         <div className="absolute -bottom-32 -left-24 w-[55vw] h-[55vw] max-w-[640px] max-h-[640px] rounded-full pointer-events-none blur-[150px]" style={{ background: "hsl(36 100% 80%)", opacity: 0.35 }} />
         <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 70% 60%, transparent 40%, hsl(28 30% 80% / 0.35) 100%)" }} />
 
+        {/* Inside page → anchored lower-CENTER */}
         <img
           src={PERSONA.png}
           alt={PERSONA.title}
-          className="pointer-events-none select-none absolute bottom-0 right-[6%] sm:right-[8%] md:right-[10%] h-[68svh] sm:h-[82svh] md:h-[92svh] lg:h-[98svh] w-auto object-contain object-bottom z-10"
+          className="pointer-events-none select-none absolute bottom-0 left-1/2 -translate-x-1/2 h-[58svh] sm:h-[76svh] md:h-[88svh] lg:h-[96svh] w-auto object-contain object-bottom z-10"
           style={{ filter: "drop-shadow(0 24px 48px hsl(28 30% 30% / 0.35))" }}
           loading="eager" draggable={false}
         />
