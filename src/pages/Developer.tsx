@@ -43,7 +43,7 @@ const Developer = () => {
         <img
           src={PERSONA.png}
           alt={PERSONA.title}
-          className="pointer-events-none select-none absolute bottom-0 right-0 sm:right-2 md:right-[3%] h-[78svh] sm:h-[92svh] md:h-[104svh] lg:h-[112svh] w-auto object-contain object-bottom z-10"
+          className="pointer-events-none select-none absolute -bottom-2 sm:-bottom-3 right-0 sm:right-2 md:right-[3%] h-[68svh] sm:h-[82svh] md:h-[92svh] lg:h-[100svh] w-auto object-contain object-bottom z-10"
           style={{ filter: "drop-shadow(0 30px 60px hsl(0 0% 0% / 0.7))" }}
           loading="eager"
           draggable={false}

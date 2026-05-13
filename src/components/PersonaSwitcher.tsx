@@ -37,7 +37,7 @@ const CursiveName = ({ text, accent }: { text: string; accent: string }) => {
         fontFamily: "'Italianno', 'Caveat', cursive",
         fontWeight: 400,
         fontStyle: "italic",
-        fontSize: "clamp(3rem, 9vw, 9rem)",
+          fontSize: "clamp(2.6rem, 7.4vw, 7.5rem)",
         textShadow: `0 18px 70px ${accent}66, 0 2px 0 ${accent}22`,
         letterSpacing: "-0.01em",
         wordSpacing: "0.12em",
@@ -327,12 +327,12 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
       </div>
 
       {/* Content grid */}
-      <div className="relative z-20 h-full container mx-auto px-5 sm:px-8 lg:px-16 pt-20 pb-20 sm:pt-24 sm:pb-24 flex items-end md:items-center">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-10 items-end md:items-center w-full">
+      <div className="relative z-20 h-full container mx-auto px-5 sm:px-8 lg:px-16 pt-20 pb-10 sm:pt-24 sm:pb-14 flex items-end">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-8 items-end w-full">
           {/* LEFT — copy */}
-          <div className="md:col-span-6 lg:col-span-6 relative max-w-2xl pb-12 sm:pb-0 pt-[26svh] sm:pt-[40svh] md:pt-0">
+          <div className="md:col-span-6 lg:col-span-5 relative max-w-xl pb-4 sm:pb-2 pt-[26svh] sm:pt-[40svh] md:pt-0">
 
-            <div className="relative mb-5 sm:mb-6 min-h-[1.2em]">
+            <div className="relative mb-3 sm:mb-4 min-h-[1.2em]">
               <AnimatePresence mode="wait">
                 <CursiveName
                   key={`title-${persona.id}`}
@@ -343,7 +343,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
             </div>
 
             {/* Description — visible on mobile too, more breathing room */}
-            <div className="mb-6 sm:mb-7 min-h-[6.5rem] sm:min-h-[5.5rem]">
+            <div className="mb-4 sm:mb-5 min-h-[5rem] sm:min-h-[4rem]">
               <AnimatePresence mode="wait">
                 <motion.p
                   key={`desc-${persona.id}`}
@@ -351,7 +351,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -14 }}
                   transition={{ duration: 0.5, delay: 0.08 }}
-                  className="font-body text-[13px] sm:text-base text-foreground/75 max-w-lg leading-relaxed drop-shadow-[0_2px_18px_hsl(0_0%_0%_/_0.9)]"
+                  className="font-body text-[12px] sm:text-[14px] text-foreground/75 max-w-md leading-relaxed drop-shadow-[0_2px_18px_hsl(0_0%_0%_/_0.9)]"
                 >
                   {persona.description}
                 </motion.p>
@@ -374,7 +374,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -6 }}
                 transition={{ duration: 0.4, delay: 0.1 }}
-                className="flex items-center gap-2 mt-5"
+                className="flex items-center gap-2 mt-4"
               >
                 {(persona.socials ?? []).map((s) => (
                   <a
@@ -410,7 +410,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.5, delay: 0.15 }}
-                className="hidden md:flex flex-wrap gap-3 mt-8"
+                className="hidden md:flex flex-wrap gap-2.5 mt-5"
               >
                 {persona.stats.map((s, i) => (
                   <motion.div
