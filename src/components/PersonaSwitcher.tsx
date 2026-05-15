@@ -176,6 +176,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
   const reduce = useReducedMotion();
   const persona = personas[index];
   const lastSwapRef = useRef(0);
+  const isLight = persona.id === "friend";
 
   const go = (n: number) => setIndex(n);
 
@@ -257,9 +258,20 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
     >
       {/* Layered backgrounds — heavy blur + dark blend so PNG sits cleanly */}
       <div className="absolute inset-0">
-        {/* Soft white-to-cream editorial gradient (matches Friend/Nunchuks page) */}
+        {/* Dark cinematic base — used for developer & gamer */}
         <div
           className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(135deg, hsl(24 8% 5%) 0%, hsl(24 8% 8%) 50%, hsl(24 8% 4%) 100%)",
+          }}
+        />
+        {/* Soft white-to-cream editorial gradient — only for the Friend (nunchuks) persona */}
+        <motion.div
+          aria-hidden
+          className="absolute inset-0"
+          animate={{ opacity: isLight ? 1 : 0 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           style={{
             background:
               "linear-gradient(135deg, hsl(36 100% 97%) 0%, hsl(28 60% 92%) 45%, hsl(20 40% 86%) 100%)",
@@ -274,13 +286,15 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
           }}
           transition={{ duration: 1.1, ease: "easeInOut" }}
         />
-        {/* Soft vignette so edges feel finished */}
-        <div
+        {/* Soft vignette so edges feel finished — adapts to tone */}
+        <motion.div
           className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              "radial-gradient(ellipse at 70% 60%, transparent 40%, hsl(28 30% 80% / 0.35) 100%)",
+          animate={{
+            background: isLight
+              ? "radial-gradient(ellipse at 70% 60%, transparent 40%, hsl(28 30% 80% / 0.35) 100%)"
+              : "radial-gradient(ellipse at 70% 60%, transparent 40%, hsl(0 0% 0% / 0.55) 100%)",
           }}
+          transition={{ duration: 0.7 }}
         />
       </div>
 
