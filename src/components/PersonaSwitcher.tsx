@@ -71,11 +71,11 @@ const HOME_PLACEMENT: Record<
 };
 
 /* Cursive name — single line, viral feel */
-const CursiveName = ({ text, accent }: { text: string; accent: string }) => {
+const CursiveName = ({ text, accent, isLight }: { text: string; accent: string; isLight: boolean }) => {
   const letters = Array.from(text);
   return (
     <h1
-      className="leading-[0.9] text-stone-900 md:whitespace-nowrap"
+      className={`leading-[0.9] md:whitespace-nowrap ${isLight ? "text-stone-900" : "text-stone-50"}`}
       style={{
         fontFamily: "'Italianno', 'Caveat', cursive",
         fontWeight: 400,
@@ -115,18 +115,20 @@ const EnterPill = ({
   to,
   label,
   accent,
+  isLight,
 }: {
   to: string;
   label: string;
   accent: string;
+  isLight: boolean;
 }) => {
   return (
     <div className="inline-block">
       <Link
         to={to}
-        className="group relative inline-flex items-center gap-3 sm:gap-4 pl-5 sm:pl-6 pr-2 py-2 sm:py-2.5 rounded-full font-display font-medium text-[11px] sm:text-xs uppercase tracking-[0.24em] text-stone-900 overflow-hidden"
+        className={`group relative inline-flex items-center gap-3 sm:gap-4 pl-5 sm:pl-6 pr-2 py-2 sm:py-2.5 rounded-full font-display font-medium text-[11px] sm:text-xs uppercase tracking-[0.24em] overflow-hidden ${isLight ? "text-stone-900" : "text-stone-50"}`}
         style={{
-          background: "hsl(0 0% 100% / 0.55)",
+          background: isLight ? "hsl(0 0% 100% / 0.55)" : "hsl(0 0% 100% / 0.08)",
           backdropFilter: "blur(14px)",
           WebkitBackdropFilter: "blur(14px)",
         }}
