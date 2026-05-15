@@ -71,11 +71,11 @@ const HOME_PLACEMENT: Record<
 };
 
 /* Cursive name — single line, viral feel */
-const CursiveName = ({ text, accent }: { text: string; accent: string }) => {
+const CursiveName = ({ text, accent, isLight }: { text: string; accent: string; isLight: boolean }) => {
   const letters = Array.from(text);
   return (
     <h1
-      className="leading-[0.9] text-stone-900 md:whitespace-nowrap"
+      className={`leading-[0.9] md:whitespace-nowrap ${isLight ? "text-stone-900" : "text-stone-50"}`}
       style={{
         fontFamily: "'Italianno', 'Caveat', cursive",
         fontWeight: 400,
@@ -115,18 +115,20 @@ const EnterPill = ({
   to,
   label,
   accent,
+  isLight,
 }: {
   to: string;
   label: string;
   accent: string;
+  isLight: boolean;
 }) => {
   return (
     <div className="inline-block">
       <Link
         to={to}
-        className="group relative inline-flex items-center gap-3 sm:gap-4 pl-5 sm:pl-6 pr-2 py-2 sm:py-2.5 rounded-full font-display font-medium text-[11px] sm:text-xs uppercase tracking-[0.24em] text-stone-900 overflow-hidden"
+        className={`group relative inline-flex items-center gap-3 sm:gap-4 pl-5 sm:pl-6 pr-2 py-2 sm:py-2.5 rounded-full font-display font-medium text-[11px] sm:text-xs uppercase tracking-[0.24em] overflow-hidden ${isLight ? "text-stone-900" : "text-stone-50"}`}
         style={{
-          background: "hsl(0 0% 100% / 0.55)",
+          background: isLight ? "hsl(0 0% 100% / 0.55)" : "hsl(0 0% 100% / 0.08)",
           backdropFilter: "blur(14px)",
           WebkitBackdropFilter: "blur(14px)",
         }}
@@ -176,6 +178,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
   const reduce = useReducedMotion();
   const persona = personas[index];
   const lastSwapRef = useRef(0);
+  const isLight = persona.id === "friend";
 
   const go = (n: number) => setIndex(n);
 
@@ -257,9 +260,20 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
     >
       {/* Layered backgrounds — heavy blur + dark blend so PNG sits cleanly */}
       <div className="absolute inset-0">
-        {/* Soft white-to-cream editorial gradient (matches Friend/Nunchuks page) */}
+        {/* Dark cinematic base — used for developer & gamer */}
         <div
           className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(135deg, hsl(24 8% 5%) 0%, hsl(24 8% 8%) 50%, hsl(24 8% 4%) 100%)",
+          }}
+        />
+        {/* Soft white-to-cream editorial gradient — only for the Friend (nunchuks) persona */}
+        <motion.div
+          aria-hidden
+          className="absolute inset-0"
+          animate={{ opacity: isLight ? 1 : 0 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           style={{
             background:
               "linear-gradient(135deg, hsl(36 100% 97%) 0%, hsl(28 60% 92%) 45%, hsl(20 40% 86%) 100%)",
@@ -274,13 +288,15 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
           }}
           transition={{ duration: 1.1, ease: "easeInOut" }}
         />
-        {/* Soft vignette so edges feel finished */}
-        <div
+        {/* Soft vignette so edges feel finished — adapts to tone */}
+        <motion.div
           className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              "radial-gradient(ellipse at 70% 60%, transparent 40%, hsl(28 30% 80% / 0.35) 100%)",
+          animate={{
+            background: isLight
+              ? "radial-gradient(ellipse at 70% 60%, transparent 40%, hsl(28 30% 80% / 0.35) 100%)"
+              : "radial-gradient(ellipse at 70% 60%, transparent 40%, hsl(0 0% 0% / 0.55) 100%)",
           }}
+          transition={{ duration: 0.7 }}
         />
       </div>
 
@@ -368,7 +384,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
       <div className="relative z-20 h-full container mx-auto px-5 sm:px-8 lg:px-16 pt-20 pb-10 sm:pt-24 sm:pb-14 flex items-end">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-8 items-end w-full">
           {/* LEFT — copy */}
-          <div className="md:col-span-6 lg:col-span-5 relative max-w-xl pb-4 sm:pb-2 pt-[26svh] sm:pt-[40svh] md:pt-0 text-stone-900">
+          <div className={`md:col-span-6 lg:col-span-5 relative max-w-xl pb-4 sm:pb-2 pt-[26svh] sm:pt-[40svh] md:pt-0 ${isLight ? "text-stone-900" : "text-stone-100"}`}>
 
             <div className="relative mb-3 sm:mb-4 min-h-[1.2em]">
               <AnimatePresence mode="wait">
@@ -376,6 +392,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
                   key={`title-${persona.id}`}
                   text={persona.title}
                   accent={persona.accent}
+                  isLight={isLight}
                 />
               </AnimatePresence>
             </div>
@@ -389,7 +406,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -14 }}
                   transition={{ duration: 0.5, delay: 0.08 }}
-                  className="font-body text-[12px] sm:text-[14px] text-stone-700 max-w-md leading-relaxed"
+                  className={`font-body text-[12px] sm:text-[14px] max-w-md leading-relaxed ${isLight ? "text-stone-700" : "text-stone-300"}`}
                 >
                   {persona.description}
                 </motion.p>
@@ -401,6 +418,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
                 to={persona.ctaTo}
                 label={persona.ctaLabel}
                 accent={persona.accent}
+                isLight={isLight}
               />
             </div>
 
