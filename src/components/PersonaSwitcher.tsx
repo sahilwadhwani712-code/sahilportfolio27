@@ -384,7 +384,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
       <div className="relative z-20 h-full container mx-auto px-5 sm:px-8 lg:px-16 pt-20 pb-10 sm:pt-24 sm:pb-14 flex items-end">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-8 items-end w-full">
           {/* LEFT — copy */}
-          <div className="md:col-span-6 lg:col-span-5 relative max-w-xl pb-4 sm:pb-2 pt-[26svh] sm:pt-[40svh] md:pt-0 text-stone-900">
+          <div className={`md:col-span-6 lg:col-span-5 relative max-w-xl pb-4 sm:pb-2 pt-[26svh] sm:pt-[40svh] md:pt-0 ${isLight ? "text-stone-900" : "text-stone-100"}`}>
 
             <div className="relative mb-3 sm:mb-4 min-h-[1.2em]">
               <AnimatePresence mode="wait">
@@ -392,6 +392,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
                   key={`title-${persona.id}`}
                   text={persona.title}
                   accent={persona.accent}
+                  isLight={isLight}
                 />
               </AnimatePresence>
             </div>
@@ -405,7 +406,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -14 }}
                   transition={{ duration: 0.5, delay: 0.08 }}
-                  className="font-body text-[12px] sm:text-[14px] text-stone-700 max-w-md leading-relaxed"
+                  className={`font-body text-[12px] sm:text-[14px] max-w-md leading-relaxed ${isLight ? "text-stone-700" : "text-stone-300"}`}
                 >
                   {persona.description}
                 </motion.p>
@@ -417,6 +418,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
                 to={persona.ctaTo}
                 label={persona.ctaLabel}
                 accent={persona.accent}
+                isLight={isLight}
               />
             </div>
 
