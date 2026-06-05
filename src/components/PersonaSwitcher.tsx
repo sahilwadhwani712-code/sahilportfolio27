@@ -1,8 +1,6 @@
 import {
   motion,
   AnimatePresence,
-  useMotionValue,
-  useSpring,
   useReducedMotion,
 } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
@@ -35,8 +33,8 @@ const HOME_PLACEMENT: Record<
   {
     // mobile (below md)
     mobileH: string;       // Tailwind height class, e.g. "h-[62svh]"
-    mobileRight: string;   // Tailwind right offset, e.g. "right-[-6%]"
     mobileBottom: string;
+    mobileExtra?: string;  // extra mobile positioning (e.g. horizontal centering)
     // desktop (md+)
     desktopH: string;
     desktopRight: string;
@@ -44,26 +42,26 @@ const HOME_PLACEMENT: Record<
   }
 > = {
   developer: {
-    mobileH: "h-[64svh]",
-    mobileRight: "right-[-8%]",
+    mobileH: "h-[92svh]",
     mobileBottom: "bottom-0",
+    mobileExtra: "left-1/2 -translate-x-1/2",
     desktopH: "md:h-[96svh] lg:h-[104svh]",
     desktopRight: "md:right-[2%] lg:right-[4%]",
     desktopBottom: "md:bottom-0",
   },
   friend: {
-    mobileH: "h-[60svh]",
-    mobileRight: "right-[-4%]",
+    mobileH: "h-[90svh]",
     mobileBottom: "bottom-0",
+    mobileExtra: "left-1/2 -translate-x-1/2",
     desktopH: "md:h-[92svh] lg:h-[100svh]",
     desktopRight: "md:right-[4%] lg:right-[6%]",
     desktopBottom: "md:bottom-0",
   },
   gamer: {
     // wider asset (nunchuks) — give it more horizontal room
-    mobileH: "h-[58svh]",
-    mobileRight: "right-[-10%]",
-    mobileBottom: "bottom-2",
+    mobileH: "h-[88svh]",
+    mobileBottom: "bottom-0",
+    mobileExtra: "left-1/2 -translate-x-1/2",
     desktopH: "md:h-[88svh] lg:h-[96svh]",
     desktopRight: "md:right-[1%] lg:right-[3%]",
     desktopBottom: "md:bottom-2",
@@ -225,32 +223,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
     };
   }, [index, personas.length]);
 
-  /* Mouse parallax */
-  const mx = useMotionValue(0);
-  const my = useMotionValue(0);
-  const px = useSpring(mx, { stiffness: 60, damping: 18 });
-  const py = useSpring(my, { stiffness: 60, damping: 18 });
   const stageRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (reduce) return;
-    const el = stageRef.current;
-    if (!el) return;
-    const onMove = (e: MouseEvent) => {
-      const r = el.getBoundingClientRect();
-      mx.set(((e.clientX - (r.left + r.width / 2)) / r.width) * 18);
-      my.set(((e.clientY - (r.top + r.height / 2)) / r.height) * 12);
-    };
-    const onLeave = () => {
-      mx.set(0);
-      my.set(0);
-    };
-    el.addEventListener("mousemove", onMove);
-    el.addEventListener("mouseleave", onLeave);
-    return () => {
-      el.removeEventListener("mousemove", onMove);
-      el.removeEventListener("mouseleave", onLeave);
-    };
-  }, [mx, my, reduce]);
 
   return (
     <section
@@ -325,10 +298,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
       {/* Character layer — per-persona placement, lower-right on home,
           tuned per asset so nothing gets cut on either device */}
       <div className="absolute inset-0 z-[8] pointer-events-none overflow-hidden">
-        <motion.div
-          style={{ x: px, y: py }}
-          className="absolute inset-0"
-        >
+        <div className="absolute inset-0">
           {/* Soft warm glow behind the active subject */}
           <motion.div
             aria-hidden
@@ -360,8 +330,9 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
                 className={[
                   "absolute w-auto max-w-none object-contain object-bottom select-none pointer-events-none",
                   place.mobileBottom,
-                  place.mobileRight,
                   place.mobileH,
+                  place.mobileExtra ?? "",
+                  "md:left-auto md:translate-x-0",
                   place.desktopBottom,
                   place.desktopRight,
                   place.desktopH,
@@ -377,8 +348,19 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
               />
             );
           })}
-        </motion.div>
+        </div>
       </div>
+
+      {/* Mobile bottom scrim — keeps text legible over full-bleed hero PNG */}
+      <div
+        aria-hidden
+        className="md:hidden absolute inset-x-0 bottom-0 h-[58svh] z-[9] pointer-events-none"
+        style={{
+          background: isLight
+            ? "linear-gradient(to top, hsl(36 100% 97% / 0.92) 0%, hsl(36 100% 97% / 0.55) 45%, transparent 100%)"
+            : "linear-gradient(to top, hsl(24 8% 4% / 0.92) 0%, hsl(24 8% 4% / 0.55) 45%, transparent 100%)",
+        }}
+      />
 
       {/* Content grid */}
       <div className="relative z-20 h-full container mx-auto px-5 sm:px-8 lg:px-16 pt-20 pb-10 sm:pt-24 sm:pb-14 flex items-end">

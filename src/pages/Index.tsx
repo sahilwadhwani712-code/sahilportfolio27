@@ -9,7 +9,7 @@ const personas: Persona[] = [
     title: "Sahil Wadhwani",
     subtitle: "",
     description:
-      "Passionate about AI and building tech that genuinely helps people. I love turning ideas into clean, user-focused Android experiences and exploring how intelligent systems can create real-world impact.",
+      "Android engineer working with AI and Jetpack Compose. Building tools that are calm, useful and quietly opinionated.",
     bg: "https://i.postimg.cc/VLh5HfWP/Dev-bg.webp",
     png: "https://i.postimg.cc/wTr3bqQ6/Dev.webp",
     accent: "hsl(0, 85%, 58%)",
@@ -37,7 +37,7 @@ const personas: Persona[] = [
     title: "Sahil Wadhwani",
     subtitle: "",
     description:
-      "Off the keyboard, I chase songs on loop, frames worth keeping, and films that stay with me. The quieter, more curious side of who I am.",
+      "Off the keyboard — music on loop, a few frames worth keeping, films worth rewatching.",
     bg: "https://i.postimg.cc/gk7rBzHF/Friend-Bg.webp",
     png: "https://i.postimg.cc/ncWMwFGJ/Friend.webp",
     accent: "hsl(28, 95%, 58%)",
@@ -62,10 +62,10 @@ const personas: Persona[] = [
   {
     id: "gamer",
     label: "GAMER",
-    title: "S A A H O",
+    title: "Sahil Wadhwani",
     subtitle: "",
     description:
-      "Gaming is my weekend reset — squad drops, slow open-world drives and quick races. Not a grind, just a way to breathe between builds.",
+      "Weekend reset — squad drops, slow open-world drives, the odd race. No grind.",
     bg: "https://i.postimg.cc/7YRbQHnw/gamer-bg.webp",
     png: "https://i.postimg.cc/TYshHdqH/Gamer.webp",
     accent: "hsl(190, 95%, 55%)",
