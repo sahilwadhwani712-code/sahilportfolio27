@@ -1,76 +1,75 @@
-import { useEffect, useRef, useState } from "react";
-import { useReducedMotion } from "framer-motion";
+import { useEffect } from "react";
 
-type Dot = { x: number; y: number; id: number };
-
+/**
+ * Classic 90s-style trailing-dots cursor.
+ * Ported from the requested snippet: 12 dots that chase the mouse,
+ * each easing toward the next with a 0.6 lerp factor.
+ */
 const CursorTrail = () => {
-  const reduce = useReducedMotion();
-  const [dots, setDots] = useState<Dot[]>([]);
-  const idRef = useRef(0);
-  const lastRef = useRef({ x: -100, y: -100, active: false });
-
   useEffect(() => {
-    if (reduce) return;
-    // hide on touch / coarse-pointer devices
+    if (typeof window === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (window.matchMedia("(hover: none)").matches) return;
 
+    const COUNT = 12;
+    const mouse = { x: -100, y: -100 };
+    const dots: { x: number; y: number; node: HTMLDivElement }[] = [];
+
+    const layer = document.createElement("div");
+    layer.style.cssText =
+      "position:fixed;inset:0;pointer-events:none;z-index:9999;";
+    document.body.appendChild(layer);
+
+    for (let i = 0; i < COUNT; i++) {
+      const node = document.createElement("div");
+      const t = (i + 1) / COUNT;
+      const size = 3 + (1 - t) * 5; // newest big, tail small
+      node.style.cssText = [
+        "position:absolute",
+        `width:${size}px`,
+        `height:${size}px`,
+        "border-radius:9999px",
+        "transform:translate(-50%,-50%)",
+        "background:hsl(28 95% 58%)",
+        `opacity:${(1 - t) * 0.55 + 0.15}`,
+        `box-shadow:0 0 ${4 + (1 - t) * 10}px hsl(28 95% 58% / 0.45)`,
+        "will-change:left,top",
+      ].join(";");
+      layer.appendChild(node);
+      dots.push({ x: 0, y: 0, node });
+    }
+
     const onMove = (e: MouseEvent) => {
-      lastRef.current = { x: e.clientX, y: e.clientY, active: true };
-    };
-    const onLeave = () => {
-      lastRef.current.active = false;
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
     };
     window.addEventListener("mousemove", onMove, { passive: true });
-    window.addEventListener("mouseleave", onLeave);
 
-    let timer = 0 as unknown as number;
-    const tick = () => {
-      const { x, y, active } = lastRef.current;
-      setDots((d) => {
-        if (!active) return d.length ? d.slice(1) : d;
-        const next = [...d, { x, y, id: idRef.current++ }];
-        if (next.length > 12) next.shift();
-        return next;
+    let raf = 0;
+    const draw = () => {
+      let x = mouse.x;
+      let y = mouse.y;
+      dots.forEach((dot, index) => {
+        const next = dots[index + 1] || dots[0];
+        dot.x = x;
+        dot.y = y;
+        dot.node.style.left = x + "px";
+        dot.node.style.top = y + "px";
+        x += (next.x - dot.x) * 0.6;
+        y += (next.y - dot.y) * 0.6;
       });
-      timer = window.setTimeout(tick, 35);
+      raf = requestAnimationFrame(draw);
     };
-    tick();
+    draw();
 
     return () => {
+      cancelAnimationFrame(raf);
       window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("mouseleave", onLeave);
-      clearTimeout(timer);
+      layer.remove();
     };
-  }, [reduce]);
+  }, []);
 
-  if (reduce) return null;
-
-  return (
-    <div className="pointer-events-none fixed inset-0 z-[9999] hidden md:block">
-      {dots.map((d, i) => {
-        const t = (i + 1) / dots.length; // 0..1, newest = 1
-        const size = 2 + t * 4;
-        return (
-          <span
-            key={d.id}
-            style={{
-              position: "absolute",
-              left: d.x,
-              top: d.y,
-              width: size,
-              height: size,
-              borderRadius: "9999px",
-              transform: "translate(-50%, -50%)",
-              background: "hsl(28 95% 58%)",
-              opacity: t * 0.55,
-              boxShadow: `0 0 ${6 + t * 10}px hsl(28 95% 58% / ${0.35 * t})`,
-              transition: "opacity 200ms linear",
-            }}
-          />
-        );
-      })}
-    </div>
-  );
+  return null;
 };
 
 export default CursorTrail;

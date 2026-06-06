@@ -7,6 +7,7 @@ import ProjectsSection from "@/components/ProjectsSection";
 import SkillsSection from "@/components/SkillsSection";
 import MarqueeText from "@/components/MarqueeText";
 import ContactSection from "@/components/ContactSection";
+import DevServicesBlock from "@/components/DevServicesBlock";
 
 const PERSONA = {
   label: "DEVELOPER",
@@ -26,26 +27,25 @@ const Developer = () => {
 
       {/* ── Persona Hero ── */}
       <section className="relative min-h-[100svh] w-full overflow-hidden flex items-end sm:items-center">
-        {/* Clean cinematic backdrop — no bg image, no giant faded label */}
-        <div className="absolute inset-0 bg-gradient-to-br from-background via-[hsl(0_30%_6%)] to-background" />
+        {/* Warm cream gradient — matches outside persona */}
+        <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, hsl(36 100% 97%) 0%, hsl(28 60% 92%) 45%, hsl(20 40% 86%) 100%)" }} />
         <div
           className="absolute -top-32 -right-24 w-[60vw] h-[60vw] max-w-[720px] max-h-[720px] rounded-full pointer-events-none blur-[140px]"
-          style={{ background: PERSONA.accent, opacity: 0.22 }}
+          style={{ background: PERSONA.accent, opacity: 0.14 }}
         />
         <div
           className="absolute -bottom-32 -left-24 w-[55vw] h-[55vw] max-w-[640px] max-h-[640px] rounded-full pointer-events-none blur-[150px]"
-          style={{ background: PERSONA.accent, opacity: 0.14 }}
+          style={{ background: "hsl(28 90% 75%)", opacity: 0.3 }}
         />
-        <div className="absolute inset-0 gradient-blinds opacity-30 pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/30 pointer-events-none" />
+        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 70% 60%, transparent 40%, hsl(28 30% 80% / 0.35) 100%)" }} />
 
         {/* Hero PNG — center anchored, text overlaps */}
         {/* Inside page → anchored lower-CENTER, sized so full figure stays visible */}
         <img
           src={PERSONA.png}
           alt={PERSONA.title}
-          className="pointer-events-none select-none absolute bottom-0 left-1/2 -translate-x-1/2 h-[82svh] sm:h-[88svh] md:h-[92svh] lg:h-[100svh] w-auto object-contain object-bottom z-10"
-          style={{ filter: "drop-shadow(0 30px 60px hsl(0 0% 0% / 0.7))" }}
+          className="pointer-events-none select-none absolute bottom-0 right-[-8%] md:right-[2%] lg:right-[6%] md:left-auto md:translate-x-0 h-[100svh] md:h-[94svh] lg:h-[102svh] w-auto object-contain object-bottom z-10"
+          style={{ filter: "drop-shadow(0 26px 44px hsl(28 30% 30% / 0.32))" }}
           loading="eager"
           draggable={false}
         />
@@ -65,17 +65,17 @@ const Developer = () => {
                 </span>
               </motion.div>
               <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                className="font-display font-black text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight leading-[0.9] mb-4 text-foreground"
+                className="font-display font-black text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight leading-[0.9] mb-4 text-stone-900"
               >
                 {PERSONA.title}
               </motion.h1>
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-                className="font-display text-sm sm:text-lg font-semibold text-foreground/80 mb-3"
+                className="font-display text-sm sm:text-lg font-semibold text-stone-800 mb-3"
               >
                 {PERSONA.subtitle}
               </motion.p>
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
-                className="font-body text-xs sm:text-sm text-muted-foreground md:ml-auto max-w-md leading-relaxed"
+                className="font-body text-xs sm:text-sm text-stone-700 md:ml-auto max-w-md leading-relaxed"
               >
                 {PERSONA.description}
               </motion.p>
@@ -88,6 +88,7 @@ const Developer = () => {
         <MarqueeText text="KOTLIN • JETPACK COMPOSE • FIREBASE • MVVM • CLEAN CODE • ANDROID" />
       </div>
 
+      <DevServicesBlock />
       <ProjectsSection />
       <SkillsSection />
       <ContactSection />
