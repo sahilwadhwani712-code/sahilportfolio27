@@ -38,7 +38,7 @@ const Friend = () => {
         <img
           src={PERSONA.png}
           alt={PERSONA.title}
-          className="pointer-events-none select-none absolute bottom-0 left-1/2 -translate-x-1/2 h-[58svh] sm:h-[76svh] md:h-[88svh] lg:h-[96svh] w-auto object-contain object-bottom z-10"
+          className="pointer-events-none select-none absolute bottom-0 right-[-6%] md:right-[4%] lg:right-[6%] md:left-auto md:translate-x-0 h-[98svh] md:h-[92svh] lg:h-[100svh] w-auto object-contain object-bottom z-10"
           style={{ filter: "drop-shadow(0 24px 48px hsl(28 30% 30% / 0.35))" }}
           loading="eager" draggable={false}
         />
