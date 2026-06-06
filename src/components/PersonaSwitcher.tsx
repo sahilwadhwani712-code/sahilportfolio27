@@ -42,26 +42,26 @@ const HOME_PLACEMENT: Record<
   }
 > = {
   developer: {
-    mobileH: "h-[92svh]",
+    mobileH: "h-[100svh]",
     mobileBottom: "bottom-0",
-    mobileExtra: "left-1/2 -translate-x-1/2",
-    desktopH: "md:h-[96svh] lg:h-[104svh]",
+    mobileExtra: "right-[-8%]",
+    desktopH: "md:h-[94svh] lg:h-[102svh]",
     desktopRight: "md:right-[2%] lg:right-[4%]",
     desktopBottom: "md:bottom-0",
   },
   friend: {
-    mobileH: "h-[90svh]",
+    mobileH: "h-[98svh]",
     mobileBottom: "bottom-0",
-    mobileExtra: "left-1/2 -translate-x-1/2",
+    mobileExtra: "right-[-6%]",
     desktopH: "md:h-[92svh] lg:h-[100svh]",
     desktopRight: "md:right-[4%] lg:right-[6%]",
     desktopBottom: "md:bottom-0",
   },
   gamer: {
     // wider asset (nunchuks) — give it more horizontal room
-    mobileH: "h-[88svh]",
+    mobileH: "h-[96svh]",
     mobileBottom: "bottom-0",
-    mobileExtra: "left-1/2 -translate-x-1/2",
+    mobileExtra: "right-[-12%]",
     desktopH: "md:h-[88svh] lg:h-[96svh]",
     desktopRight: "md:right-[1%] lg:right-[3%]",
     desktopBottom: "md:bottom-2",
@@ -176,7 +176,8 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
   const reduce = useReducedMotion();
   const persona = personas[index];
   const lastSwapRef = useRef(0);
-  const isLight = persona.id === "friend";
+  // Whole site uses the warm cream gradient now → always light.
+  const isLight = true;
 
   const go = (n: number) => setIndex(n);
 
@@ -233,20 +234,9 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
     >
       {/* Layered backgrounds — heavy blur + dark blend so PNG sits cleanly */}
       <div className="absolute inset-0">
-        {/* Dark cinematic base — used for developer & gamer */}
+        {/* Unified warm cream editorial gradient — site-wide base */}
         <div
           className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(135deg, hsl(24 8% 5%) 0%, hsl(24 8% 8%) 50%, hsl(24 8% 4%) 100%)",
-          }}
-        />
-        {/* Soft white-to-cream editorial gradient — only for the Friend (nunchuks) persona */}
-        <motion.div
-          aria-hidden
-          className="absolute inset-0"
-          animate={{ opacity: isLight ? 1 : 0 }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           style={{
             background:
               "linear-gradient(135deg, hsl(36 100% 97%) 0%, hsl(28 60% 92%) 45%, hsl(20 40% 86%) 100%)",
