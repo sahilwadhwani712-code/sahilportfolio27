@@ -7,6 +7,7 @@ import ProjectsSection from "@/components/ProjectsSection";
 import SkillsSection from "@/components/SkillsSection";
 import MarqueeText from "@/components/MarqueeText";
 import ContactSection from "@/components/ContactSection";
+import DevServicesBlock from "@/components/DevServicesBlock";
 
 const PERSONA = {
   label: "DEVELOPER",
@@ -87,6 +88,7 @@ const Developer = () => {
         <MarqueeText text="KOTLIN • JETPACK COMPOSE • FIREBASE • MVVM • CLEAN CODE • ANDROID" />
       </div>
 
+      <DevServicesBlock />
       <ProjectsSection />
       <SkillsSection />
       <ContactSection />
