@@ -1,27 +1,38 @@
-import { motion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowUpRight, CheckCircle2, Clock3, Rocket } from "lucide-react";
 import { useState } from "react";
 
-type Item = {
+type ProjectStatus = "completed" | "progress" | "upcoming";
+
+type ProjectItem = {
   num: string;
   title: string;
-  category: string;
+  meta: string;
   year: string;
-  preview: string; // emoji or short label
-  color: string;   // gradient classes
+  preview: string;
+  status: ProjectStatus;
   href: string;
 };
 
-const items: Item[] = [
-  { num: "01", title: "Utilix — Premium Toolkit", category: "Android · Compose", year: "2025", preview: "🧰", color: "from-violet-500 to-fuchsia-600", href: "https://github.com/Sahil-dev7" },
-  { num: "02", title: "Dopamine Bar", category: "Attention · Accessibility", year: "2025", preview: "🧠", color: "from-emerald-500 to-teal-600", href: "https://github.com/Sahil-dev7" },
-  { num: "03", title: "Aureo Music Player", category: "Media · Skeuomorphic UI", year: "2025", preview: "🎵", color: "from-rose-500 to-pink-600", href: "https://github.com/Sahil-dev7" },
-  { num: "04", title: "Personal Portfolio", category: "Web · Cinematic", year: "2026", preview: "🌐", color: "from-orange-500 to-red-500", href: "https://github.com/Sahil-dev7" },
-  { num: "05", title: "Election Central", category: "Web · Secure Voting", year: "2024", preview: "🗳️", color: "from-indigo-500 to-violet-600", href: "https://github.com/Sahil-dev7" },
+const categories: { key: ProjectStatus; label: string; icon: typeof CheckCircle2 }[] = [
+  { key: "completed", label: "Completed", icon: CheckCircle2 },
+  { key: "progress", label: "In Progress", icon: Rocket },
+  { key: "upcoming", label: "Upcoming", icon: Clock3 },
 ];
 
-const Row = ({ item, index }: { item: Item; index: number }) => {
+const projects: ProjectItem[] = [
+  { num: "01", title: "Utilix", meta: "Premium Android toolkit · Compose", year: "2025", preview: "🧰", status: "completed", href: "https://github.com/Sahil-dev7" },
+  { num: "02", title: "Dopamine Bar", meta: "Short-form blocker · Accessibility API", year: "2025", preview: "🧠", status: "completed", href: "https://github.com/Sahil-dev7" },
+  { num: "03", title: "Personal Portfolio", meta: "Cinematic React experience", year: "2026", preview: "🌐", status: "completed", href: "https://github.com/Sahil-dev7" },
+  { num: "04", title: "Election Central", meta: "University voting system", year: "2024", preview: "🗳️", status: "completed", href: "https://github.com/Sahil-dev7" },
+  { num: "05", title: "Aureo Music Player", meta: "Skeuomorphic media player", year: "2026", preview: "🎵", status: "progress", href: "https://github.com/Sahil-dev7" },
+  { num: "06", title: "PC Connect", meta: "Phone-to-computer bridge", year: "2026", preview: "🔗", status: "upcoming", href: "https://github.com/Sahil-dev7" },
+  { num: "07", title: "AI Study Companion", meta: "Notes, reminders, focus flows", year: "2026", preview: "📚", status: "upcoming", href: "https://github.com/Sahil-dev7" },
+];
+
+const ProjectRow = ({ item, index }: { item: ProjectItem; index: number }) => {
   const [hover, setHover] = useState(false);
+
   return (
     <motion.a
       href={item.href}
@@ -32,70 +43,50 @@ const Row = ({ item, index }: { item: Item; index: number }) => {
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.5, delay: index * 0.06, ease: [0.22, 1, 0.36, 1] }}
-      className="group relative block border-t border-stone-900/15 last:border-b py-6 sm:py-8 overflow-hidden"
+      transition={{ duration: 0.45, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
+      className="group relative block overflow-hidden border-t border-stone-100/14 last:border-b"
     >
-      {/* Sliding wash on hover */}
       <motion.div
         aria-hidden
-        className="absolute inset-0 -z-10"
+        className="absolute inset-0"
         initial={false}
-        animate={{ x: hover ? "0%" : "-101%" }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        style={{
-          background:
-            "linear-gradient(90deg, hsl(28 95% 58% / 0.10) 0%, hsl(28 95% 58% / 0.02) 100%)",
-        }}
+        animate={{ x: hover ? "0%" : "-102%" }}
+        transition={{ duration: 0.62, ease: [0.22, 1, 0.36, 1] }}
+        style={{ background: "linear-gradient(90deg, hsl(0 85% 58% / 0.22), hsl(22 88% 60% / 0.08))" }}
       />
 
-      <div className="container mx-auto px-4 sm:px-6 grid grid-cols-12 items-center gap-4">
-        {/* Number */}
-        <div className="col-span-2 sm:col-span-1 font-mono text-[11px] sm:text-xs text-stone-500 tabular-nums">
-          {item.num}
-        </div>
-
-        {/* Title slides slightly right on hover */}
+      <div className="relative container mx-auto px-4 sm:px-6 py-6 sm:py-8 grid grid-cols-12 gap-4 items-center">
+        <span className="col-span-2 sm:col-span-1 font-mono text-[11px] sm:text-xs text-stone-400 tabular-nums">{item.num}</span>
         <motion.div
           className="col-span-10 sm:col-span-6"
-          animate={{ x: hover ? 10 : 0 }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          animate={{ x: hover ? 14 : 0 }}
+          transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
         >
-          <h3 className="font-display font-bold text-xl sm:text-3xl md:text-4xl tracking-tight text-stone-900 leading-tight">
+          <h3 className="font-display font-black text-2xl sm:text-4xl md:text-6xl tracking-tight text-stone-50 leading-[0.9]">
             {item.title}
           </h3>
         </motion.div>
-
-        {/* Category */}
-        <div className="hidden sm:block col-span-3 font-body text-xs sm:text-sm text-stone-600">
-          {item.category}
-        </div>
-
-        {/* Year + arrow */}
-        <div className="col-span-12 sm:col-span-2 flex items-center justify-end gap-3">
-          <span className="font-mono text-[11px] sm:text-xs text-stone-500 tabular-nums">
-            {item.year}
-          </span>
+        <p className="col-span-8 col-start-3 sm:col-span-3 sm:col-start-auto font-body text-xs sm:text-sm text-stone-300 leading-relaxed">
+          {item.meta}
+        </p>
+        <div className="col-span-4 sm:col-span-2 flex items-center justify-end gap-3">
+          <span className="font-mono text-[11px] sm:text-xs text-stone-400 tabular-nums">{item.year}</span>
           <motion.span
-            className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-stone-900 text-white"
-            animate={{ rotate: hover ? 0 : -45, scale: hover ? 1.05 : 1 }}
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-stone-50 text-stone-950"
+            animate={{ rotate: hover ? 0 : -45, scale: hover ? 1.06 : 1 }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           >
-            <ArrowUpRight className="w-4 h-4" />
+            <ArrowUpRight className="h-4 w-4" />
           </motion.span>
         </div>
       </div>
 
-      {/* Floating thumbnail preview that tracks hover (desktop only) */}
       <motion.div
         aria-hidden
-        className={`pointer-events-none hidden md:flex absolute top-1/2 right-[18%] -translate-y-1/2 w-40 h-28 rounded-2xl bg-gradient-to-br ${item.color} items-center justify-center text-4xl shadow-2xl`}
+        className="pointer-events-none absolute right-[16%] top-1/2 hidden h-32 w-44 -translate-y-1/2 items-center justify-center rounded-[1.5rem] border border-stone-50/20 bg-stone-950/80 text-5xl shadow-2xl backdrop-blur-md md:flex"
         initial={false}
-        animate={{
-          opacity: hover ? 1 : 0,
-          scale: hover ? 1 : 0.85,
-          y: hover ? "-50%" : "-30%",
-        }}
-        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        animate={{ opacity: hover ? 1 : 0, scale: hover ? 1 : 0.86, rotate: hover ? -2 : 0 }}
+        transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
       >
         {item.preview}
       </motion.div>
@@ -104,34 +95,56 @@ const Row = ({ item, index }: { item: Item; index: number }) => {
 };
 
 const DevServicesBlock = () => {
+  const [active, setActive] = useState<ProjectStatus>("completed");
+  const visible = projects.filter((project) => project.status === active);
+
   return (
-    <section className="relative py-16 sm:py-24">
+    <section className="relative py-16 sm:py-24 overflow-hidden" style={{ background: "var(--persona-dev-bg)" }}>
       <div className="container mx-auto px-4 sm:px-6 mb-8 sm:mb-12">
-        <div className="flex items-end justify-between gap-6">
-          <div>
-            <span className="font-mono text-[11px] tracking-[0.3em] uppercase text-stone-500">
-              Selected Work · 2024 — 2026
+        <div className="grid gap-6 md:grid-cols-12 md:items-end">
+          <div className="md:col-span-8">
+            <span className="font-mono text-[11px] tracking-[0.3em] uppercase text-stone-400">
+              Dev Projects · 2024 — 2026
             </span>
-            <h2 className="mt-3 font-display font-black text-3xl sm:text-5xl md:text-6xl tracking-tight text-stone-900 leading-[0.95]">
-              Things I’ve been building.
+            <h2 className="mt-3 max-w-4xl font-display text-4xl sm:text-6xl md:text-7xl font-black tracking-tight text-stone-50 leading-[0.86]">
+              Code that ships, learns, and evolves.
             </h2>
           </div>
-          <a
-            href="https://github.com/Sahil-dev7"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden sm:inline-flex items-center gap-2 font-display text-sm font-semibold text-stone-900 border-b border-stone-900 pb-1 hover:gap-3 transition-all"
-          >
-            View all on GitHub <ArrowUpRight className="w-4 h-4" />
-          </a>
+          <div className="md:col-span-4 flex md:justify-end">
+            <div className="inline-flex flex-wrap gap-2 rounded-full border border-stone-100/15 bg-stone-950/45 p-1 backdrop-blur-md">
+              {categories.map((category) => {
+                const selected = active === category.key;
+                return (
+                  <button
+                    key={category.key}
+                    type="button"
+                    onClick={() => setActive(category.key)}
+                    className={`inline-flex items-center gap-2 rounded-full px-3.5 py-2 font-display text-[11px] sm:text-xs font-semibold transition-colors ${selected ? "bg-stone-50 text-stone-950" : "text-stone-300 hover:text-stone-50"}`}
+                  >
+                    <category.icon className="h-3.5 w-3.5" />
+                    {category.label}
+                    <span className="font-mono opacity-70">{projects.filter((project) => project.status === category.key).length}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
 
-      <div>
-        {items.map((it, i) => (
-          <Row key={it.num} item={it} index={i} />
-        ))}
-      </div>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={active}
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -18 }}
+          transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+        >
+          {visible.map((item, index) => (
+            <ProjectRow key={item.num} item={item} index={index} />
+          ))}
+        </motion.div>
+      </AnimatePresence>
     </section>
   );
 };
