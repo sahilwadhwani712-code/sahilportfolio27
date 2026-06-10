@@ -42,9 +42,9 @@ const HOME_PLACEMENT: Record<
   }
 > = {
   developer: {
-    mobileH: "h-[88svh]",
+    mobileH: "h-[92svh]",
     mobileBottom: "bottom-0",
-    mobileExtra: "left-[57%] -translate-x-1/2",
+    mobileExtra: "right-[-14%]",
     desktopH: "md:h-[94svh] lg:h-[102svh]",
     desktopRight: "md:right-[2%] lg:right-[4%]",
     desktopBottom: "md:bottom-0",
@@ -52,16 +52,16 @@ const HOME_PLACEMENT: Record<
   friend: {
     mobileH: "h-[90svh]",
     mobileBottom: "bottom-0",
-    mobileExtra: "left-[58%] -translate-x-1/2",
+    mobileExtra: "right-[-10%]",
     desktopH: "md:h-[92svh] lg:h-[100svh]",
     desktopRight: "md:right-[4%] lg:right-[6%]",
     desktopBottom: "md:bottom-0",
   },
   gamer: {
     // wider asset (nunchuks) — give it more horizontal room
-    mobileH: "h-[88svh]",
+    mobileH: "h-[90svh]",
     mobileBottom: "bottom-0",
-    mobileExtra: "left-[60%] -translate-x-1/2",
+    mobileExtra: "right-[-16%]",
     desktopH: "md:h-[88svh] lg:h-[96svh]",
     desktopRight: "md:right-[1%] lg:right-[3%]",
     desktopBottom: "md:bottom-2",
