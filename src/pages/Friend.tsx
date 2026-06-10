@@ -24,7 +24,7 @@ const PERSONA = {
 
 const Friend = () => {
   return (
-    <div className="min-h-screen bg-background grain overflow-x-hidden">
+    <div className="min-h-screen grain overflow-x-hidden" style={{ background: "var(--persona-friend-bg)" }}>
       <Navbar />
 
       <section className="relative min-h-[100svh] w-full overflow-hidden flex items-end sm:items-center">
