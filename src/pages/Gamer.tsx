@@ -85,7 +85,7 @@ const GameDeck = ({ games }: { games: any[] }) => {
 
 const GamerInner = () => {
   return (
-    <div className="min-h-screen bg-background grain overflow-x-hidden">
+    <div className="min-h-screen grain overflow-x-hidden" style={{ background: "var(--persona-gamer-bg)" }}>
       <Navbar />
 
       {/* Hero */}
@@ -164,7 +164,7 @@ const GamerInner = () => {
               <span className="text-foreground">My </span>
               <span className="text-gradient">Game Library</span>
             </h2>
-            <p className="text-muted-foreground font-body text-xs sm:text-sm mt-2">Tap to flip — the deck shifts to the next title.</p>
+            <p className="text-muted-foreground font-body text-xs sm:text-sm mt-2">Cards open the official game pages.</p>
           </motion.div>
 
           <GameDeck games={games} />
