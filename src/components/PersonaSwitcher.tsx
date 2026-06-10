@@ -44,7 +44,7 @@ const HOME_PLACEMENT: Record<
   developer: {
     mobileH: "h-[100svh]",
     mobileBottom: "bottom-0",
-    mobileExtra: "right-[-8%]",
+    mobileExtra: "right-[-3%]",
     desktopH: "md:h-[94svh] lg:h-[102svh]",
     desktopRight: "md:right-[2%] lg:right-[4%]",
     desktopBottom: "md:bottom-0",
@@ -52,7 +52,7 @@ const HOME_PLACEMENT: Record<
   friend: {
     mobileH: "h-[98svh]",
     mobileBottom: "bottom-0",
-    mobileExtra: "right-[-6%]",
+    mobileExtra: "right-[-2%]",
     desktopH: "md:h-[92svh] lg:h-[100svh]",
     desktopRight: "md:right-[4%] lg:right-[6%]",
     desktopBottom: "md:bottom-0",
@@ -61,7 +61,7 @@ const HOME_PLACEMENT: Record<
     // wider asset (nunchuks) — give it more horizontal room
     mobileH: "h-[96svh]",
     mobileBottom: "bottom-0",
-    mobileExtra: "right-[-12%]",
+    mobileExtra: "right-[-5%]",
     desktopH: "md:h-[88svh] lg:h-[96svh]",
     desktopRight: "md:right-[1%] lg:right-[3%]",
     desktopBottom: "md:bottom-2",
