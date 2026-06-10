@@ -94,15 +94,15 @@ body {
 
 @layer base {
   :root {
-    /* Warm cream editorial base — taken from persona gradient */
-    --background: 36 100% 97%;
-    --foreground: 24 12% 12%;
+    /* Default persona base: developer dark */
+    --background: 24 8% 5%;
+    --foreground: 38 28% 92%;
 
-    --card: 36 60% 96%;
-    --card-foreground: 24 12% 12%;
+    --card: 24 8% 8%;
+    --card-foreground: 38 28% 92%;
 
-    --popover: 36 80% 97%;
-    --popover-foreground: 24 12% 12%;
+    --popover: 24 8% 8%;
+    --popover-foreground: 38 28% 92%;
 
     /* Signature crimson — kept for brand continuity */
     --primary: 0 85% 58%;
@@ -112,8 +112,8 @@ body {
     --secondary: 22 88% 60%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 28 30% 90%;
-    --muted-foreground: 24 8% 38%;
+    --muted: 24 7% 14%;
+    --muted-foreground: 36 12% 72%;
 
     --accent: 22 88% 60%;
     --accent-foreground: 0 0% 100%;
@@ -121,13 +121,16 @@ body {
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 28 25% 82%;
-    --input: 28 25% 82%;
+    --border: 28 18% 22%;
+    --input: 28 18% 22%;
     --ring: 0 85% 58%;
 
     --radius: 0.75rem;
 
     /* Premium gradient tokens */
+    --persona-dev-bg: radial-gradient(70% 70% at 78% 58%, hsl(0 85% 34% / 0.30) 0%, transparent 58%), radial-gradient(50% 55% at 18% 24%, hsl(22 88% 45% / 0.16) 0%, transparent 72%), linear-gradient(135deg, hsl(24 8% 5%) 0%, hsl(18 10% 8%) 48%, hsl(0 26% 7%) 100%);
+    --persona-friend-bg: linear-gradient(135deg, hsl(36 100% 97%) 0%, hsl(28 60% 92%) 45%, hsl(20 40% 86%) 100%);
+    --persona-gamer-bg: radial-gradient(72% 70% at 78% 58%, hsl(190 95% 42% / 0.28) 0%, transparent 58%), radial-gradient(48% 54% at 18% 24%, hsl(220 92% 40% / 0.18) 0%, transparent 72%), linear-gradient(135deg, hsl(210 18% 5%) 0%, hsl(200 24% 8%) 50%, hsl(185 20% 6%) 100%);
     --gradient-primary: linear-gradient(135deg, hsl(0 85% 58%) 0%, hsl(12 80% 52%) 50%, hsl(22 88% 60%) 100%);
     --gradient-text: linear-gradient(135deg, hsl(0 85% 62%) 0%, hsl(15 80% 68%) 55%, hsl(38 92% 72%) 100%);
     --gradient-card: linear-gradient(145deg, hsl(0 0% 10%) 0%, hsl(0 0% 5%) 100%);
@@ -636,7 +639,7 @@ body {
 
   body {
     @apply bg-background text-foreground;
-    background-image: linear-gradient(135deg, hsl(36 100% 97%) 0%, hsl(28 60% 92%) 45%, hsl(20 40% 86%) 100%);
+    background-image: var(--persona-dev-bg);
     background-attachment: fixed;
   }
   

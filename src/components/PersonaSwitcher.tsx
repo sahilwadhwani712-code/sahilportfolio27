@@ -42,26 +42,26 @@ const HOME_PLACEMENT: Record<
   }
 > = {
   developer: {
-    mobileH: "h-[100svh]",
+    mobileH: "h-[92svh]",
     mobileBottom: "bottom-0",
-    mobileExtra: "right-[-8%]",
+    mobileExtra: "right-[-14%]",
     desktopH: "md:h-[94svh] lg:h-[102svh]",
     desktopRight: "md:right-[2%] lg:right-[4%]",
     desktopBottom: "md:bottom-0",
   },
   friend: {
-    mobileH: "h-[98svh]",
+    mobileH: "h-[90svh]",
     mobileBottom: "bottom-0",
-    mobileExtra: "right-[-6%]",
+    mobileExtra: "right-[-10%]",
     desktopH: "md:h-[92svh] lg:h-[100svh]",
     desktopRight: "md:right-[4%] lg:right-[6%]",
     desktopBottom: "md:bottom-0",
   },
   gamer: {
     // wider asset (nunchuks) — give it more horizontal room
-    mobileH: "h-[96svh]",
+    mobileH: "h-[90svh]",
     mobileBottom: "bottom-0",
-    mobileExtra: "right-[-12%]",
+    mobileExtra: "right-[-16%]",
     desktopH: "md:h-[88svh] lg:h-[96svh]",
     desktopRight: "md:right-[1%] lg:right-[3%]",
     desktopBottom: "md:bottom-2",
@@ -176,8 +176,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
   const reduce = useReducedMotion();
   const persona = personas[index];
   const lastSwapRef = useRef(0);
-  // Whole site uses the warm cream gradient now → always light.
-  const isLight = true;
+  const isLight = persona.id === "friend";
 
   const go = (n: number) => setIndex(n);
 
@@ -234,12 +233,16 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
     >
       {/* Layered backgrounds — heavy blur + dark blend so PNG sits cleanly */}
       <div className="absolute inset-0">
-        {/* Unified warm cream editorial gradient — site-wide base */}
+        {/* Per-persona editorial gradient — same tone as each persona page */}
         <div
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(135deg, hsl(36 100% 97%) 0%, hsl(28 60% 92%) 45%, hsl(20 40% 86%) 100%)",
+              persona.id === "friend"
+                ? "var(--persona-friend-bg)"
+                : persona.id === "gamer"
+                  ? "var(--persona-gamer-bg)"
+                  : "var(--persona-dev-bg)",
           }}
         />
         {/* Persona-tinted accent wash — subtle, follows active persona */}
