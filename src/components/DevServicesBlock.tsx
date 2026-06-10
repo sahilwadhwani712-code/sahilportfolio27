@@ -44,7 +44,7 @@ const ProjectRow = ({ item, index }: { item: ProjectItem; index: number }) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.45, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
-      className="group relative block overflow-hidden border-t border-stone-100/14 last:border-b"
+      className="group relative block overflow-hidden border-t border-stone-100/15 last:border-b"
     >
       <motion.div
         aria-hidden
@@ -111,7 +111,7 @@ const DevServicesBlock = () => {
             </h2>
           </div>
           <div className="md:col-span-4 flex md:justify-end">
-            <div className="inline-flex flex-wrap gap-2 rounded-full border border-stone-100/15 bg-stone-950/45 p-1 backdrop-blur-md">
+            <div className="inline-flex flex-wrap gap-2 rounded-full border border-stone-100/15 bg-stone-950/40 p-1 backdrop-blur-md">
               {categories.map((category) => {
                 const selected = active === category.key;
                 return (
