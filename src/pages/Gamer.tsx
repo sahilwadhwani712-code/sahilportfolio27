@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
-import { ArrowLeft, Trophy, Clock, Star, ExternalLink, Users, Gamepad2 } from "lucide-react";
+import { ArrowLeft, Trophy, Clock, Star, ExternalLink, Gamepad2 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import MarqueeText from "@/components/MarqueeText";
@@ -31,83 +30,55 @@ const Gamer = () => {
 };
 
 const GameDeck = ({ games }: { games: any[] }) => {
-  const [i, setI] = useState(0);
-  const next = () => setI((i + 1) % games.length);
-  const prev = () => setI((i - 1 + games.length) % games.length);
   return (
-    <div className="relative max-w-2xl mx-auto h-[480px] sm:h-[520px] select-none">
-      <div className="relative w-full h-full">
-        {games.map((g: any, idx: number) => {
-          const offset = (idx - i + games.length) % games.length;
-          const isTop = offset === 0;
-          const visible = offset < 4;
-          return (
-            <motion.div
-              key={g.name}
-              animate={{
-                y: offset * 14,
-                scale: 1 - offset * 0.04,
-                opacity: visible ? 1 - offset * 0.2 : 0,
-                rotate: offset === 0 ? 0 : (idx % 2 === 0 ? -1.5 : 1.5) * offset,
-                zIndex: 100 - offset,
-              }}
-              transition={{ type: "spring", stiffness: 220, damping: 26 }}
-              drag={isTop ? "x" : false}
-              dragConstraints={{ left: 0, right: 0 }}
-              onDragEnd={(_, info) => {
-                if (info.offset.x < -80) next();
-                else if (info.offset.x > 80) prev();
-              }}
-              className="absolute inset-0 cursor-grab active:cursor-grabbing"
-            >
-              <div className="relative h-full glass-card rounded-3xl overflow-hidden border border-border/40">
-                <div className={`absolute inset-0 bg-gradient-to-br ${g.color} opacity-60`} />
-                <img src={g.logo} alt="" className="absolute inset-0 w-full h-full object-cover opacity-30 blur-md scale-110" />
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/20" />
-                <div className="relative h-full flex flex-col p-6 sm:p-8">
-                  <div className="flex items-start gap-4 mb-4">
-                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden bg-muted flex-shrink-0 ring-1 ring-border/50">
-                      <img src={g.logo} alt={g.name} className="w-full h-full object-cover"
-                        onError={(e) => { (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="80">🎮</text></svg>'; }} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-display text-2xl sm:text-3xl font-bold text-foreground truncate">{g.name}</h3>
-                      <span className="text-xs font-display text-muted-foreground px-2 py-0.5 rounded-full bg-muted inline-block mt-1">{g.genre}</span>
-                    </div>
-                    <div className="text-right flex-shrink-0">
-                      <div className="flex items-center gap-1 text-yellow-500"><Star className="w-4 h-4 fill-current" /><span className="font-display text-sm font-bold">{g.rating}</span></div>
-                      <div className="text-xs text-muted-foreground">{g.playtime}</div>
-                    </div>
-                  </div>
-                  <p className="font-body text-sm text-muted-foreground mb-4">{g.description}</p>
-                  <div className="space-y-1.5 mb-4">
-                    {g.highlights.map((h: string) => (
-                      <div key={h} className="flex items-center gap-2 text-sm"><Trophy className="w-3 h-3 text-primary flex-shrink-0" /><span className="text-foreground/80">{h}</span></div>
-                    ))}
-                  </div>
-                  <div className="mt-auto flex items-center justify-between gap-3">
-                    {g.playerId ? (
-                      <div className="px-3 py-1.5 rounded-xl bg-primary/10 border border-primary/20 inline-flex items-center gap-2">
-                        <Users className="w-4 h-4 text-primary" />
-                        <span className="font-mono text-xs text-primary font-bold">ID: {g.playerId}</span>
-                      </div>
-                    ) : <span />}
-                    <a href={g.url} target="_blank" rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-xs font-display font-semibold text-primary hover:underline">
-                      Visit <ExternalLink className="w-3 h-3" />
-                    </a>
-                  </div>
+    <div className="grid gap-4 sm:gap-5 lg:grid-cols-3">
+      {games.map((g: any, idx: number) => (
+        <motion.a
+          key={g.name}
+          href={g.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          initial={{ opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.5, delay: idx * 0.06, ease: [0.22, 1, 0.36, 1] }}
+          className="group relative min-h-[420px] overflow-hidden rounded-[1.6rem] border border-stone-50/14 bg-stone-950/55 shadow-2xl"
+        >
+          <img
+            src={g.logo}
+            alt={g.name}
+            className="absolute inset-0 h-full w-full object-cover opacity-70 transition duration-700 group-hover:scale-105 group-hover:opacity-90"
+            onError={(e) => { (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23080f12"/><text x="50" y="62" text-anchor="middle" font-size="50">🎮</text></svg>'; }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/55 to-transparent" />
+          <div className="absolute inset-x-0 top-0 flex items-center justify-between p-4">
+            <span className="rounded-full border border-stone-50/20 bg-stone-950/45 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.22em] text-stone-100 backdrop-blur-md">{g.genre}</span>
+            <span className="inline-flex items-center gap-1 rounded-full bg-stone-50 px-3 py-1 font-display text-xs font-bold text-stone-950">
+              <Star className="h-3 w-3 fill-current" /> {g.rating}
+            </span>
+          </div>
+          <div className="relative z-10 flex min-h-[420px] flex-col justify-end p-5 sm:p-6">
+            <motion.h3 className="font-display text-3xl sm:text-4xl font-black leading-[0.9] text-stone-50" whileHover={{ x: 8 }}>
+              {g.name}
+            </motion.h3>
+            <p className="mt-3 font-body text-sm leading-relaxed text-stone-300">{g.description}</p>
+            <div className="mt-4 space-y-2 border-t border-stone-50/14 pt-4">
+              {g.highlights.slice(0, 2).map((h: string) => (
+                <div key={h} className="flex items-center gap-2 text-xs text-stone-200">
+                  <Trophy className="h-3.5 w-3.5 flex-shrink-0" style={{ color: PERSONA.accent }} />
+                  <span>{h}</span>
                 </div>
-              </div>
-            </motion.div>
-          );
-        })}
-      </div>
-      <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-3">
-        <button onClick={prev} className="px-3 py-1.5 rounded-full glass border border-border/50 text-xs font-display hover:border-primary/50 transition-colors">Prev</button>
-        <span className="text-xs font-mono text-muted-foreground">{i + 1} / {games.length}</span>
-        <button onClick={next} className="px-3 py-1.5 rounded-full glass border border-border/50 text-xs font-display hover:border-primary/50 transition-colors">Next</button>
-      </div>
+              ))}
+            </div>
+            <div className="mt-5 flex items-center justify-between gap-3">
+              <span className="font-mono text-[11px] text-stone-400">{g.playtime}</span>
+              <span className="inline-flex items-center gap-1.5 font-display text-xs font-semibold text-stone-50">
+                Open <ExternalLink className="h-3.5 w-3.5" />
+              </span>
+            </div>
+          </div>
+        </motion.a>
+      ))}
     </div>
   );
 };
