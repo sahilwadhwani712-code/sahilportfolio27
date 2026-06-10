@@ -42,7 +42,7 @@ const GameDeck = ({ games }: { games: any[] }) => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.5, delay: idx * 0.06, ease: [0.22, 1, 0.36, 1] }}
-          className="group relative min-h-[420px] overflow-hidden rounded-[1.6rem] border border-stone-50/14 bg-stone-950/55 shadow-2xl"
+          className="group relative min-h-[420px] overflow-hidden rounded-[1.6rem] border border-stone-50/20 bg-stone-950/50 shadow-2xl"
         >
           <img
             src={g.logo}
@@ -50,9 +50,9 @@ const GameDeck = ({ games }: { games: any[] }) => {
             className="absolute inset-0 h-full w-full object-cover opacity-70 transition duration-700 group-hover:scale-105 group-hover:opacity-90"
             onError={(e) => { (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23080f12"/><text x="50" y="62" text-anchor="middle" font-size="50">🎮</text></svg>'; }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/55 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/50 to-transparent" />
           <div className="absolute inset-x-0 top-0 flex items-center justify-between p-4">
-            <span className="rounded-full border border-stone-50/20 bg-stone-950/45 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.22em] text-stone-100 backdrop-blur-md">{g.genre}</span>
+            <span className="rounded-full border border-stone-50/20 bg-stone-950/50 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.22em] text-stone-100 backdrop-blur-md">{g.genre}</span>
             <span className="inline-flex items-center gap-1 rounded-full bg-stone-50 px-3 py-1 font-display text-xs font-bold text-stone-950">
               <Star className="h-3 w-3 fill-current" /> {g.rating}
             </span>
@@ -62,7 +62,7 @@ const GameDeck = ({ games }: { games: any[] }) => {
               {g.name}
             </motion.h3>
             <p className="mt-3 font-body text-sm leading-relaxed text-stone-300">{g.description}</p>
-            <div className="mt-4 space-y-2 border-t border-stone-50/14 pt-4">
+            <div className="mt-4 space-y-2 border-t border-stone-50/20 pt-4">
               {g.highlights.slice(0, 2).map((h: string) => (
                 <div key={h} className="flex items-center gap-2 text-xs text-stone-200">
                   <Trophy className="h-3.5 w-3.5 flex-shrink-0" style={{ color: PERSONA.accent }} />
