@@ -90,17 +90,17 @@ const GamerInner = () => {
 
       {/* Hero */}
       <section className="relative min-h-[100svh] w-full overflow-hidden flex items-end sm:items-center">
-        <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, hsl(36 100% 97%) 0%, hsl(28 60% 92%) 45%, hsl(20 40% 86%) 100%)" }} />
+        <div className="absolute inset-0" style={{ background: "var(--persona-gamer-bg)" }} />
         <div className="absolute -top-32 -right-24 w-[60vw] h-[60vw] max-w-[720px] max-h-[720px] rounded-full pointer-events-none blur-[140px]" style={{ background: PERSONA.accent, opacity: 0.14 }} />
-        <div className="absolute -bottom-32 -left-24 w-[55vw] h-[55vw] max-w-[640px] max-h-[640px] rounded-full pointer-events-none blur-[150px]" style={{ background: "hsl(190 80% 75%)", opacity: 0.3 }} />
-        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 70% 60%, transparent 40%, hsl(28 30% 80% / 0.35) 100%)" }} />
+        <div className="absolute -bottom-32 -left-24 w-[55vw] h-[55vw] max-w-[640px] max-h-[640px] rounded-full pointer-events-none blur-[150px]" style={{ background: "hsl(190 80% 55%)", opacity: 0.16 }} />
+        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 70% 60%, transparent 40%, hsl(0 0% 0% / 0.58) 100%)" }} />
 
         {/* Inside page → anchored lower-CENTER. Wider asset (nunchuks) → slightly smaller heights */}
         <img
           src={PERSONA.png}
           alt={PERSONA.title}
-          className="pointer-events-none select-none absolute bottom-0 right-[-12%] md:right-[1%] lg:right-[4%] md:left-auto md:translate-x-0 h-[96svh] md:h-[88svh] lg:h-[96svh] w-auto max-w-[130vw] object-contain object-bottom z-10"
-          style={{ filter: "drop-shadow(0 26px 44px hsl(28 30% 30% / 0.32))" }}
+          className="pointer-events-none select-none absolute bottom-0 left-[56%] -translate-x-1/2 md:left-auto md:translate-x-0 md:right-[-2%] lg:right-[1%] h-[108svh] md:h-[102svh] lg:h-[110svh] w-auto max-w-[145vw] object-contain object-bottom z-10"
+          style={{ filter: "drop-shadow(0 28px 46px hsl(0 0% 0% / 0.48))" }}
           loading="eager" draggable={false}
         />
 
@@ -108,27 +108,27 @@ const GamerInner = () => {
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
             <div className="md:col-span-6 md:col-start-1 md:text-left">
               <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
-                <Link to="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm mb-6">
+                <Link to="/" className="inline-flex items-center gap-2 text-stone-300 hover:text-stone-50 transition-colors text-sm mb-6">
                   <ArrowLeft className="w-4 h-4" /> Back to Home
                 </Link>
               </motion.div>
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="inline-flex items-center gap-2 mb-5">
-                <span className="px-3 py-1 font-display font-bold text-xs tracking-widest text-white" style={{ background: PERSONA.accent }}>
+                <span className="px-3 py-1 font-display font-bold text-xs tracking-widest text-primary-foreground" style={{ background: PERSONA.accent }}>
                   {PERSONA.label}
                 </span>
               </motion.div>
               <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                className="font-display font-black text-5xl sm:text-7xl md:text-8xl lg:text-[7.5rem] leading-[0.95] mb-4 text-stone-900 whitespace-nowrap"
+                className="font-display font-black text-5xl sm:text-7xl md:text-8xl lg:text-[7.5rem] leading-[0.95] mb-4 text-stone-50 whitespace-nowrap"
                 style={{ fontFamily: "'Orbitron', sans-serif", letterSpacing: "0.08em" }}
               >
                 {PERSONA.title}
               </motion.h1>
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-                className="font-display text-sm sm:text-lg font-semibold text-stone-800 mb-3">
+                className="font-display text-sm sm:text-lg font-semibold text-stone-200 mb-3">
                 {PERSONA.subtitle}
               </motion.p>
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
-                className="font-body text-xs sm:text-sm text-stone-700 md:ml-auto max-w-md leading-relaxed mb-6">
+                className="font-body text-xs sm:text-sm text-stone-300 md:ml-auto max-w-md leading-relaxed mb-6">
                 {PERSONA.description}
               </motion.p>
 
