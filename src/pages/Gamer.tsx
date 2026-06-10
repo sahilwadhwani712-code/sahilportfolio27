@@ -25,14 +25,16 @@ const games = [
   { name: "Getting Over It", logo: "https://cdn.cloudflare.steamstatic.com/steam/apps/240720/header.jpg", description: "Played for the chaos. Mostly to laugh, sometimes to suffer.", url: "https://store.steampowered.com/app/240720/Getting_Over_It_with_Bennett_Foddy/", playtime: "Few sessions", rating: "Pain/10", genre: "Platformer", highlights: ["Tried, fell, repeated", "Streamed it for friends", "Lots of laughter"], color: "from-orange-500/30 to-orange-600/10" },
 ];
 
+type Game = (typeof games)[number];
+
 const Gamer = () => {
   return <GamerInner />;
 };
 
-const GameDeck = ({ games }: { games: any[] }) => {
+const GameDeck = ({ games }: { games: Game[] }) => {
   return (
     <div className="grid gap-4 sm:gap-5 lg:grid-cols-3">
-      {games.map((g: any, idx: number) => (
+      {games.map((g, idx) => (
         <motion.a
           key={g.name}
           href={g.url}
