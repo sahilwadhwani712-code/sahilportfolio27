@@ -11,7 +11,7 @@ const CursorTrail = () => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (window.matchMedia("(hover: none)").matches) return;
 
-    const COUNT = 12;
+    const COUNT = 16;
     const mouse = { x: -100, y: -100 };
     const dots: { x: number; y: number; node: HTMLDivElement }[] = [];
 
@@ -22,17 +22,17 @@ const CursorTrail = () => {
 
     for (let i = 0; i < COUNT; i++) {
       const node = document.createElement("div");
-      const t = (i + 1) / COUNT;
-      const size = 3 + (1 - t) * 5; // newest big, tail small
+      const t = i / (COUNT - 1);
+      node.className = "trail";
       node.style.cssText = [
         "position:absolute",
-        `width:${size}px`,
-        `height:${size}px`,
-        "border-radius:9999px",
+        "width:6px",
+        "height:6px",
+        "border-radius:3px",
         "transform:translate(-50%,-50%)",
         "background:hsl(28 95% 58%)",
-        `opacity:${(1 - t) * 0.55 + 0.15}`,
-        `box-shadow:0 0 ${4 + (1 - t) * 10}px hsl(28 95% 58% / 0.45)`,
+        `opacity:${0.72 - t * 0.55}`,
+        "box-shadow:0 0 10px hsl(28 95% 58% / 0.38)",
         "will-change:left,top",
       ].join(";");
       layer.appendChild(node);
