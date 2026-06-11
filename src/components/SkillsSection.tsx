@@ -127,8 +127,7 @@ const SkillsSection = () => {
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.3, delay: index * 0.04 }}
-                  whileHover={{ scale: 1.03, y: -3 }}
-                  className="glass-card rounded-lg p-2 sm:p-3 flex items-center gap-2 cursor-default hover:border-primary/30 transition-all group bounce-card"
+                  className="glass-card rounded-lg p-2 sm:p-3 flex items-center gap-2 cursor-default hover:border-primary/30 hover:-translate-y-0.5 transition-all duration-200 group"
                 >
                   <img 
                     src={`https://skillicons.dev/icons?i=${tool.icon}&theme=dark`}
