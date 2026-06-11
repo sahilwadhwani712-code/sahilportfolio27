@@ -120,7 +120,7 @@ const GamerInner = () => {
                 </span>
               </motion.div>
               <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                className="font-display font-black text-5xl sm:text-7xl md:text-8xl lg:text-[7.5rem] leading-[0.95] mb-4 text-stone-50 whitespace-nowrap"
+                className="font-display font-black text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[0.95] mb-3 text-stone-50 whitespace-nowrap"
                 style={{ fontFamily: "'Orbitron', sans-serif", letterSpacing: "0.08em" }}
               >
                 {PERSONA.title}
