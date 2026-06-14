@@ -42,25 +42,25 @@ const HOME_PLACEMENT: Record<
   }
 > = {
   developer: {
-    mobileH: "h-[68svh]",
+    mobileH: "h-[64svh]",
     mobileBottom: "bottom-0",
-    mobileExtra: "right-[-6%]",
+    mobileExtra: "right-0 left-auto translate-x-0",
     desktopH: "md:h-[78svh] lg:h-[84svh]",
     desktopRight: "md:right-[4%] lg:right-[6%]",
     desktopBottom: "md:bottom-0",
   },
   friend: {
-    mobileH: "h-[66svh]",
+    mobileH: "h-[62svh]",
     mobileBottom: "bottom-0",
-    mobileExtra: "right-[-4%]",
+    mobileExtra: "right-0 left-auto translate-x-0",
     desktopH: "md:h-[76svh] lg:h-[82svh]",
     desktopRight: "md:right-[6%] lg:right-[8%]",
     desktopBottom: "md:bottom-0",
   },
   gamer: {
-    mobileH: "h-[66svh]",
+    mobileH: "h-[62svh]",
     mobileBottom: "bottom-0",
-    mobileExtra: "right-[-8%]",
+    mobileExtra: "right-[-4%] left-auto translate-x-0",
     desktopH: "md:h-[74svh] lg:h-[80svh]",
     desktopRight: "md:right-[3%] lg:right-[5%]",
     desktopBottom: "md:bottom-2",
@@ -355,8 +355,8 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
       />
 
       {/* Content grid */}
-      <div className="relative z-20 h-full container mx-auto px-5 sm:px-8 lg:px-16 pt-20 pb-8 sm:pt-24 sm:pb-14 flex items-end">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-8 items-end w-full">
+      <div className="relative z-20 h-full container mx-auto px-5 sm:px-8 lg:px-16 pt-20 pb-8 sm:pt-20 sm:pb-14 flex items-end md:items-center">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-8 items-end md:items-center w-full">
           {/* LEFT — copy */}
           <div className={`md:col-span-6 lg:col-span-5 relative max-w-lg pb-2 sm:pb-2 md:pt-0 ${isLight ? "text-stone-900" : "text-stone-100"}`}>
 
