@@ -355,12 +355,12 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
       />
 
       {/* Content grid */}
-      <div className="relative z-20 h-full container mx-auto px-5 sm:px-8 lg:px-16 pt-20 pb-10 sm:pt-24 sm:pb-14 flex items-end">
+      <div className="relative z-20 h-full container mx-auto px-5 sm:px-8 lg:px-16 pt-20 pb-8 sm:pt-24 sm:pb-14 flex items-end">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-8 items-end w-full">
           {/* LEFT — copy */}
-          <div className={`md:col-span-6 lg:col-span-5 relative max-w-lg pb-4 sm:pb-2 pt-[18svh] sm:pt-[28svh] md:pt-0 ${isLight ? "text-stone-900" : "text-stone-100"}`}>
+          <div className={`md:col-span-6 lg:col-span-5 relative max-w-lg pb-2 sm:pb-2 md:pt-0 ${isLight ? "text-stone-900" : "text-stone-100"}`}>
 
-            <div className="relative mb-2 sm:mb-3 min-h-[1.1em]">
+            <div className="relative mb-3 sm:mb-3 min-h-[1.1em]">
               <AnimatePresence mode="wait">
                 <CursiveName
                   key={`title-${persona.id}`}
@@ -372,7 +372,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
             </div>
 
             {/* Description — visible on mobile too, more breathing room */}
-            <div className="mb-3 sm:mb-4 min-h-[4.5rem] sm:min-h-[3.5rem]">
+            <div className="mb-4 sm:mb-4 min-h-[3.5rem]">
               <AnimatePresence mode="wait">
                 <motion.p
                   key={`desc-${persona.id}`}
@@ -380,7 +380,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -14 }}
                   transition={{ duration: 0.5, delay: 0.08 }}
-                  className={`font-body text-[11px] sm:text-[13px] max-w-md leading-relaxed ${isLight ? "text-stone-700" : "text-stone-300"}`}
+                  className={`font-body text-[13px] sm:text-[14px] max-w-md leading-relaxed ${isLight ? "text-stone-700" : "text-stone-300"}`}
                 >
                   {persona.description}
                 </motion.p>
