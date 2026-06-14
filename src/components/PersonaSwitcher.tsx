@@ -42,27 +42,27 @@ const HOME_PLACEMENT: Record<
   }
 > = {
   developer: {
-    mobileH: "h-[72svh]",
+    mobileH: "h-[68svh]",
     mobileBottom: "bottom-0",
-    mobileExtra: "right-[-10%]",
-    desktopH: "md:h-[80svh] lg:h-[86svh]",
-    desktopRight: "md:right-[3%] lg:right-[5%]",
+    mobileExtra: "right-[-6%]",
+    desktopH: "md:h-[78svh] lg:h-[84svh]",
+    desktopRight: "md:right-[4%] lg:right-[6%]",
     desktopBottom: "md:bottom-0",
   },
   friend: {
-    mobileH: "h-[70svh]",
+    mobileH: "h-[66svh]",
     mobileBottom: "bottom-0",
-    mobileExtra: "right-[-8%]",
-    desktopH: "md:h-[78svh] lg:h-[84svh]",
-    desktopRight: "md:right-[5%] lg:right-[7%]",
+    mobileExtra: "right-[-4%]",
+    desktopH: "md:h-[76svh] lg:h-[82svh]",
+    desktopRight: "md:right-[6%] lg:right-[8%]",
     desktopBottom: "md:bottom-0",
   },
   gamer: {
-    mobileH: "h-[70svh]",
+    mobileH: "h-[66svh]",
     mobileBottom: "bottom-0",
-    mobileExtra: "right-[-12%]",
-    desktopH: "md:h-[76svh] lg:h-[82svh]",
-    desktopRight: "md:right-[2%] lg:right-[4%]",
+    mobileExtra: "right-[-8%]",
+    desktopH: "md:h-[74svh] lg:h-[80svh]",
+    desktopRight: "md:right-[3%] lg:right-[5%]",
     desktopBottom: "md:bottom-2",
   },
 };
@@ -77,7 +77,7 @@ const CursiveName = ({ text, accent, isLight }: { text: string; accent: string; 
         fontFamily: "'Italianno', 'Caveat', cursive",
         fontWeight: 400,
         fontStyle: "italic",
-          fontSize: "clamp(2rem, 5.4vw, 5rem)",
+          fontSize: "clamp(3rem, 8.5vw, 5.5rem)",
         textShadow: `0 14px 50px ${accent}55, 0 1px 0 ${accent}22`,
         letterSpacing: "-0.01em",
         wordSpacing: "0.12em",
@@ -355,12 +355,12 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
       />
 
       {/* Content grid */}
-      <div className="relative z-20 h-full container mx-auto px-5 sm:px-8 lg:px-16 pt-20 pb-10 sm:pt-24 sm:pb-14 flex items-end">
+      <div className="relative z-20 h-full container mx-auto px-5 sm:px-8 lg:px-16 pt-20 pb-8 sm:pt-24 sm:pb-14 flex items-end">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-8 items-end w-full">
           {/* LEFT — copy */}
-          <div className={`md:col-span-6 lg:col-span-5 relative max-w-lg pb-4 sm:pb-2 pt-[18svh] sm:pt-[28svh] md:pt-0 ${isLight ? "text-stone-900" : "text-stone-100"}`}>
+          <div className={`md:col-span-6 lg:col-span-5 relative max-w-lg pb-2 sm:pb-2 md:pt-0 ${isLight ? "text-stone-900" : "text-stone-100"}`}>
 
-            <div className="relative mb-2 sm:mb-3 min-h-[1.1em]">
+            <div className="relative mb-3 sm:mb-3 min-h-[1.1em]">
               <AnimatePresence mode="wait">
                 <CursiveName
                   key={`title-${persona.id}`}
@@ -372,7 +372,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
             </div>
 
             {/* Description — visible on mobile too, more breathing room */}
-            <div className="mb-3 sm:mb-4 min-h-[4.5rem] sm:min-h-[3.5rem]">
+            <div className="mb-4 sm:mb-4 min-h-[3.5rem]">
               <AnimatePresence mode="wait">
                 <motion.p
                   key={`desc-${persona.id}`}
@@ -380,7 +380,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -14 }}
                   transition={{ duration: 0.5, delay: 0.08 }}
-                  className={`font-body text-[11px] sm:text-[13px] max-w-md leading-relaxed ${isLight ? "text-stone-700" : "text-stone-300"}`}
+                  className={`font-body text-[13px] sm:text-[14px] max-w-md leading-relaxed ${isLight ? "text-stone-700" : "text-stone-300"}`}
                 >
                   {persona.description}
                 </motion.p>
