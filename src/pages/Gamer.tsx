@@ -129,7 +129,7 @@ const GamerInner = () => {
         <img
           src={PERSONA.png}
           alt={PERSONA.title}
-          className="pointer-events-none select-none absolute bottom-0 left-1/2 -translate-x-1/2 h-[78svh] sm:h-[84svh] md:h-[88svh] lg:h-[94svh] w-auto max-w-[120vw] object-contain object-bottom z-10"
+          className="pointer-events-none select-none absolute bottom-0 left-1/2 -translate-x-1/2 h-[82svh] sm:h-[92svh] md:h-[98svh] lg:h-[104svh] w-auto max-w-[130vw] object-contain object-bottom z-10"
           style={{ filter: "drop-shadow(0 30px 60px hsl(0 0% 0% / 0.7))" }}
           loading="eager" draggable={false}
         />
