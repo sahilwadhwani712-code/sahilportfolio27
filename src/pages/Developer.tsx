@@ -11,9 +11,9 @@ import ContactSection from "@/components/ContactSection";
 const PERSONA = {
   label: "DEVELOPER",
   title: "SAHIL DEV",
-  subtitle: "Android engineer building human-first products",
+  subtitle: "Android engineer · Kotlin & Compose",
   description:
-    "Passionate about AI and shipping tech that genuinely helps people. I turn ideas into clean, user-focused Android apps and explore how intelligent systems can create real-world impact.",
+    "I build Android apps and small AI tools — mostly in Kotlin and Jetpack Compose. Interested in how thoughtful interfaces make software feel less like software.",
   bg: "https://i.postimg.cc/VLh5HfWP/Dev-bg.webp",
   png: "https://i.postimg.cc/wTr3bqQ6/Dev.webp",
   accent: "hsl(0 85% 55%)",
@@ -44,7 +44,7 @@ const Developer = () => {
         <img
           src={PERSONA.png}
           alt={PERSONA.title}
-          className="pointer-events-none select-none absolute bottom-0 left-1/2 -translate-x-1/2 h-[82svh] sm:h-[88svh] md:h-[92svh] lg:h-[100svh] w-auto object-contain object-bottom z-10"
+          className="pointer-events-none select-none absolute bottom-0 left-1/2 -translate-x-1/2 h-[86svh] sm:h-[94svh] md:h-[100svh] lg:h-[108svh] w-auto object-contain object-bottom z-10"
           style={{ filter: "drop-shadow(0 30px 60px hsl(0 0% 0% / 0.7))" }}
           loading="eager"
           draggable={false}
