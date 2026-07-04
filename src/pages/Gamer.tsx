@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
-import { ArrowLeft, Trophy, Clock, Star, ExternalLink, Gamepad2 } from "lucide-react";
+import { ArrowLeft, Trophy, Clock, Star, ExternalLink, Users, Gamepad2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import MarqueeText from "@/components/MarqueeText";
@@ -25,84 +26,111 @@ const games = [
   { name: "Getting Over It", logo: "https://cdn.cloudflare.steamstatic.com/steam/apps/240720/header.jpg", description: "Played for the chaos. Mostly to laugh, sometimes to suffer.", url: "https://store.steampowered.com/app/240720/Getting_Over_It_with_Bennett_Foddy/", playtime: "Few sessions", rating: "Pain/10", genre: "Platformer", highlights: ["Tried, fell, repeated", "Streamed it for friends", "Lots of laughter"], color: "from-orange-500/30 to-orange-600/10" },
 ];
 
-type Game = (typeof games)[number];
-
 const Gamer = () => {
   return <GamerInner />;
 };
 
-const GameDeck = ({ games }: { games: Game[] }) => {
+const GameDeck = ({ games }: { games: any[] }) => {
+  const [i, setI] = useState(0);
+  const next = () => setI((i + 1) % games.length);
+  const prev = () => setI((i - 1 + games.length) % games.length);
   return (
-    <div className="grid gap-4 sm:gap-5 lg:grid-cols-3">
-      {games.map((g, idx) => (
-        <motion.a
-          key={g.name}
-          href={g.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          initial={{ opacity: 0, y: 28 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.5, delay: idx * 0.06, ease: [0.22, 1, 0.36, 1] }}
-          className="group relative min-h-[420px] overflow-hidden rounded-[1.6rem] border border-stone-50/20 bg-stone-950/50 shadow-2xl"
-        >
-          <img
-            src={g.logo}
-            alt={g.name}
-            className="absolute inset-0 h-full w-full object-cover opacity-70 transition duration-700 group-hover:scale-105 group-hover:opacity-90"
-            onError={(e) => { (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23080f12"/><text x="50" y="62" text-anchor="middle" font-size="50">🎮</text></svg>'; }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/50 to-transparent" />
-          <div className="absolute inset-x-0 top-0 flex items-center justify-between p-4">
-            <span className="rounded-full border border-stone-50/20 bg-stone-950/50 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.22em] text-stone-100 backdrop-blur-md">{g.genre}</span>
-            <span className="inline-flex items-center gap-1 rounded-full bg-stone-50 px-3 py-1 font-display text-xs font-bold text-stone-950">
-              <Star className="h-3 w-3 fill-current" /> {g.rating}
-            </span>
-          </div>
-          <div className="relative z-10 flex min-h-[420px] flex-col justify-end p-5 sm:p-6">
-            <motion.h3 className="font-display text-3xl sm:text-4xl font-black leading-[0.9] text-stone-50" whileHover={{ x: 8 }}>
-              {g.name}
-            </motion.h3>
-            <p className="mt-3 font-body text-sm leading-relaxed text-stone-300">{g.description}</p>
-            <div className="mt-4 space-y-2 border-t border-stone-50/20 pt-4">
-              {g.highlights.slice(0, 2).map((h: string) => (
-                <div key={h} className="flex items-center gap-2 text-xs text-stone-200">
-                  <Trophy className="h-3.5 w-3.5 flex-shrink-0" style={{ color: PERSONA.accent }} />
-                  <span>{h}</span>
+    <div className="relative max-w-2xl mx-auto h-[480px] sm:h-[520px] select-none">
+      <div className="relative w-full h-full">
+        {games.map((g: any, idx: number) => {
+          const offset = (idx - i + games.length) % games.length;
+          const isTop = offset === 0;
+          const visible = offset < 4;
+          return (
+            <motion.div
+              key={g.name}
+              animate={{
+                y: offset * 14,
+                scale: 1 - offset * 0.04,
+                opacity: visible ? 1 - offset * 0.2 : 0,
+                rotate: offset === 0 ? 0 : (idx % 2 === 0 ? -1.5 : 1.5) * offset,
+                zIndex: 100 - offset,
+              }}
+              transition={{ type: "spring", stiffness: 220, damping: 26 }}
+              drag={isTop ? "x" : false}
+              dragConstraints={{ left: 0, right: 0 }}
+              onDragEnd={(_, info) => {
+                if (info.offset.x < -80) next();
+                else if (info.offset.x > 80) prev();
+              }}
+              className="absolute inset-0 cursor-grab active:cursor-grabbing"
+            >
+              <div className="relative h-full glass-card rounded-3xl overflow-hidden border border-border/40">
+                <div className={`absolute inset-0 bg-gradient-to-br ${g.color} opacity-60`} />
+                <img src={g.logo} alt="" className="absolute inset-0 w-full h-full object-cover opacity-30 blur-md scale-110" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/20" />
+                <div className="relative h-full flex flex-col p-6 sm:p-8">
+                  <div className="flex items-start gap-4 mb-4">
+                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden bg-muted flex-shrink-0 ring-1 ring-border/50">
+                      <img src={g.logo} alt={g.name} className="w-full h-full object-cover"
+                        onError={(e) => { (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="80">🎮</text></svg>'; }} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-display text-2xl sm:text-3xl font-bold text-foreground truncate">{g.name}</h3>
+                      <span className="text-xs font-display text-muted-foreground px-2 py-0.5 rounded-full bg-muted inline-block mt-1">{g.genre}</span>
+                    </div>
+                    <div className="text-right flex-shrink-0">
+                      <div className="flex items-center gap-1 text-yellow-500"><Star className="w-4 h-4 fill-current" /><span className="font-display text-sm font-bold">{g.rating}</span></div>
+                      <div className="text-xs text-muted-foreground">{g.playtime}</div>
+                    </div>
+                  </div>
+                  <p className="font-body text-sm text-muted-foreground mb-4">{g.description}</p>
+                  <div className="space-y-1.5 mb-4">
+                    {g.highlights.map((h: string) => (
+                      <div key={h} className="flex items-center gap-2 text-sm"><Trophy className="w-3 h-3 text-primary flex-shrink-0" /><span className="text-foreground/80">{h}</span></div>
+                    ))}
+                  </div>
+                  <div className="mt-auto flex items-center justify-between gap-3">
+                    {g.playerId ? (
+                      <div className="px-3 py-1.5 rounded-xl bg-primary/10 border border-primary/20 inline-flex items-center gap-2">
+                        <Users className="w-4 h-4 text-primary" />
+                        <span className="font-mono text-xs text-primary font-bold">ID: {g.playerId}</span>
+                      </div>
+                    ) : <span />}
+                    <a href={g.url} target="_blank" rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-xs font-display font-semibold text-primary hover:underline">
+                      Visit <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </div>
                 </div>
-              ))}
-            </div>
-            <div className="mt-5 flex items-center justify-between gap-3">
-              <span className="font-mono text-[11px] text-stone-400">{g.playtime}</span>
-              <span className="inline-flex items-center gap-1.5 font-display text-xs font-semibold text-stone-50">
-                Open <ExternalLink className="h-3.5 w-3.5" />
-              </span>
-            </div>
-          </div>
-        </motion.a>
-      ))}
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+      <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-3">
+        <button onClick={prev} className="px-3 py-1.5 rounded-full glass border border-border/50 text-xs font-display hover:border-primary/50 transition-colors">Prev</button>
+        <span className="text-xs font-mono text-muted-foreground">{i + 1} / {games.length}</span>
+        <button onClick={next} className="px-3 py-1.5 rounded-full glass border border-border/50 text-xs font-display hover:border-primary/50 transition-colors">Next</button>
+      </div>
     </div>
   );
 };
 
 const GamerInner = () => {
   return (
-    <div className="min-h-screen grain overflow-x-hidden" style={{ background: "var(--persona-gamer-bg)" }}>
+    <div className="min-h-screen bg-background grain overflow-x-hidden">
       <Navbar />
 
       {/* Hero */}
       <section className="relative min-h-[100svh] w-full overflow-hidden flex items-end sm:items-center">
-        <div className="absolute inset-0" style={{ background: "var(--persona-gamer-bg)" }} />
-        <div className="absolute -top-32 -right-24 w-[60vw] h-[60vw] max-w-[720px] max-h-[720px] rounded-full pointer-events-none blur-[140px]" style={{ background: PERSONA.accent, opacity: 0.14 }} />
-        <div className="absolute -bottom-32 -left-24 w-[55vw] h-[55vw] max-w-[640px] max-h-[640px] rounded-full pointer-events-none blur-[150px]" style={{ background: "hsl(190 80% 55%)", opacity: 0.16 }} />
-        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 70% 60%, transparent 40%, hsl(0 0% 0% / 0.58) 100%)" }} />
+        <div className="absolute inset-0 bg-gradient-to-br from-background via-[hsl(190_30%_7%)] to-background" />
+        <div className="absolute -top-32 -right-24 w-[60vw] h-[60vw] max-w-[720px] max-h-[720px] rounded-full pointer-events-none blur-[140px]" style={{ background: PERSONA.accent, opacity: 0.22 }} />
+        <div className="absolute -bottom-32 -left-24 w-[55vw] h-[55vw] max-w-[640px] max-h-[640px] rounded-full pointer-events-none blur-[150px]" style={{ background: PERSONA.accent, opacity: 0.14 }} />
+        <div className="absolute inset-0 gradient-blinds opacity-30 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/30 pointer-events-none" />
 
         {/* Inside page → anchored lower-CENTER. Wider asset (nunchuks) → slightly smaller heights */}
         <img
           src={PERSONA.png}
           alt={PERSONA.title}
-          className="pointer-events-none select-none absolute bottom-0 left-[56%] -translate-x-1/2 md:left-auto md:translate-x-0 md:right-[-2%] lg:right-[1%] h-[108svh] md:h-[102svh] lg:h-[110svh] w-auto max-w-[145vw] object-contain object-bottom z-10"
-          style={{ filter: "drop-shadow(0 28px 46px hsl(0 0% 0% / 0.48))" }}
+          className="pointer-events-none select-none absolute bottom-0 left-1/2 -translate-x-1/2 h-[78svh] sm:h-[84svh] md:h-[88svh] lg:h-[94svh] w-auto max-w-[120vw] object-contain object-bottom z-10"
+          style={{ filter: "drop-shadow(0 30px 60px hsl(0 0% 0% / 0.7))" }}
           loading="eager" draggable={false}
         />
 
@@ -110,27 +138,27 @@ const GamerInner = () => {
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
             <div className="md:col-span-6 md:col-start-1 md:text-left">
               <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
-                <Link to="/" className="inline-flex items-center gap-2 text-stone-300 hover:text-stone-50 transition-colors text-sm mb-6">
+                <Link to="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm mb-6">
                   <ArrowLeft className="w-4 h-4" /> Back to Home
                 </Link>
               </motion.div>
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="inline-flex items-center gap-2 mb-5">
-                <span className="px-3 py-1 font-display font-bold text-xs tracking-widest text-primary-foreground" style={{ background: PERSONA.accent }}>
+                <span className="px-3 py-1 font-display font-bold text-xs tracking-widest text-white" style={{ background: PERSONA.accent }}>
                   {PERSONA.label}
                 </span>
               </motion.div>
               <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                className="font-display font-black text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[0.95] mb-3 text-stone-50 whitespace-nowrap"
+                className="font-display font-black text-5xl sm:text-7xl md:text-8xl lg:text-[7.5rem] leading-[0.95] mb-4 text-foreground whitespace-nowrap"
                 style={{ fontFamily: "'Orbitron', sans-serif", letterSpacing: "0.08em" }}
               >
                 {PERSONA.title}
               </motion.h1>
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-                className="font-display text-sm sm:text-lg font-semibold text-stone-200 mb-3">
+                className="font-display text-sm sm:text-lg font-semibold text-foreground/80 mb-3">
                 {PERSONA.subtitle}
               </motion.p>
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
-                className="font-body text-xs sm:text-sm text-stone-300 md:ml-auto max-w-md leading-relaxed mb-6">
+                className="font-body text-xs sm:text-sm text-muted-foreground md:ml-auto max-w-md leading-relaxed mb-6">
                 {PERSONA.description}
               </motion.p>
 
@@ -166,7 +194,7 @@ const GamerInner = () => {
               <span className="text-foreground">My </span>
               <span className="text-gradient">Game Library</span>
             </h2>
-            <p className="text-muted-foreground font-body text-xs sm:text-sm mt-2">Cards open the official game pages.</p>
+            <p className="text-muted-foreground font-body text-xs sm:text-sm mt-2">Tap to flip — the deck shifts to the next title.</p>
           </motion.div>
 
           <GameDeck games={games} />

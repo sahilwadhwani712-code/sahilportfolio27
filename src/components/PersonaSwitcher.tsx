@@ -1,6 +1,8 @@
 import {
   motion,
   AnimatePresence,
+  useMotionValue,
+  useSpring,
   useReducedMotion,
 } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
@@ -33,8 +35,8 @@ const HOME_PLACEMENT: Record<
   {
     // mobile (below md)
     mobileH: string;       // Tailwind height class, e.g. "h-[62svh]"
+    mobileRight: string;   // Tailwind right offset, e.g. "right-[-6%]"
     mobileBottom: string;
-    mobileExtra?: string;  // extra mobile positioning (e.g. horizontal centering)
     // desktop (md+)
     desktopH: string;
     desktopRight: string;
@@ -43,26 +45,27 @@ const HOME_PLACEMENT: Record<
 > = {
   developer: {
     mobileH: "h-[64svh]",
+    mobileRight: "right-[-8%]",
     mobileBottom: "bottom-0",
-    mobileExtra: "right-0 left-auto translate-x-0",
-    desktopH: "md:h-[78svh] lg:h-[84svh]",
-    desktopRight: "md:right-[4%] lg:right-[6%]",
+    desktopH: "md:h-[96svh] lg:h-[104svh]",
+    desktopRight: "md:right-[2%] lg:right-[4%]",
     desktopBottom: "md:bottom-0",
   },
   friend: {
-    mobileH: "h-[62svh]",
+    mobileH: "h-[60svh]",
+    mobileRight: "right-[-4%]",
     mobileBottom: "bottom-0",
-    mobileExtra: "right-0 left-auto translate-x-0",
-    desktopH: "md:h-[76svh] lg:h-[82svh]",
-    desktopRight: "md:right-[6%] lg:right-[8%]",
+    desktopH: "md:h-[92svh] lg:h-[100svh]",
+    desktopRight: "md:right-[4%] lg:right-[6%]",
     desktopBottom: "md:bottom-0",
   },
   gamer: {
-    mobileH: "h-[62svh]",
-    mobileBottom: "bottom-0",
-    mobileExtra: "right-[-4%] left-auto translate-x-0",
-    desktopH: "md:h-[74svh] lg:h-[80svh]",
-    desktopRight: "md:right-[3%] lg:right-[5%]",
+    // wider asset (nunchuks) — give it more horizontal room
+    mobileH: "h-[58svh]",
+    mobileRight: "right-[-10%]",
+    mobileBottom: "bottom-2",
+    desktopH: "md:h-[88svh] lg:h-[96svh]",
+    desktopRight: "md:right-[1%] lg:right-[3%]",
     desktopBottom: "md:bottom-2",
   },
 };
@@ -77,7 +80,7 @@ const CursiveName = ({ text, accent, isLight }: { text: string; accent: string; 
         fontFamily: "'Italianno', 'Caveat', cursive",
         fontWeight: 400,
         fontStyle: "italic",
-          fontSize: "clamp(3rem, 8.5vw, 5.5rem)",
+          fontSize: "clamp(2.6rem, 7.4vw, 7.5rem)",
         textShadow: `0 14px 50px ${accent}55, 0 1px 0 ${accent}22`,
         letterSpacing: "-0.01em",
         wordSpacing: "0.12em",
@@ -222,7 +225,32 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
     };
   }, [index, personas.length]);
 
+  /* Mouse parallax */
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+  const px = useSpring(mx, { stiffness: 60, damping: 18 });
+  const py = useSpring(my, { stiffness: 60, damping: 18 });
   const stageRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (reduce) return;
+    const el = stageRef.current;
+    if (!el) return;
+    const onMove = (e: MouseEvent) => {
+      const r = el.getBoundingClientRect();
+      mx.set(((e.clientX - (r.left + r.width / 2)) / r.width) * 18);
+      my.set(((e.clientY - (r.top + r.height / 2)) / r.height) * 12);
+    };
+    const onLeave = () => {
+      mx.set(0);
+      my.set(0);
+    };
+    el.addEventListener("mousemove", onMove);
+    el.addEventListener("mouseleave", onLeave);
+    return () => {
+      el.removeEventListener("mousemove", onMove);
+      el.removeEventListener("mouseleave", onLeave);
+    };
+  }, [mx, my, reduce]);
 
   return (
     <section
@@ -232,16 +260,23 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
     >
       {/* Layered backgrounds — heavy blur + dark blend so PNG sits cleanly */}
       <div className="absolute inset-0">
-        {/* Per-persona editorial gradient — same tone as each persona page */}
+        {/* Dark cinematic base — used for developer & gamer */}
         <div
           className="absolute inset-0"
           style={{
             background:
-              persona.id === "friend"
-                ? "var(--persona-friend-bg)"
-                : persona.id === "gamer"
-                  ? "var(--persona-gamer-bg)"
-                  : "var(--persona-dev-bg)",
+              "linear-gradient(135deg, hsl(24 8% 5%) 0%, hsl(24 8% 8%) 50%, hsl(24 8% 4%) 100%)",
+          }}
+        />
+        {/* Soft white-to-cream editorial gradient — only for the Friend (nunchuks) persona */}
+        <motion.div
+          aria-hidden
+          className="absolute inset-0"
+          animate={{ opacity: isLight ? 1 : 0 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          style={{
+            background:
+              "linear-gradient(135deg, hsl(36 100% 97%) 0%, hsl(28 60% 92%) 45%, hsl(20 40% 86%) 100%)",
           }}
         />
         {/* Persona-tinted accent wash — subtle, follows active persona */}
@@ -290,7 +325,10 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
       {/* Character layer — per-persona placement, lower-right on home,
           tuned per asset so nothing gets cut on either device */}
       <div className="absolute inset-0 z-[8] pointer-events-none overflow-hidden">
-        <div className="absolute inset-0">
+        <motion.div
+          style={{ x: px, y: py }}
+          className="absolute inset-0"
+        >
           {/* Soft warm glow behind the active subject */}
           <motion.div
             aria-hidden
@@ -322,9 +360,8 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
                 className={[
                   "absolute w-auto max-w-none object-contain object-bottom select-none pointer-events-none",
                   place.mobileBottom,
+                  place.mobileRight,
                   place.mobileH,
-                  place.mobileExtra ?? "",
-                  "md:left-auto md:translate-x-0",
                   place.desktopBottom,
                   place.desktopRight,
                   place.desktopH,
@@ -340,27 +377,16 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
               />
             );
           })}
-        </div>
+        </motion.div>
       </div>
 
-      {/* Mobile bottom scrim — keeps text legible over full-bleed hero PNG */}
-      <div
-        aria-hidden
-        className="md:hidden absolute inset-x-0 bottom-0 h-[58svh] z-[9] pointer-events-none"
-        style={{
-          background: isLight
-            ? "linear-gradient(to top, hsl(36 100% 97% / 0.92) 0%, hsl(36 100% 97% / 0.55) 45%, transparent 100%)"
-            : "linear-gradient(to top, hsl(24 8% 4% / 0.92) 0%, hsl(24 8% 4% / 0.55) 45%, transparent 100%)",
-        }}
-      />
-
       {/* Content grid */}
-      <div className="relative z-20 h-full container mx-auto px-5 sm:px-8 lg:px-16 pt-20 pb-8 sm:pt-20 sm:pb-14 flex items-end md:items-center">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-8 items-end md:items-center w-full">
+      <div className="relative z-20 h-full container mx-auto px-5 sm:px-8 lg:px-16 pt-20 pb-10 sm:pt-24 sm:pb-14 flex items-end">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-8 items-end w-full">
           {/* LEFT — copy */}
-          <div className={`md:col-span-6 lg:col-span-5 relative max-w-lg pb-2 sm:pb-2 md:pt-0 ${isLight ? "text-stone-900" : "text-stone-100"}`}>
+          <div className={`md:col-span-6 lg:col-span-5 relative max-w-xl pb-4 sm:pb-2 pt-[26svh] sm:pt-[40svh] md:pt-0 ${isLight ? "text-stone-900" : "text-stone-100"}`}>
 
-            <div className="relative mb-3 sm:mb-3 min-h-[1.1em]">
+            <div className="relative mb-3 sm:mb-4 min-h-[1.2em]">
               <AnimatePresence mode="wait">
                 <CursiveName
                   key={`title-${persona.id}`}
@@ -372,7 +398,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
             </div>
 
             {/* Description — visible on mobile too, more breathing room */}
-            <div className="mb-4 sm:mb-4 min-h-[3.5rem]">
+            <div className="mb-4 sm:mb-5 min-h-[5rem] sm:min-h-[4rem]">
               <AnimatePresence mode="wait">
                 <motion.p
                   key={`desc-${persona.id}`}
@@ -380,7 +406,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -14 }}
                   transition={{ duration: 0.5, delay: 0.08 }}
-                  className={`font-body text-[13px] sm:text-[14px] max-w-md leading-relaxed ${isLight ? "text-stone-700" : "text-stone-300"}`}
+                  className={`font-body text-[12px] sm:text-[14px] max-w-md leading-relaxed ${isLight ? "text-stone-700" : "text-stone-300"}`}
                 >
                   {persona.description}
                 </motion.p>

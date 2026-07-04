@@ -13,10 +13,10 @@ import MarqueeText from "@/components/MarqueeText";
 
 const PERSONA = {
   label: "ABOUT ME",
-  title: "SAHIL WADHWANI",
+  title: "THE HUMAN",
   subtitle: "Off the keyboard — music, films, frames, friends",
   description:
-    "Off the keyboard, it is music on loop, films worth rewatching and frames worth keeping — the slower side of my internet.",
+    "When I'm not shipping code, I'm chasing songs on loop, films on repeat, and photographs that mean something. This is the slower, softer side of Sahil — the corners of the internet I call home.",
   bg: "https://i.postimg.cc/gk7rBzHF/Friend-Bg.webp",
   png: "https://i.postimg.cc/ncWMwFGJ/Friend.webp",
   accent: "hsl(28 90% 55%)",
@@ -24,11 +24,12 @@ const PERSONA = {
 
 const Friend = () => {
   return (
-    <div className="min-h-screen grain overflow-x-hidden" style={{ background: "var(--persona-friend-bg)" }}>
+    <div className="min-h-screen bg-background grain overflow-x-hidden">
       <Navbar />
 
       <section className="relative min-h-[100svh] w-full overflow-hidden flex items-end sm:items-center">
-        <div className="absolute inset-0" style={{ background: "var(--persona-friend-bg)" }} />
+        {/* Soft white-to-cream gradient — bright, editorial */}
+        <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, hsl(36 100% 97%) 0%, hsl(28 60% 92%) 45%, hsl(20 40% 86%) 100%)" }} />
         <div className="absolute -top-32 -right-24 w-[60vw] h-[60vw] max-w-[720px] max-h-[720px] rounded-full pointer-events-none blur-[140px]" style={{ background: PERSONA.accent, opacity: 0.18 }} />
         <div className="absolute -bottom-32 -left-24 w-[55vw] h-[55vw] max-w-[640px] max-h-[640px] rounded-full pointer-events-none blur-[150px]" style={{ background: "hsl(36 100% 80%)", opacity: 0.35 }} />
         <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 70% 60%, transparent 40%, hsl(28 30% 80% / 0.35) 100%)" }} />
@@ -37,7 +38,7 @@ const Friend = () => {
         <img
           src={PERSONA.png}
           alt={PERSONA.title}
-          className="pointer-events-none select-none absolute bottom-0 left-[55%] -translate-x-1/2 md:left-auto md:translate-x-0 md:right-[0%] lg:right-[3%] h-[108svh] md:h-[104svh] lg:h-[112svh] w-auto max-w-[140vw] object-contain object-bottom z-10"
+          className="pointer-events-none select-none absolute bottom-0 left-1/2 -translate-x-1/2 h-[58svh] sm:h-[76svh] md:h-[88svh] lg:h-[96svh] w-auto object-contain object-bottom z-10"
           style={{ filter: "drop-shadow(0 24px 48px hsl(28 30% 30% / 0.35))" }}
           loading="eager" draggable={false}
         />
@@ -56,7 +57,7 @@ const Friend = () => {
                 </span>
               </motion.div>
               <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                className="font-display font-black text-3xl sm:text-5xl md:text-6xl tracking-tight leading-[0.95] mb-3 text-stone-900">
+                className="font-display font-black text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight leading-[0.9] mb-4 text-stone-900">
                 {PERSONA.title}
               </motion.h1>
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
