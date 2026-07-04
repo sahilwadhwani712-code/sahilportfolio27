@@ -1,8 +1,6 @@
 import {
   motion,
   AnimatePresence,
-  useMotionValue,
-  useSpring,
   useReducedMotion,
 } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
@@ -44,16 +42,16 @@ const HOME_PLACEMENT: Record<
   }
 > = {
   developer: {
-    mobileH: "h-[64svh]",
-    mobileRight: "right-[-8%]",
+    mobileH: "h-[68svh]",
+    mobileRight: "right-[-2%]",
     mobileBottom: "bottom-0",
     desktopH: "md:h-[96svh] lg:h-[104svh]",
     desktopRight: "md:right-[2%] lg:right-[4%]",
     desktopBottom: "md:bottom-0",
   },
   friend: {
-    mobileH: "h-[60svh]",
-    mobileRight: "right-[-4%]",
+    mobileH: "h-[66svh]",
+    mobileRight: "right-[0%]",
     mobileBottom: "bottom-0",
     desktopH: "md:h-[92svh] lg:h-[100svh]",
     desktopRight: "md:right-[4%] lg:right-[6%]",
@@ -61,8 +59,8 @@ const HOME_PLACEMENT: Record<
   },
   gamer: {
     // wider asset (nunchuks) — give it more horizontal room
-    mobileH: "h-[58svh]",
-    mobileRight: "right-[-10%]",
+    mobileH: "h-[64svh]",
+    mobileRight: "right-[-4%]",
     mobileBottom: "bottom-2",
     desktopH: "md:h-[88svh] lg:h-[96svh]",
     desktopRight: "md:right-[1%] lg:right-[3%]",
@@ -225,32 +223,8 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
     };
   }, [index, personas.length]);
 
-  /* Mouse parallax */
-  const mx = useMotionValue(0);
-  const my = useMotionValue(0);
-  const px = useSpring(mx, { stiffness: 60, damping: 18 });
-  const py = useSpring(my, { stiffness: 60, damping: 18 });
+  /* Hero image stays static — no mouse-follow parallax */
   const stageRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (reduce) return;
-    const el = stageRef.current;
-    if (!el) return;
-    const onMove = (e: MouseEvent) => {
-      const r = el.getBoundingClientRect();
-      mx.set(((e.clientX - (r.left + r.width / 2)) / r.width) * 18);
-      my.set(((e.clientY - (r.top + r.height / 2)) / r.height) * 12);
-    };
-    const onLeave = () => {
-      mx.set(0);
-      my.set(0);
-    };
-    el.addEventListener("mousemove", onMove);
-    el.addEventListener("mouseleave", onLeave);
-    return () => {
-      el.removeEventListener("mousemove", onMove);
-      el.removeEventListener("mouseleave", onLeave);
-    };
-  }, [mx, my, reduce]);
 
   return (
     <section
@@ -325,10 +299,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
       {/* Character layer — per-persona placement, lower-right on home,
           tuned per asset so nothing gets cut on either device */}
       <div className="absolute inset-0 z-[8] pointer-events-none overflow-hidden">
-        <motion.div
-          style={{ x: px, y: py }}
-          className="absolute inset-0"
-        >
+        <div className="absolute inset-0">
           {/* Soft warm glow behind the active subject */}
           <motion.div
             aria-hidden
@@ -377,7 +348,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
               />
             );
           })}
-        </motion.div>
+        </div>
       </div>
 
       {/* Content grid */}
