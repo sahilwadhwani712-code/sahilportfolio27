@@ -160,11 +160,12 @@ const GamerInner = () => {
       <section className="py-16 sm:py-24">
         <div className="container mx-auto px-4 sm:px-6">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-10">
-            <h2 className="font-display text-2xl sm:text-4xl font-bold">
-              <span className="text-foreground">My </span>
-              <span className="text-gradient">Game Library</span>
+            <span className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.4em] text-muted-foreground">Selected · 06</span>
+            <h2 className="font-display text-3xl sm:text-5xl md:text-6xl font-bold mt-3 tracking-tight">
+              <span className="text-foreground">Games I </span>
+              <span className="text-gradient">played</span>
             </h2>
-            <p className="text-muted-foreground font-body text-xs sm:text-sm mt-2">Tap to flip — the deck shifts to the next title.</p>
+            <p className="text-muted-foreground font-body text-xs sm:text-sm mt-3 max-w-md mx-auto">A short shelf of titles I keep coming back to.</p>
           </motion.div>
 
           <GameGrid games={games} />
