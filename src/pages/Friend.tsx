@@ -13,10 +13,10 @@ import MarqueeText from "@/components/MarqueeText";
 
 const PERSONA = {
   label: "ABOUT ME",
-  title: "THE HUMAN",
-  subtitle: "Off the keyboard — music, films, frames, friends",
+  title: "OFF THE CLOCK",
+  subtitle: "Music, films, frames, friends",
   description:
-    "When I'm not shipping code, I'm chasing songs on loop, films on repeat, and photographs that mean something. This is the slower, softer side of Sahil — the corners of the internet I call home.",
+    "Away from the keyboard — a few songs on loop, films worth revisiting, and photographs I hold on to. The corners of the internet I call home.",
   bg: "https://i.postimg.cc/gk7rBzHF/Friend-Bg.webp",
   png: "https://i.postimg.cc/ncWMwFGJ/Friend.webp",
   accent: "hsl(28 90% 55%)",
@@ -38,7 +38,7 @@ const Friend = () => {
         <img
           src={PERSONA.png}
           alt={PERSONA.title}
-          className="pointer-events-none select-none absolute bottom-0 left-1/2 -translate-x-1/2 h-[58svh] sm:h-[76svh] md:h-[88svh] lg:h-[96svh] w-auto object-contain object-bottom z-10"
+          className="pointer-events-none select-none absolute bottom-0 left-1/2 -translate-x-1/2 h-[80svh] sm:h-[90svh] md:h-[96svh] lg:h-[104svh] w-auto object-contain object-bottom z-10"
           style={{ filter: "drop-shadow(0 24px 48px hsl(28 30% 30% / 0.35))" }}
           loading="eager" draggable={false}
         />
