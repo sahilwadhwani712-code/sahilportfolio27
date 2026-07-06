@@ -3,9 +3,9 @@ import {
   AnimatePresence,
   useReducedMotion,
 } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Code2, Coffee, Gamepad2 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 export type Persona = {
@@ -23,6 +23,12 @@ export type Persona = {
   stats: { label: string; value: string }[];
   marquee: string[];
   socials?: { icon: LucideIcon; label: string; href: string }[];
+};
+
+const PERSONA_ICONS: Record<string, LucideIcon> = {
+  developer: Code2,
+  friend: Coffee,
+  gamer: Gamepad2,
 };
 
 /* Per-persona PNG placement on the HOME / outside switcher.
@@ -78,7 +84,7 @@ const CursiveName = ({ text, accent, isLight }: { text: string; accent: string; 
         fontFamily: "'Italianno', 'Caveat', cursive",
         fontWeight: 400,
         fontStyle: "italic",
-          fontSize: "clamp(2.6rem, 7.4vw, 7.5rem)",
+          fontSize: "clamp(3.2rem, 8vw, 7.5rem)",
         textShadow: `0 14px 50px ${accent}55, 0 1px 0 ${accent}22`,
         letterSpacing: "-0.01em",
         wordSpacing: "0.12em",
@@ -169,59 +175,13 @@ const EnterPill = ({
   );
 };
 
-const SCROLL_COOLDOWN = 950;
-
 const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
   const [index, setIndex] = useState(0);
   const reduce = useReducedMotion();
   const persona = personas[index];
-  const lastSwapRef = useRef(0);
   const isLight = persona.id === "friend";
 
   const go = (n: number) => setIndex(n);
-
-  /* Wheel / touch / key → change persona */
-  useEffect(() => {
-    const tryAdvance = (delta: number) => {
-      const now = Date.now();
-      if (now - lastSwapRef.current < SCROLL_COOLDOWN) return;
-      if (Math.abs(delta) < 14) return;
-      lastSwapRef.current = now;
-      if (delta > 0) go((index + 1) % personas.length);
-      else go((index - 1 + personas.length) % personas.length);
-    };
-
-    const onWheel = (e: WheelEvent) => {
-      e.preventDefault();
-      tryAdvance(e.deltaY);
-    };
-    let touchStartY = 0;
-    const onTouchStart = (e: TouchEvent) => {
-      touchStartY = e.touches[0].clientY;
-    };
-    const onTouchMove = (e: TouchEvent) => {
-      const dy = touchStartY - e.touches[0].clientY;
-      if (Math.abs(dy) > 50) {
-        tryAdvance(dy);
-        touchStartY = e.touches[0].clientY;
-      }
-    };
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "ArrowDown" || e.key === "ArrowRight") tryAdvance(1);
-      if (e.key === "ArrowUp" || e.key === "ArrowLeft") tryAdvance(-1);
-    };
-
-    window.addEventListener("wheel", onWheel, { passive: false });
-    window.addEventListener("touchstart", onTouchStart, { passive: true });
-    window.addEventListener("touchmove", onTouchMove, { passive: true });
-    window.addEventListener("keydown", onKey);
-    return () => {
-      window.removeEventListener("wheel", onWheel);
-      window.removeEventListener("touchstart", onTouchStart);
-      window.removeEventListener("touchmove", onTouchMove);
-      window.removeEventListener("keydown", onKey);
-    };
-  }, [index, personas.length]);
 
   /* Hero image stays static — no mouse-follow parallax */
   const stageRef = useRef<HTMLDivElement>(null);
@@ -377,7 +337,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -14 }}
                   transition={{ duration: 0.5, delay: 0.08 }}
-                  className={`font-body text-[12px] sm:text-[14px] max-w-md leading-relaxed ${isLight ? "text-stone-700" : "text-stone-300"}`}
+                  className={`font-body text-[13px] sm:text-[15px] max-w-md leading-relaxed ${isLight ? "text-stone-700" : "text-stone-300"}`}
                 >
                   {persona.description}
                 </motion.p>
@@ -472,43 +432,44 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
         </div>
       </div>
 
-      {/* Scroll hint — bottom center */}
-      <div className="absolute bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 z-30 pointer-events-none">
-        <motion.span
-          className="font-mono text-[9px] sm:text-[10px] tracking-[0.4em] text-stone-600/70 uppercase"
-          animate={{ y: [0, 4, 0], opacity: [0.4, 0.7, 0.4] }}
-          transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-        >
-          Scroll to switch
-        </motion.span>
-      </div>
-
-      {/* Right-center: persona dots only (socials moved inline next to CTA) */}
-      <div className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-4 sm:gap-5">
-        {/* Persona indicator dots — vertical, clickable */}
-        <div className="flex flex-col items-center gap-2">
-          {personas.map((p, i) => {
-            const isActive = i === index;
-            return (
-              <button
-                key={p.id}
-                onClick={() => go(i)}
-                aria-label={`Go to ${p.label}`}
-                className="group relative flex items-center justify-center w-5 h-5"
-              >
-                <motion.span
-                  aria-hidden
-                  className="block w-[3px] rounded-full"
-                  animate={{
-                    height: isActive ? 32 : 10,
-                    background: isActive ? p.accent : "hsl(0 0% 100% / 0.3)",
-                  }}
-                  transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                />
-              </button>
-            );
-          })}
-        </div>
+      {/* Right rail — persona icon switcher (replaces scroll) */}
+      <div className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-3">
+        {personas.map((p, i) => {
+          const isActive = i === index;
+          const Icon = PERSONA_ICONS[p.id] ?? Code2;
+          return (
+            <button
+              key={p.id}
+              onClick={() => go(i)}
+              aria-label={`Switch to ${p.label}`}
+              title={p.label}
+              className="group relative inline-flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-full transition-transform hover:scale-105 active:scale-95"
+              style={{
+                background: isActive
+                  ? `${p.accent}`
+                  : isLight
+                    ? "hsl(0 0% 100% / 0.6)"
+                    : "hsl(0 0% 100% / 0.08)",
+                backdropFilter: "blur(12px)",
+                WebkitBackdropFilter: "blur(12px)",
+                boxShadow: isActive
+                  ? `0 10px 28px -8px ${p.accent}cc, 0 0 0 1px ${p.accent}`
+                  : `0 0 0 1px ${isLight ? "hsl(24 8% 20% / 0.15)" : "hsl(0 0% 100% / 0.18)"}`,
+              }}
+            >
+              <Icon
+                className="w-4 h-4 sm:w-[18px] sm:h-[18px] transition-colors"
+                style={{
+                  color: isActive
+                    ? "white"
+                    : isLight
+                      ? "hsl(24 8% 20%)"
+                      : "hsl(0 0% 92%)",
+                }}
+              />
+            </button>
+          );
+        })}
       </div>
     </section>
   );
