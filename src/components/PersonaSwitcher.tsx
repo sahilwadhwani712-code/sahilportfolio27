@@ -130,7 +130,7 @@ const EnterPill = ({
     <div className="inline-block">
       <Link
         to={to}
-        className={`group relative inline-flex items-center gap-2.5 sm:gap-3 pl-4 sm:pl-5 pr-1.5 py-1.5 sm:py-2 rounded-full font-display font-medium text-[10px] sm:text-[11px] uppercase tracking-[0.22em] overflow-hidden ${isLight ? "text-stone-900" : "text-stone-50"}`}
+        className={`group relative inline-flex items-center gap-2 sm:gap-2.5 pl-3.5 sm:pl-4 pr-1 py-1 sm:py-1.5 rounded-full font-display font-medium text-[9px] sm:text-[10px] uppercase tracking-[0.22em] overflow-hidden ${isLight ? "text-stone-900" : "text-stone-50"}`}
         style={{
           background: isLight ? "hsl(0 0% 100% / 0.55)" : "hsl(0 0% 100% / 0.08)",
           backdropFilter: "blur(14px)",
@@ -165,10 +165,10 @@ const EnterPill = ({
           </AnimatePresence>
         </span>
         <span
-          className="relative z-10 inline-flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full transition-colors group-hover:bg-white/20"
+          className="relative z-10 inline-flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full transition-colors group-hover:bg-white/20"
           style={{ background: accent }}
         >
-          <ArrowUpRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-white transition-transform duration-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          <ArrowUpRight className="w-3 h-3 text-white transition-transform duration-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
         </span>
       </Link>
     </div>
