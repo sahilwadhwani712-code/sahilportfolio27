@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
-import { ArrowLeft, Trophy, Clock, Star, ArrowUpRight, Gamepad2 } from "lucide-react";
+import { ArrowLeft, Trophy, Clock, Star, ExternalLink, Users, Gamepad2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import MarqueeText from "@/components/MarqueeText";
@@ -29,58 +30,87 @@ const Gamer = () => {
   return <GamerInner />;
 };
 
-/* Premium editorial grid — inspired by echo-heedcollective (Creator of Echo).
-   Large image tile, minimal caption, quiet hover elevation, external arrow. */
-const GameGrid = ({ games }: { games: any[] }) => (
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8 max-w-6xl mx-auto">
-    {games.map((g: any, idx: number) => (
-      <motion.a
-        key={g.name}
-        href={g.url}
-        target="_blank"
-        rel="noopener noreferrer"
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-60px" }}
-        transition={{ duration: 0.5, delay: idx * 0.06, ease: [0.22, 1, 0.36, 1] }}
-        className="group block"
-      >
-        {/* image tile */}
-        <div className="relative overflow-hidden rounded-2xl bg-muted/40 border border-border/40 aspect-[4/5] transition-all duration-500 group-hover:border-primary/40 group-hover:-translate-y-1 group-hover:shadow-[0_30px_60px_-20px_hsl(190_90%_55%/0.35)]">
-          <img
-            src={g.logo}
-            alt={g.name}
-            loading="lazy"
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.06]"
-            onError={(e) => { (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="80">🎮</text></svg>'; }}
-          />
-          {/* gradient scrim for legibility */}
-          <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/30 to-transparent" />
-          {/* meta chip top-left */}
-          <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-background/70 backdrop-blur-md border border-border/50">
-            <span className="text-[10px] font-mono uppercase tracking-[0.18em] text-muted-foreground">{g.genre}</span>
-          </div>
-          {/* external arrow top-right */}
-          <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-background/70 backdrop-blur-md border border-border/50 flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-300">
-            <ArrowUpRight className="w-4 h-4 text-foreground" />
-          </div>
-          {/* caption bottom */}
-          <div className="absolute inset-x-0 bottom-0 p-5">
-            <div className="text-[10px] font-mono uppercase tracking-[0.22em] text-muted-foreground mb-1.5">
-              {String(idx + 1).padStart(2, "0")} · {g.playtime}
-            </div>
-            <h3 className="font-display text-xl sm:text-2xl font-bold text-foreground leading-tight">
-              {g.name}
-            </h3>
-            <p className="font-body text-[12px] sm:text-[13px] text-muted-foreground mt-2 line-clamp-2 max-w-[95%]">
-              {g.description}
-            </p>
-          </div>
-        </div>
-      </motion.a>
-    ))}
-  </div>
-);
+const GameDeck = ({ games }: { games: any[] }) => {
+  const [i, setI] = useState(0);
+  const next = () => setI((i + 1) % games.length);
+  const prev = () => setI((i - 1 + games.length) % games.length);
+  return (
+    <div className="relative max-w-2xl mx-auto h-[480px] sm:h-[520px] select-none">
+      <div className="relative w-full h-full">
+        {games.map((g: any, idx: number) => {
+          const offset = (idx - i + games.length) % games.length;
+          const isTop = offset === 0;
+          const visible = offset < 4;
+          return (
+            <motion.div
+              key={g.name}
+              animate={{
+                y: offset * 14,
+                scale: 1 - offset * 0.04,
+                opacity: visible ? 1 - offset * 0.2 : 0,
+                rotate: offset === 0 ? 0 : (idx % 2 === 0 ? -1.5 : 1.5) * offset,
+                zIndex: 100 - offset,
+              }}
+              transition={{ type: "spring", stiffness: 220, damping: 26 }}
+              drag={isTop ? "x" : false}
+              dragConstraints={{ left: 0, right: 0 }}
+              onDragEnd={(_, info) => {
+                if (info.offset.x < -80) next();
+                else if (info.offset.x > 80) prev();
+              }}
+              className="absolute inset-0 cursor-grab active:cursor-grabbing"
+            >
+              <div className="relative h-full glass-card rounded-3xl overflow-hidden border border-border/40">
+                <div className={`absolute inset-0 bg-gradient-to-br ${g.color} opacity-60`} />
+                <img src={g.logo} alt="" className="absolute inset-0 w-full h-full object-cover opacity-30 blur-md scale-110" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/20" />
+                <div className="relative h-full flex flex-col p-6 sm:p-8">
+                  <div className="flex items-start gap-4 mb-4">
+                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden bg-muted flex-shrink-0 ring-1 ring-border/50">
+                      <img src={g.logo} alt={g.name} className="w-full h-full object-cover"
+                        onError={(e) => { (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="80">🎮</text></svg>'; }} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-display text-2xl sm:text-3xl font-bold text-foreground truncate">{g.name}</h3>
+                      <span className="text-xs font-display text-muted-foreground px-2 py-0.5 rounded-full bg-muted inline-block mt-1">{g.genre}</span>
+                    </div>
+                    <div className="text-right flex-shrink-0">
+                      <div className="flex items-center gap-1 text-yellow-500"><Star className="w-4 h-4 fill-current" /><span className="font-display text-sm font-bold">{g.rating}</span></div>
+                      <div className="text-xs text-muted-foreground">{g.playtime}</div>
+                    </div>
+                  </div>
+                  <p className="font-body text-sm text-muted-foreground mb-4">{g.description}</p>
+                  <div className="space-y-1.5 mb-4">
+                    {g.highlights.map((h: string) => (
+                      <div key={h} className="flex items-center gap-2 text-sm"><Trophy className="w-3 h-3 text-primary flex-shrink-0" /><span className="text-foreground/80">{h}</span></div>
+                    ))}
+                  </div>
+                  <div className="mt-auto flex items-center justify-between gap-3">
+                    {g.playerId ? (
+                      <div className="px-3 py-1.5 rounded-xl bg-primary/10 border border-primary/20 inline-flex items-center gap-2">
+                        <Users className="w-4 h-4 text-primary" />
+                        <span className="font-mono text-xs text-primary font-bold">ID: {g.playerId}</span>
+                      </div>
+                    ) : <span />}
+                    <a href={g.url} target="_blank" rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-xs font-display font-semibold text-primary hover:underline">
+                      Visit <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+      <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-3">
+        <button onClick={prev} className="px-3 py-1.5 rounded-full glass border border-border/50 text-xs font-display hover:border-primary/50 transition-colors">Prev</button>
+        <span className="text-xs font-mono text-muted-foreground">{i + 1} / {games.length}</span>
+        <button onClick={next} className="px-3 py-1.5 rounded-full glass border border-border/50 text-xs font-display hover:border-primary/50 transition-colors">Next</button>
+      </div>
+    </div>
+  );
+};
 
 const GamerInner = () => {
   return (
@@ -95,11 +125,10 @@ const GamerInner = () => {
         <div className="absolute inset-0 gradient-blinds opacity-30 pointer-events-none" />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/30 pointer-events-none" />
 
-        {/* Inside page → anchored lower-CENTER. Wider asset (nunchuks) → slightly smaller heights */}
         <img
           src={PERSONA.png}
           alt={PERSONA.title}
-          className="pointer-events-none select-none absolute bottom-0 left-1/2 -translate-x-1/2 h-[82svh] sm:h-[92svh] md:h-[98svh] lg:h-[104svh] w-auto max-w-[130vw] object-contain object-bottom z-10"
+          className="pointer-events-none select-none absolute -bottom-2 sm:-bottom-3 right-0 sm:right-2 md:right-[3%] h-[68svh] sm:h-[82svh] md:h-[92svh] lg:h-[100svh] w-auto object-contain object-bottom z-10"
           style={{ filter: "drop-shadow(0 30px 60px hsl(0 0% 0% / 0.7))" }}
           loading="eager" draggable={false}
         />
@@ -160,15 +189,14 @@ const GamerInner = () => {
       <section className="py-16 sm:py-24">
         <div className="container mx-auto px-4 sm:px-6">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-10">
-            <span className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.4em] text-muted-foreground">Selected · 06</span>
-            <h2 className="font-display text-3xl sm:text-5xl md:text-6xl font-bold mt-3 tracking-tight">
-              <span className="text-foreground">Games I </span>
-              <span className="text-gradient">played</span>
+            <h2 className="font-display text-2xl sm:text-4xl font-bold">
+              <span className="text-foreground">My </span>
+              <span className="text-gradient">Game Library</span>
             </h2>
-            <p className="text-muted-foreground font-body text-xs sm:text-sm mt-3 max-w-md mx-auto">A short shelf of titles I keep coming back to.</p>
+            <p className="text-muted-foreground font-body text-xs sm:text-sm mt-2">Tap to flip — the deck shifts to the next title.</p>
           </motion.div>
 
-          <GameGrid games={games} />
+          <GameDeck games={games} />
         </div>
       </section>
 

@@ -11,9 +11,9 @@ import ContactSection from "@/components/ContactSection";
 const PERSONA = {
   label: "DEVELOPER",
   title: "SAHIL DEV",
-  subtitle: "Android engineer · Kotlin & Compose",
+  subtitle: "Android engineer building human-first products",
   description:
-    "I build Android apps and small AI tools — mostly in Kotlin and Jetpack Compose. Interested in how thoughtful interfaces make software feel less like software.",
+    "Passionate about AI and shipping tech that genuinely helps people. I turn ideas into clean, user-focused Android apps and explore how intelligent systems can create real-world impact.",
   bg: "https://i.postimg.cc/VLh5HfWP/Dev-bg.webp",
   png: "https://i.postimg.cc/wTr3bqQ6/Dev.webp",
   accent: "hsl(0 85% 55%)",
@@ -40,11 +40,10 @@ const Developer = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/30 pointer-events-none" />
 
         {/* Hero PNG — center anchored, text overlaps */}
-        {/* Inside page → anchored lower-CENTER, sized so full figure stays visible */}
         <img
           src={PERSONA.png}
           alt={PERSONA.title}
-          className="pointer-events-none select-none absolute bottom-0 left-1/2 -translate-x-1/2 h-[86svh] sm:h-[94svh] md:h-[100svh] lg:h-[108svh] w-auto object-contain object-bottom z-10"
+          className="pointer-events-none select-none absolute -bottom-2 sm:-bottom-3 right-0 sm:right-2 md:right-[3%] h-[68svh] sm:h-[82svh] md:h-[92svh] lg:h-[100svh] w-auto object-contain object-bottom z-10"
           style={{ filter: "drop-shadow(0 30px 60px hsl(0 0% 0% / 0.7))" }}
           loading="eager"
           draggable={false}

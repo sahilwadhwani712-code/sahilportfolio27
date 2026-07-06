@@ -13,10 +13,10 @@ import MarqueeText from "@/components/MarqueeText";
 
 const PERSONA = {
   label: "ABOUT ME",
-  title: "OFF THE CLOCK",
-  subtitle: "Music, films, frames, friends",
+  title: "THE HUMAN",
+  subtitle: "Off the keyboard — music, films, frames, friends",
   description:
-    "Away from the keyboard — a few songs on loop, films worth revisiting, and photographs I hold on to. The corners of the internet I call home.",
+    "When I'm not shipping code, I'm chasing songs on loop, films on repeat, and photographs that mean something. This is the slower, softer side of Sahil — the corners of the internet I call home.",
   bg: "https://i.postimg.cc/gk7rBzHF/Friend-Bg.webp",
   png: "https://i.postimg.cc/ncWMwFGJ/Friend.webp",
   accent: "hsl(28 90% 55%)",
@@ -34,11 +34,10 @@ const Friend = () => {
         <div className="absolute -bottom-32 -left-24 w-[55vw] h-[55vw] max-w-[640px] max-h-[640px] rounded-full pointer-events-none blur-[150px]" style={{ background: "hsl(36 100% 80%)", opacity: 0.35 }} />
         <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 70% 60%, transparent 40%, hsl(28 30% 80% / 0.35) 100%)" }} />
 
-        {/* Inside page → anchored lower-CENTER */}
         <img
           src={PERSONA.png}
           alt={PERSONA.title}
-          className="pointer-events-none select-none absolute bottom-0 left-1/2 -translate-x-1/2 h-[80svh] sm:h-[90svh] md:h-[96svh] lg:h-[104svh] w-auto object-contain object-bottom z-10"
+          className="pointer-events-none select-none absolute bottom-0 right-[6%] sm:right-[8%] md:right-[10%] h-[68svh] sm:h-[82svh] md:h-[92svh] lg:h-[98svh] w-auto object-contain object-bottom z-10"
           style={{ filter: "drop-shadow(0 24px 48px hsl(28 30% 30% / 0.35))" }}
           loading="eager" draggable={false}
         />
