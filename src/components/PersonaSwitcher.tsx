@@ -133,6 +133,21 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
   const reduce = useReducedMotion();
   const persona = personas[index];
   const lastSwapRef = useRef(0);
+  // Progressive mount: render only the first persona's heavy assets on first paint,
+  // then hydrate the rest during idle time so the LCP stays snappy.
+  const [assetsReady, setAssetsReady] = useState(false);
+  useEffect(() => {
+    const w = window as unknown as {
+      requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
+    };
+    const schedule = w.requestIdleCallback
+      ? (cb: () => void) => w.requestIdleCallback!(cb, { timeout: 1200 })
+      : (cb: () => void) => window.setTimeout(cb, 600);
+    const id = schedule(() => setAssetsReady(true));
+    return () => {
+      if (typeof id === "number") clearTimeout(id);
+    };
+  }, []);
 
   const go = (n: number) => setIndex(n);
 
@@ -214,7 +229,9 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
     >
       {/* Layered backgrounds — heavy blur + dark blend so PNG sits cleanly */}
       <div className="absolute inset-0">
-        {personas.map((p, i) => (
+        {personas.map((p, i) => {
+          if (!assetsReady && i !== 0) return null;
+          return (
           <motion.img
             key={p.id}
             src={p.bg}
@@ -230,9 +247,12 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
             animate={{ opacity: i === index ? 1 : 0 }}
             transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
             loading={i === 0 ? "eager" : "lazy"}
+            // @ts-expect-error fetchpriority is valid HTML but not yet in React types
+            fetchpriority={i === 0 ? "high" : "low"}
             draggable={false}
           />
-        ))}
+          );
+        })}
 
         {/* Accent wash that follows persona */}
         <motion.div
@@ -297,6 +317,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
             }}
           />
           {personas.map((p, i) => {
+            if (!assetsReady && i !== 0) return null;
             const active = i === index;
             return (
               <motion.img
@@ -318,6 +339,8 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
                   willChange: "opacity, transform",
                 }}
                 loading={i === 0 ? "eager" : "lazy"}
+                // @ts-expect-error fetchpriority is valid HTML but not yet in React types
+                fetchpriority={i === 0 ? "high" : "low"}
                 draggable={false}
               />
             );
