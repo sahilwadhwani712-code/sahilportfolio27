@@ -141,22 +141,11 @@ const GamerInner = () => {
                   <ArrowLeft className="w-4 h-4" /> Back to Home
                 </Link>
               </motion.div>
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="inline-flex items-center gap-2 mb-5">
-                <span className="px-3 py-1 font-display font-bold text-xs tracking-widest text-white" style={{ background: PERSONA.accent }}>
-                  {PERSONA.label}
-                </span>
-              </motion.div>
-              <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                className="font-display font-black text-5xl sm:text-7xl md:text-8xl lg:text-[7.5rem] leading-[0.95] mb-4 text-foreground whitespace-nowrap"
-                style={{ fontFamily: "'Orbitron', sans-serif", letterSpacing: "0.08em" }}
-              >
-                {PERSONA.title}
-              </motion.h1>
-              <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+              <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
                 className="font-display text-sm sm:text-lg font-semibold text-foreground/80 mb-3">
                 {PERSONA.subtitle}
               </motion.p>
-              <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
+              <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}
                 className="font-body text-xs sm:text-sm text-muted-foreground md:ml-auto max-w-md leading-relaxed mb-6">
                 {PERSONA.description}
               </motion.p>
