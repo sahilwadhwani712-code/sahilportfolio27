@@ -204,32 +204,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
     };
   }, [index, personas.length]);
 
-  /* Mouse parallax */
-  const mx = useMotionValue(0);
-  const my = useMotionValue(0);
-  const px = useSpring(mx, { stiffness: 60, damping: 18 });
-  const py = useSpring(my, { stiffness: 60, damping: 18 });
   const stageRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (reduce) return;
-    const el = stageRef.current;
-    if (!el) return;
-    const onMove = (e: MouseEvent) => {
-      const r = el.getBoundingClientRect();
-      mx.set(((e.clientX - (r.left + r.width / 2)) / r.width) * 18);
-      my.set(((e.clientY - (r.top + r.height / 2)) / r.height) * 12);
-    };
-    const onLeave = () => {
-      mx.set(0);
-      my.set(0);
-    };
-    el.addEventListener("mousemove", onMove);
-    el.addEventListener("mouseleave", onLeave);
-    return () => {
-      el.removeEventListener("mousemove", onMove);
-      el.removeEventListener("mouseleave", onLeave);
-    };
-  }, [mx, my, reduce]);
 
   return (
     <section
@@ -310,10 +285,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
 
       {/* Character layer — bigger on home, anchored bottom-right on desktop, centered on mobile */}
       <div className="absolute inset-0 z-[8] pointer-events-none overflow-hidden">
-        <motion.div
-          style={{ x: px, y: py }}
-          className="absolute inset-x-0 bottom-0 h-[68svh] sm:h-[88svh] md:h-[112svh] flex items-end justify-center md:justify-end"
-        >
+        <div className="absolute inset-x-0 bottom-0 h-[72svh] sm:h-[88svh] md:h-[112svh] flex items-end justify-center md:justify-end">
           <motion.div
             aria-hidden
             className="absolute bottom-0 left-1/2 -translate-x-1/2 md:left-auto md:right-[8%] md:translate-x-0 w-[82%] md:w-[48%] h-[50%] rounded-full blur-[110px]"
@@ -329,6 +301,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
           {personas.map((p, i) => {
             if (!assetsReady && i !== 0) return null;
             const active = i === index;
+            const isFriend = p.id === "friend";
             return (
               <motion.img
                 key={p.id}
@@ -341,12 +314,17 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
                   scale: active ? 1 : 0.99,
                 }}
                 transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                className="absolute bottom-0 left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-[3%] h-[68svh] sm:h-[90svh] md:h-[112svh] w-auto max-w-[100vw] md:max-w-none object-contain object-bottom select-none pointer-events-none"
+                className={
+                  "absolute bottom-0 h-[72svh] sm:h-[90svh] md:h-[112svh] w-auto max-w-[110vw] md:max-w-none object-contain object-bottom select-none pointer-events-none " +
+                  (isFriend
+                    ? "left-[42%] -translate-x-1/2 md:left-auto md:translate-x-0 md:right-[10%] -bottom-[3svh] md:-bottom-[4svh]"
+                    : "left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-[3%]")
+                }
                 style={{
                   transformOrigin: "50% 100%",
                   filter:
                     "drop-shadow(0 42px 64px hsl(0 0% 0% / 0.78)) drop-shadow(0 0 28px hsl(0 0% 0% / 0.42))",
-                  willChange: "opacity, transform",
+                  willChange: "opacity",
                 }}
                 loading={i === 0 ? "eager" : "lazy"}
                 // @ts-expect-error fetchpriority is valid HTML but not yet in React types
@@ -356,7 +334,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
             );
           })}
           <div className="absolute inset-x-0 bottom-0 h-[22svh] bg-gradient-to-t from-background/85 via-background/25 to-transparent" />
-        </motion.div>
+        </div>
       </div>
 
       {/* Content grid */}
