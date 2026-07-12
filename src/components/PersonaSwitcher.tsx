@@ -1,8 +1,6 @@
 import {
   motion,
   AnimatePresence,
-  useMotionValue,
-  useSpring,
   useReducedMotion,
 } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
@@ -30,6 +28,16 @@ export type Persona = {
 /* Cursive name — single line, viral feel */
 const CursiveName = ({ text, accent }: { text: string; accent: string }) => {
   const letters = Array.from(text);
+  const [fontReady, setFontReady] = useState(false);
+  useEffect(() => {
+    const d = document as Document & { fonts?: { load: (s: string) => Promise<unknown>; ready: Promise<unknown> } };
+    if (!d.fonts) { setFontReady(true); return; }
+    let cancelled = false;
+    d.fonts.load("1em Italianno").then(() => d.fonts!.ready).then(() => {
+      if (!cancelled) setFontReady(true);
+    }).catch(() => setFontReady(true));
+    return () => { cancelled = true; };
+  }, []);
   return (
     <h1
       className="leading-[0.9] text-foreground md:whitespace-nowrap"
@@ -41,6 +49,8 @@ const CursiveName = ({ text, accent }: { text: string; accent: string }) => {
         textShadow: `0 18px 70px ${accent}66, 0 2px 0 ${accent}22`,
         letterSpacing: "-0.01em",
         wordSpacing: "0.12em",
+        opacity: fontReady ? 1 : 0,
+        transition: "opacity 300ms ease-out",
       }}
     >
       <span className="sr-only">{text}</span>
