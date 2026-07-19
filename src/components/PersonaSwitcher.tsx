@@ -224,14 +224,15 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
             aria-hidden
             className="absolute inset-0 w-full h-full object-cover"
             style={{
-              filter: "blur(28px) saturate(1.2) brightness(0.65)",
-              transform: "scale(1.18)",
+              filter: "blur(20px) saturate(1.15) brightness(0.65)",
+              transform: "scale(1.15) translateZ(0)",
               willChange: "opacity",
             }}
             initial={false}
             animate={{ opacity: i === index ? 1 : 0 }}
-            transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
             loading={i === 0 ? "eager" : "lazy"}
+            decoding={i === 0 ? "sync" : "async"}
             // @ts-expect-error fetchpriority is valid HTML but not yet in React types
             fetchpriority={i === 0 ? "high" : "low"}
             draggable={false}
@@ -285,18 +286,15 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
 
       {/* Character layer — bigger on home, anchored bottom-right on desktop, centered on mobile */}
       <div className="absolute inset-0 z-[8] pointer-events-none overflow-hidden">
-        <div className="absolute inset-x-0 bottom-0 h-[64svh] sm:h-[80svh] md:h-[112svh] flex items-end justify-center md:justify-end">
+        <div className="absolute inset-x-0 bottom-0 h-[68svh] portrait:h-[70svh] landscape:h-[92svh] sm:h-[80svh] md:h-[112svh] flex items-end justify-center md:justify-end">
           <motion.div
             aria-hidden
-            className="absolute bottom-0 left-1/2 -translate-x-1/2 md:left-auto md:right-[8%] md:translate-x-0 w-[82%] md:w-[48%] h-[50%] rounded-full blur-[110px]"
+            className="absolute bottom-0 left-1/2 -translate-x-1/2 md:left-auto md:right-[8%] md:translate-x-0 w-[72%] md:w-[48%] h-[46%] rounded-full blur-[70px] md:blur-[110px]"
             animate={{
               background: persona.accent,
-              opacity: reduce ? 0.24 : [0.22, 0.4, 0.22],
+              opacity: reduce ? 0.22 : 0.3,
             }}
-            transition={{
-              background: { duration: 0.8 },
-              opacity: { duration: 5, repeat: Infinity, ease: "easeInOut" },
-            }}
+            transition={{ background: { duration: 0.8 } }}
           />
           {personas.map((p, i) => {
             if (!assetsReady && i !== 0) return null;
@@ -315,7 +313,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
                 }}
                 transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                 className={
-                  "absolute bottom-0 h-[64svh] sm:h-[82svh] md:h-[112svh] w-auto max-w-[92vw] md:max-w-none object-contain object-bottom select-none pointer-events-none " +
+                  "absolute bottom-0 h-[68svh] portrait:h-[70svh] landscape:h-[92svh] sm:h-[82svh] md:h-[112svh] w-auto max-w-[88vw] sm:max-w-[92vw] md:max-w-none object-contain object-bottom select-none pointer-events-none " +
                   (isFriend
                     ? "left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-[10%] md:-bottom-[4svh]"
                     : "left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-[3%]")
@@ -323,27 +321,28 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
                 style={{
                   transformOrigin: "50% 100%",
                   filter:
-                    "drop-shadow(0 42px 64px hsl(0 0% 0% / 0.78)) drop-shadow(0 0 28px hsl(0 0% 0% / 0.42))",
+                    "drop-shadow(0 30px 50px hsl(0 0% 0% / 0.7))",
                   willChange: "opacity",
                 }}
                 loading={i === 0 ? "eager" : "lazy"}
+                decoding={i === 0 ? "sync" : "async"}
                 // @ts-expect-error fetchpriority is valid HTML but not yet in React types
                 fetchpriority={i === 0 ? "high" : "low"}
                 draggable={false}
               />
             );
           })}
-          <div className="absolute inset-x-0 bottom-0 h-[22svh] bg-gradient-to-t from-background/85 via-background/25 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-[26svh] md:h-[22svh] bg-gradient-to-t from-background via-background/60 to-transparent" />
         </div>
       </div>
 
       {/* Content grid */}
-      <div className="relative z-20 h-full container mx-auto px-5 sm:px-8 lg:px-16 pt-20 pb-10 sm:pt-24 sm:pb-14 flex items-end">
+      <div className="relative z-20 h-full container mx-auto px-5 sm:px-8 lg:px-16 pt-20 pb-8 sm:pt-24 sm:pb-14 flex items-end">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-8 items-end w-full">
           {/* LEFT — copy */}
-          <div className="md:col-span-6 lg:col-span-5 relative max-w-xl pb-4 sm:pb-2 pt-[52svh] sm:pt-[56svh] md:pt-0">
+          <div className="md:col-span-6 lg:col-span-5 relative max-w-xl pb-2 sm:pb-2 pt-[58svh] portrait:pt-[60svh] landscape:pt-[70svh] sm:pt-[56svh] md:pt-0">
 
-            <div className="relative mb-3 sm:mb-4 min-h-[1.2em]">
+            <div className="relative mb-2 sm:mb-4 min-h-[1.2em]">
               <AnimatePresence mode="wait">
                 <CursiveName
                   key={`title-${persona.id}`}
@@ -354,7 +353,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
             </div>
 
             {/* Description — visible on mobile too, more breathing room */}
-            <div className="mb-4 sm:mb-5 min-h-[5rem] sm:min-h-[4rem]">
+            <div className="mb-3 sm:mb-5 min-h-[4.5rem] sm:min-h-[4rem]">
               <AnimatePresence mode="wait">
                 <motion.p
                   key={`desc-${persona.id}`}
@@ -362,7 +361,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -14 }}
                   transition={{ duration: 0.5, delay: 0.08 }}
-                  className="font-body text-[12px] sm:text-[14px] text-foreground/75 max-w-md leading-relaxed drop-shadow-[0_2px_18px_hsl(0_0%_0%_/_0.9)]"
+                  className="font-body text-[12px] sm:text-[14px] text-foreground/80 max-w-md leading-relaxed drop-shadow-[0_2px_14px_hsl(0_0%_0%_/_0.85)]"
                 >
                   {persona.description}
                 </motion.p>
