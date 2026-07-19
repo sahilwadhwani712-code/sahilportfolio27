@@ -45,7 +45,7 @@ const CursiveName = ({ text, accent }: { text: string; accent: string }) => {
         fontFamily: "'Italianno', 'Caveat', cursive",
         fontWeight: 400,
         fontStyle: "italic",
-          fontSize: "clamp(2.6rem, 7.4vw, 7.5rem)",
+          fontSize: "clamp(3.2rem, 8.2vw, 8.4rem)",
         textShadow: `0 18px 70px ${accent}66, 0 2px 0 ${accent}22`,
         letterSpacing: "-0.01em",
         wordSpacing: "0.12em",
