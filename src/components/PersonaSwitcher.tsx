@@ -276,7 +276,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
 
       {/* Character layer — dominant on both breakpoints */}
       <div className="absolute inset-0 z-[8] pointer-events-none overflow-hidden">
-        <div className="absolute inset-x-0 bottom-0 h-[62svh] portrait:h-[62svh] landscape:h-[94svh] sm:h-[80svh] md:h-[108svh] flex items-end justify-center md:justify-end">
+        <div className="absolute inset-x-0 bottom-0 h-[80svh] portrait:h-[78svh] landscape:h-[94svh] sm:h-[86svh] md:h-[108svh] flex items-end justify-center md:justify-end">
           <motion.div
             aria-hidden
             className="absolute bottom-0 left-1/2 -translate-x-1/2 md:left-auto md:right-[8%] md:translate-x-0 w-[72%] md:w-[48%] h-[46%] rounded-full blur-[70px] md:blur-[110px]"
@@ -303,7 +303,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
                 }}
                 transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                 className={
-                  "absolute bottom-0 h-[62svh] portrait:h-[62svh] landscape:h-[94svh] sm:h-[82svh] md:h-[108svh] w-auto max-w-[95vw] sm:max-w-[92vw] md:max-w-none object-contain object-bottom select-none pointer-events-none " +
+                  "absolute bottom-0 h-[80svh] portrait:h-[78svh] landscape:h-[94svh] sm:h-[86svh] md:h-[108svh] w-auto max-w-[110vw] sm:max-w-[92vw] md:max-w-none object-contain object-bottom select-none pointer-events-none " +
                   (isFriend
                     ? "left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-[10%] md:-bottom-[4svh]"
                     : "left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-[3%]")
@@ -327,8 +327,8 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
       </div>
 
       {/* Content grid — editorial, bottom-left anchored, tight rhythm */}
-      <div className="relative z-20 h-full container mx-auto px-5 sm:px-8 lg:px-16 pt-16 pb-10 sm:pt-20 sm:pb-14 flex items-end md:items-center">
-        <div className="w-full md:max-w-[560px] lg:max-w-[600px] pt-[46svh] portrait:pt-[48svh] landscape:pt-[70svh] sm:pt-[52svh] md:pt-0">
+      <div className="relative z-20 h-full container mx-auto px-5 sm:px-8 lg:px-16 pt-16 pb-8 sm:pt-20 sm:pb-14 flex items-end md:items-center">
+        <div className="w-full md:max-w-[560px] lg:max-w-[600px] pt-[58svh] portrait:pt-[58svh] landscape:pt-[72svh] sm:pt-[58svh] md:pt-0">
 
           {/* Eyebrow — persona label + tick */}
           <AnimatePresence mode="wait">
@@ -421,7 +421,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.45, delay: 0.1 }}
-              className="flex items-stretch gap-4 sm:gap-6 pt-4 border-t border-foreground/10 max-w-md"
+              className="hidden md:flex items-stretch gap-4 sm:gap-6 pt-4 border-t border-foreground/10 max-w-md"
             >
               {persona.stats.map((s, i) => (
                 <div key={s.label} className="flex items-stretch gap-4 sm:gap-6">
