@@ -285,7 +285,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
 
       {/* Character layer — bigger on home, anchored bottom-right on desktop, centered on mobile */}
       <div className="absolute inset-0 z-[8] pointer-events-none overflow-hidden">
-        <div className="absolute inset-x-0 bottom-0 h-[72svh] sm:h-[88svh] md:h-[112svh] flex items-end justify-center md:justify-end">
+        <div className="absolute inset-x-0 bottom-0 h-[64svh] sm:h-[80svh] md:h-[112svh] flex items-end justify-center md:justify-end">
           <motion.div
             aria-hidden
             className="absolute bottom-0 left-1/2 -translate-x-1/2 md:left-auto md:right-[8%] md:translate-x-0 w-[82%] md:w-[48%] h-[50%] rounded-full blur-[110px]"
@@ -315,9 +315,9 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
                 }}
                 transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                 className={
-                  "absolute bottom-0 h-[72svh] sm:h-[90svh] md:h-[112svh] w-auto max-w-[110vw] md:max-w-none object-contain object-bottom select-none pointer-events-none " +
+                  "absolute bottom-0 h-[64svh] sm:h-[82svh] md:h-[112svh] w-auto max-w-[92vw] md:max-w-none object-contain object-bottom select-none pointer-events-none " +
                   (isFriend
-                    ? "left-[42%] -translate-x-1/2 md:left-auto md:translate-x-0 md:right-[10%] -bottom-[3svh] md:-bottom-[4svh]"
+                    ? "left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-[10%] md:-bottom-[4svh]"
                     : "left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-[3%]")
                 }
                 style={{
@@ -341,7 +341,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
       <div className="relative z-20 h-full container mx-auto px-5 sm:px-8 lg:px-16 pt-20 pb-10 sm:pt-24 sm:pb-14 flex items-end">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-8 items-end w-full">
           {/* LEFT — copy */}
-          <div className="md:col-span-6 lg:col-span-5 relative max-w-xl pb-4 sm:pb-2 pt-[26svh] sm:pt-[40svh] md:pt-0">
+          <div className="md:col-span-6 lg:col-span-5 relative max-w-xl pb-4 sm:pb-2 pt-[52svh] sm:pt-[56svh] md:pt-0">
 
             <div className="relative mb-3 sm:mb-4 min-h-[1.2em]">
               <AnimatePresence mode="wait">
