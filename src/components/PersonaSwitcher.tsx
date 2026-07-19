@@ -45,7 +45,7 @@ const CursiveName = ({ text, accent }: { text: string; accent: string }) => {
         fontFamily: "'Italianno', 'Caveat', cursive",
         fontWeight: 400,
         fontStyle: "italic",
-          fontSize: "clamp(2.6rem, 7.4vw, 7.5rem)",
+          fontSize: "clamp(3.2rem, 8.2vw, 8.4rem)",
         textShadow: `0 18px 70px ${accent}66, 0 2px 0 ${accent}22`,
         letterSpacing: "-0.01em",
         wordSpacing: "0.12em",
@@ -250,43 +250,34 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
           transition={{ duration: 1.1, ease: "easeInOut" }}
         />
 
-        {/* Unified blend overlays */}
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/55 to-background/10" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/30" />
+        {/* Unified blend overlays — lighter so PNG stays visible */}
+        <div className="absolute inset-0 hidden md:block bg-gradient-to-r from-background via-background/45 to-background/5" />
+        <div className="absolute inset-0 md:hidden bg-gradient-to-b from-background/40 via-transparent to-background/70" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-background/20" />
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              "radial-gradient(ellipse at center, transparent 45%, hsl(0 0% 0% / 0.55) 100%)",
+              "radial-gradient(ellipse at center, transparent 55%, hsl(0 0% 0% / 0.45) 100%)",
           }}
         />
       </div>
 
       {/* Vertical persona rail (desktop) */}
-      <div className="hidden lg:flex absolute left-5 top-1/2 -translate-y-1/2 z-20 flex-col items-center gap-6">
-        <span className="font-mono text-[9px] tracking-[0.4em] text-foreground/40 [writing-mode:vertical-rl] rotate-180">
-          SAHIL · WADHWANI
+      {/* Vertical persona rail (desktop) — quiet, editorial */}
+      <div className="hidden lg:flex absolute left-6 top-1/2 -translate-y-1/2 z-20 flex-col items-center gap-5">
+        <span className="font-mono text-[9px] tracking-[0.42em] text-foreground/35 [writing-mode:vertical-rl] rotate-180">
+          PORTFOLIO · MMXXVI
         </span>
-        <span className="block w-px h-14 bg-foreground/15" />
-        <AnimatePresence mode="wait">
-          <motion.span
-            key={`rail-${persona.id}`}
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -14 }}
-            transition={{ duration: 0.5 }}
-            className="font-display font-bold text-xs tracking-[0.5em] [writing-mode:vertical-rl] rotate-180"
-            style={{ color: persona.accent }}
-          >
-            {persona.label}
-          </motion.span>
-        </AnimatePresence>
-        <span className="block w-px h-14 bg-foreground/15" />
+        <span className="block w-px h-16 bg-foreground/15" />
+        <span className="font-mono text-[9px] tracking-[0.42em] text-foreground/35">
+          0{index + 1} / 0{personas.length}
+        </span>
       </div>
 
-      {/* Character layer — bigger on home, anchored bottom-right on desktop, centered on mobile */}
+      {/* Character layer — dominant on both breakpoints */}
       <div className="absolute inset-0 z-[8] pointer-events-none overflow-hidden">
-        <div className="absolute inset-x-0 bottom-0 h-[68svh] portrait:h-[70svh] landscape:h-[92svh] sm:h-[80svh] md:h-[112svh] flex items-end justify-center md:justify-end">
+        <div className="absolute inset-x-0 bottom-0 h-[80svh] portrait:h-[78svh] landscape:h-[94svh] sm:h-[86svh] md:h-[108svh] flex items-end justify-center md:justify-end">
           <motion.div
             aria-hidden
             className="absolute bottom-0 left-1/2 -translate-x-1/2 md:left-auto md:right-[8%] md:translate-x-0 w-[72%] md:w-[48%] h-[46%] rounded-full blur-[70px] md:blur-[110px]"
@@ -301,90 +292,108 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
             const active = i === index;
             const isFriend = p.id === "friend";
             return (
-              <motion.img
+              <div
                 key={p.id}
-                src={p.png}
-                alt={active ? p.title : ""}
-                initial={false}
-                animate={{
-                  opacity: active ? 1 : 0,
-                  x: active ? 0 : i < index ? -28 : 28,
-                  scale: active ? 1 : 0.99,
-                }}
-                transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                 className={
-                  "absolute bottom-0 h-[68svh] portrait:h-[70svh] landscape:h-[92svh] sm:h-[82svh] md:h-[112svh] w-auto max-w-[88vw] sm:max-w-[92vw] md:max-w-none object-contain object-bottom select-none pointer-events-none " +
+                  "absolute bottom-0 h-[92svh] portrait:h-[92svh] landscape:h-[94svh] sm:h-[92svh] md:h-[108svh] flex items-end justify-center pointer-events-none " +
                   (isFriend
                     ? "left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-[10%] md:-bottom-[4svh]"
                     : "left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-[3%]")
                 }
-                style={{
-                  transformOrigin: "50% 100%",
-                  filter:
-                    "drop-shadow(0 30px 50px hsl(0 0% 0% / 0.7))",
-                  willChange: "opacity",
-                }}
-                loading={i === 0 ? "eager" : "lazy"}
-                decoding={i === 0 ? "sync" : "async"}
-                // @ts-expect-error fetchpriority is valid HTML but not yet in React types
-                fetchpriority={i === 0 ? "high" : "low"}
-                draggable={false}
-              />
+              >
+                <motion.img
+                  src={p.png}
+                  alt={active ? p.title : ""}
+                  initial={false}
+                  animate={{
+                    opacity: active ? 1 : 0,
+                    x: active ? 0 : i < index ? -28 : 28,
+                    scale: active ? 1 : 0.99,
+                  }}
+                  transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                  className="h-full w-auto max-w-none object-contain object-bottom select-none"
+                  style={{
+                    transformOrigin: "50% 100%",
+                    filter: "drop-shadow(0 30px 50px hsl(0 0% 0% / 0.7))",
+                    willChange: "opacity",
+                  }}
+                  loading={i === 0 ? "eager" : "lazy"}
+                  decoding={i === 0 ? "sync" : "async"}
+                  // @ts-expect-error fetchpriority is valid HTML but not yet in React types
+                  fetchpriority={i === 0 ? "high" : "low"}
+                  draggable={false}
+                />
+              </div>
             );
           })}
-          <div className="absolute inset-x-0 bottom-0 h-[26svh] md:h-[22svh] bg-gradient-to-t from-background via-background/60 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-[22svh] md:h-[22svh] bg-gradient-to-t from-background via-background/70 to-transparent" />
         </div>
       </div>
 
-      {/* Content grid */}
-      <div className="relative z-20 h-full container mx-auto px-5 sm:px-8 lg:px-16 pt-20 pb-8 sm:pt-24 sm:pb-14 flex items-end">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-8 items-end w-full">
-          {/* LEFT — copy */}
-          <div className="md:col-span-6 lg:col-span-5 relative max-w-xl pb-2 sm:pb-2 pt-[58svh] portrait:pt-[60svh] landscape:pt-[70svh] sm:pt-[56svh] md:pt-0">
+      {/* Content grid — editorial, bottom-left anchored, tight rhythm */}
+      <div className="relative z-20 h-full container mx-auto px-5 sm:px-8 lg:px-16 pt-16 pb-8 sm:pt-20 sm:pb-14 flex items-end md:items-center">
+        <div className="w-full md:max-w-[560px] lg:max-w-[600px] pt-[58svh] portrait:pt-[58svh] landscape:pt-[72svh] sm:pt-[58svh] md:pt-0">
 
-            <div className="relative mb-2 sm:mb-4 min-h-[1.2em]">
-              <AnimatePresence mode="wait">
-                <CursiveName
-                  key={`title-${persona.id}`}
-                  text={persona.title}
-                  accent={persona.accent}
-                />
-              </AnimatePresence>
-            </div>
+          {/* Eyebrow — persona label + tick */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`eyebrow-${persona.id}`}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.4 }}
+              className="flex items-center gap-3 mb-3 sm:mb-4"
+            >
+              <span
+                className="block h-px w-8"
+                style={{ background: persona.accent }}
+              />
+              <span
+                className="font-mono text-[10px] sm:text-[11px] tracking-[0.42em] uppercase"
+                style={{ color: persona.accent }}
+              >
+                {persona.label}
+              </span>
+            </motion.div>
+          </AnimatePresence>
 
-            {/* Description — visible on mobile too, more breathing room */}
-            <div className="mb-3 sm:mb-5 min-h-[4.5rem] sm:min-h-[4rem]">
-              <AnimatePresence mode="wait">
-                <motion.p
-                  key={`desc-${persona.id}`}
-                  initial={{ opacity: 0, y: 14 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -14 }}
-                  transition={{ duration: 0.5, delay: 0.08 }}
-                  className="font-body text-[12px] sm:text-[14px] text-foreground/80 max-w-md leading-relaxed drop-shadow-[0_2px_14px_hsl(0_0%_0%_/_0.85)]"
-                >
-                  {persona.description}
-                </motion.p>
-              </AnimatePresence>
-            </div>
-
-            <div className="flex items-center gap-4">
-              <EnterPill
-                to={persona.ctaTo}
-                label={persona.ctaLabel}
+          <div className="relative mb-3 sm:mb-5 min-h-[1.05em]">
+            <AnimatePresence mode="wait">
+              <CursiveName
+                key={`title-${persona.id}`}
+                text={persona.title}
                 accent={persona.accent}
               />
-            </div>
+            </AnimatePresence>
+          </div>
 
-            {/* Persona socials — inline under the CTA */}
+          {/* Description */}
+          <div className="mb-5 sm:mb-6 min-h-[4rem]">
+            <AnimatePresence mode="wait">
+              <motion.p
+                key={`desc-${persona.id}`}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.45, delay: 0.06 }}
+                className="font-body text-[13px] sm:text-[14.5px] text-foreground/75 max-w-md leading-[1.65] drop-shadow-[0_2px_14px_hsl(0_0%_0%_/_0.85)]"
+              >
+                {persona.description}
+              </motion.p>
+            </AnimatePresence>
+          </div>
+
+          {/* CTA + socials — single row */}
+          <div className="flex items-center gap-3 sm:gap-4 flex-wrap mb-5 sm:mb-7">
+            <EnterPill to={persona.ctaTo} label={persona.ctaLabel} accent={persona.accent} />
             <AnimatePresence mode="wait">
               <motion.div
                 key={`pers-socials-${persona.id}`}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -6 }}
-                transition={{ duration: 0.4, delay: 0.1 }}
-                className="flex items-center gap-2 mt-4"
+                initial={{ opacity: 0, x: -6 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 6 }}
+                transition={{ duration: 0.35 }}
+                className="flex items-center gap-1.5"
               >
                 {(persona.socials ?? []).map((s) => (
                   <a
@@ -394,64 +403,48 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
                     rel="noopener noreferrer"
                     aria-label={s.label}
                     title={s.label}
-                    className="group relative inline-flex items-center justify-center w-9 h-9 rounded-full border border-foreground/15 hover:border-foreground/40 transition-colors"
-                    style={{
-                      background: "hsl(0 0% 100% / 0.04)",
-                      backdropFilter: "blur(10px)",
-                      WebkitBackdropFilter: "blur(10px)",
-                    }}
+                    className="group relative inline-flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-foreground/10 hover:border-foreground/30 transition-colors"
                   >
                     <span
                       aria-hidden
                       className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                      style={{ background: `${persona.accent}33`, boxShadow: `0 0 22px ${persona.accent}66` }}
+                      style={{ background: `${persona.accent}1f`, boxShadow: `0 0 22px ${persona.accent}55` }}
                     />
-                    <s.icon className="relative z-10 w-4 h-4 text-foreground/85 group-hover:text-foreground transition-colors" />
+                    <s.icon className="relative z-10 w-3.5 h-3.5 sm:w-4 sm:h-4 text-foreground/70 group-hover:text-foreground transition-colors" />
                   </a>
-                ))}
-              </motion.div>
-            </AnimatePresence>
-
-            {/* Stat tiles */}
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={`stats-${persona.id}`}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.5, delay: 0.15 }}
-                className="hidden md:flex flex-wrap gap-2.5 mt-5"
-              >
-                {persona.stats.map((s, i) => (
-                  <motion.div
-                    key={s.label}
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 + i * 0.08, duration: 0.4 }}
-                    whileHover={{ y: -4, scale: 1.04 }}
-                    className="rounded-xl px-4 py-2.5 cursor-default"
-                    style={{
-                      background: "hsl(0 0% 100% / 0.04)",
-                      backdropFilter: "blur(12px)",
-                      WebkitBackdropFilter: "blur(12px)",
-                      boxShadow: `0 8px 24px hsl(0 0% 0% / 0.3), inset 0 0 0 1px ${persona.accent}33`,
-                    }}
-                  >
-                    <div
-                      className="font-display text-lg sm:text-2xl font-bold leading-none"
-                      style={{ color: persona.accent }}
-                    >
-                      {s.value}
-                    </div>
-                    <div className="text-[10px] sm:text-xs text-muted-foreground font-body mt-1 tracking-wide">
-                      {s.label}
-                    </div>
-                  </motion.div>
                 ))}
               </motion.div>
             </AnimatePresence>
           </div>
 
+          {/* Meta strip — editorial, no chunky tiles */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`stats-${persona.id}`}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.45, delay: 0.1 }}
+              className="hidden md:flex items-stretch gap-4 sm:gap-6 pt-4 border-t border-foreground/10 max-w-md"
+            >
+              {persona.stats.map((s, i) => (
+                <div key={s.label} className="flex items-stretch gap-4 sm:gap-6">
+                  {i > 0 && <span className="w-px bg-foreground/10" aria-hidden />}
+                  <div className="flex flex-col">
+                    <span
+                      className="font-display font-semibold text-sm sm:text-base leading-tight"
+                      style={{ color: persona.accent }}
+                    >
+                      {s.value}
+                    </span>
+                    <span className="text-[10px] sm:text-[11px] text-foreground/50 font-mono tracking-[0.14em] uppercase mt-1">
+                      {s.label}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
 
