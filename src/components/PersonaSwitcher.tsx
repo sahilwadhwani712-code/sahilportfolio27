@@ -292,35 +292,38 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
             const active = i === index;
             const isFriend = p.id === "friend";
             return (
-              <motion.img
+              <div
                 key={p.id}
-                src={p.png}
-                alt={active ? p.title : ""}
-                initial={false}
-                animate={{
-                  opacity: active ? 1 : 0,
-                  x: active ? 0 : i < index ? -28 : 28,
-                  scale: active ? 1 : 0.99,
-                }}
-                transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                 className={
-                  "absolute bottom-0 h-[92svh] portrait:h-[92svh] landscape:h-[94svh] sm:h-[92svh] md:h-[108svh] w-auto max-w-none object-contain object-bottom select-none pointer-events-none " +
+                  "absolute bottom-0 h-[92svh] portrait:h-[92svh] landscape:h-[94svh] sm:h-[92svh] md:h-[108svh] flex items-end justify-center pointer-events-none " +
                   (isFriend
                     ? "left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-[10%] md:-bottom-[4svh]"
                     : "left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-[3%]")
                 }
-                style={{
-                  transformOrigin: "50% 100%",
-                  filter:
-                    "drop-shadow(0 30px 50px hsl(0 0% 0% / 0.7))",
-                  willChange: "opacity",
-                }}
-                loading={i === 0 ? "eager" : "lazy"}
-                decoding={i === 0 ? "sync" : "async"}
-                // @ts-expect-error fetchpriority is valid HTML but not yet in React types
-                fetchpriority={i === 0 ? "high" : "low"}
-                draggable={false}
-              />
+              >
+                <motion.img
+                  src={p.png}
+                  alt={active ? p.title : ""}
+                  initial={false}
+                  animate={{
+                    opacity: active ? 1 : 0,
+                    x: active ? 0 : i < index ? -28 : 28,
+                    scale: active ? 1 : 0.99,
+                  }}
+                  transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                  className="h-full w-auto max-w-none object-contain object-bottom select-none"
+                  style={{
+                    transformOrigin: "50% 100%",
+                    filter: "drop-shadow(0 30px 50px hsl(0 0% 0% / 0.7))",
+                    willChange: "opacity",
+                  }}
+                  loading={i === 0 ? "eager" : "lazy"}
+                  decoding={i === 0 ? "sync" : "async"}
+                  // @ts-expect-error fetchpriority is valid HTML but not yet in React types
+                  fetchpriority={i === 0 ? "high" : "low"}
+                  draggable={false}
+                />
+              </div>
             );
           })}
           <div className="absolute inset-x-0 bottom-0 h-[22svh] md:h-[22svh] bg-gradient-to-t from-background via-background/70 to-transparent" />
