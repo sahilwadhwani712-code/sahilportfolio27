@@ -306,8 +306,8 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
                 className={
                   "absolute bottom-0 h-[92svh] portrait:h-[92svh] landscape:h-[94svh] sm:h-[92svh] md:h-[108svh] w-auto max-w-none object-contain object-bottom select-none pointer-events-none " +
                   (isFriend
-                    ? "left-1/2 -translate-x-[55%] md:left-auto md:translate-x-0 md:right-[10%] md:-bottom-[4svh]"
-                    : "left-1/2 -translate-x-[50%] md:left-auto md:translate-x-0 md:right-[3%]")
+                    ? "left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-[10%] md:-bottom-[4svh]"
+                    : "left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-[3%]")
                 }
                 style={{
                   transformOrigin: "50% 100%",
