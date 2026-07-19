@@ -250,14 +250,15 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
           transition={{ duration: 1.1, ease: "easeInOut" }}
         />
 
-        {/* Unified blend overlays */}
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/55 to-background/10" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/30" />
+        {/* Unified blend overlays — lighter so PNG stays visible */}
+        <div className="absolute inset-0 hidden md:block bg-gradient-to-r from-background via-background/45 to-background/5" />
+        <div className="absolute inset-0 md:hidden bg-gradient-to-b from-background/40 via-transparent to-background/70" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-background/20" />
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              "radial-gradient(ellipse at center, transparent 45%, hsl(0 0% 0% / 0.55) 100%)",
+              "radial-gradient(ellipse at center, transparent 55%, hsl(0 0% 0% / 0.45) 100%)",
           }}
         />
       </div>
