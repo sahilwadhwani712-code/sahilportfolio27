@@ -92,6 +92,19 @@ const PhotoGallery = () => {
             </motion.button>
           ))}
         </div>
+
+        <div className="mt-8 sm:mt-10 flex justify-center">
+          <Link
+            to="/gallery"
+            className="group relative inline-flex items-center gap-3 pl-5 pr-2 py-2 rounded-full font-display font-medium text-[11px] uppercase tracking-[0.24em] text-foreground overflow-hidden border border-primary/40"
+          >
+            <span aria-hidden className="absolute inset-0 rounded-full origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-700 ease-out bg-primary" />
+            <span className="relative z-10 transition-colors group-hover:text-white">View full gallery</span>
+            <span className="relative z-10 inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary transition-colors group-hover:bg-white/20">
+              <ArrowUpRight className="w-4 h-4 text-white" />
+            </span>
+          </Link>
+        </div>
       </div>
 
       <AnimatePresence>
