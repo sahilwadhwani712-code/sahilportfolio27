@@ -12,6 +12,7 @@ const SkillsPage = lazy(() => import("./pages/Skills"));
 const Developer = lazy(() => import("./pages/Developer"));
 const Friend = lazy(() => import("./pages/Friend"));
 const Gamer = lazy(() => import("./pages/Gamer"));
+const GalleryPage = lazy(() => import("./pages/Gallery"));
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ const App = () => (
           <Route path="/developer" element={<Developer />} />
           <Route path="/friend" element={<Friend />} />
           <Route path="/gamer" element={<Gamer />} />
+          <Route path="/gallery" element={<GalleryPage />} />
           <Route path="/youtube" element={<YouTubePage />} />
           <Route path="/gaming" element={<GamingPage />} />
           <Route path="/skills" element={<SkillsPage />} />

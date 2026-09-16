@@ -3,12 +3,20 @@ import { useState, useEffect } from "react";
 import { Menu, X, Home, Code2, Heart, Gamepad2, Image, Phone, FileText, ArrowUpRight } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const navItems = [
+type NavItem = {
+  label: string;
+  to?: string;
+  href?: string;
+  external?: boolean;
+  icon: typeof Home;
+};
+
+const navItems: NavItem[] = [
   { label: "Home", to: "/", icon: Home },
   { label: "Developer", to: "/developer", icon: Code2 },
   { label: "About", to: "/friend", icon: Heart },
   { label: "Gamer", to: "/gamer", icon: Gamepad2 },
-  { label: "Gallery", href: "https://sahildev.odoo.com/gallery", external: true, icon: Image },
+  { label: "Gallery", to: "/gallery", icon: Image },
   { label: "Contact", to: "/friend#contact", icon: Phone },
 ];
 
