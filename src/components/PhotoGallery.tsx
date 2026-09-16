@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Camera, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { Camera, X, ChevronLeft, ChevronRight, ArrowUpRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const photos = [
   "https://i.postimg.cc/HnxHJTX9/1000325079.jpg",
