@@ -72,6 +72,7 @@ const Friend = () => {
       <YouTubeSection />
       <SpotifySection />
       <InstagramFeed />
+      <PhotoGallery />
       <FavouritesSection />
       <ContactSection />
       <Footer />
