@@ -8,7 +8,7 @@ const navItems = [
   { label: "Developer", to: "/developer", icon: Code2 },
   { label: "About", to: "/friend", icon: Heart },
   { label: "Gamer", to: "/gamer", icon: Gamepad2 },
-  { label: "Gallery", href: "https://sahildev.odoo.com/gallery", external: true, icon: Image },
+  { label: "Gallery", to: "/gallery", icon: Image },
   { label: "Contact", to: "/friend#contact", icon: Phone },
 ];
 
