@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import YouTubeSection from "@/components/YouTubeSection";
 import InstagramFeed from "@/components/InstagramFeed";
+import PhotoGallery from "@/components/PhotoGallery";
 import SpotifySection from "@/components/SpotifySection";
 import FavouritesSection from "@/components/FavouritesSection";
 import InterestsSection from "@/components/InterestsSection";
