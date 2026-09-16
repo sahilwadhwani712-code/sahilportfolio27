@@ -68,9 +68,9 @@ const PhotoGallery = () => {
           </h2>
         </motion.div>
 
-        {/* Masonry — natural dimensions, never cropped */}
+        {/* Preview — natural dimensions, never cropped */}
         <div className="columns-2 sm:columns-3 lg:columns-4 gap-3 sm:gap-4 [column-fill:_balance]">
-          {photos.map((src, i) => (
+          {photos.slice(0, 6).map((src, i) => (
             <motion.button
               key={src}
               type="button"
