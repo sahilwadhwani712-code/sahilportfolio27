@@ -12,6 +12,7 @@ const SkillsPage = lazy(() => import("./pages/Skills"));
 const Developer = lazy(() => import("./pages/Developer"));
 const Friend = lazy(() => import("./pages/Friend"));
 const Gamer = lazy(() => import("./pages/Gamer"));
+const GalleryPage = lazy(() => import("./pages/Gallery"));
 
 const queryClient = new QueryClient();
 
