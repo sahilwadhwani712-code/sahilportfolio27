@@ -74,7 +74,7 @@ const Footer = () => {
 
         {/* Tiny baseline */}
         <div className="mt-4 pt-3 border-t border-border/20 flex items-center justify-between text-[10px] font-mono uppercase tracking-[0.3em] text-foreground/35">
-          <span>© 2025 Sahil Wadhwani</span>
+          <span>© {new Date().getFullYear()} Sahil Wadhwani</span>
           <span className="hidden sm:inline">Crafted with care · IST</span>
           <span className="sm:hidden">IST</span>
         </div>

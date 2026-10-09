@@ -29,7 +29,7 @@ const games = [
   {
     name: "BGMI",
     logo: "https://www.seekpng.com/png/detail/889-8897281_pubg-logo-png.png",
-    description: "Battle Royale - Conqueror Rank",
+    description: "Battle Royale · Weekend squads",
     url: "https://www.battlegroundsmobileindia.com/",
     color: "from-yellow-500/20 to-yellow-600/10",
   },
