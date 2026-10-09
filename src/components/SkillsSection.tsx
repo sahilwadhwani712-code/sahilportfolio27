@@ -144,8 +144,8 @@ const SkillsSection = () => {
             {/* Stats */}
             <div className="grid grid-cols-3 gap-1.5 sm:gap-2.5 mt-3 sm:mt-5">
               {[
-                { value: 6, label: "Years Coding", suffix: "+" },
-                { value: 15, label: "Projects Built", suffix: "+" },
+                { value: 4, label: "Years of Experience", suffix: "" },
+                { value: 7, label: "Apps Shipped", suffix: "+" },
                 { value: 10, label: "Lines of Kotlin", suffix: "K+" },
               ].map((stat, index) => (
                 <motion.div

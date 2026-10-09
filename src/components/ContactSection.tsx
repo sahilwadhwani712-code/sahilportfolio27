@@ -7,8 +7,8 @@ const socials = [
   { icon: Linkedin, label: "LinkedIn", href: "https://www.linkedin.com/in/sahil-w712" },
   { icon: Instagram, label: "Instagram", href: "https://www.instagram.com/__sahil_.27" },
   { icon: Twitter, label: "Twitter", href: "https://x.com/Sahil_701" },
-  { icon: Youtube, label: "Vines Channel", href: "https://instagram.com/sahil_x_rajat_vines" },
-  { icon: Globe, label: "Portfolio", href: "https://sahildev.odoo.com" },
+  { icon: Instagram, label: "Vines", href: "https://www.instagram.com/sahil_x_rajat_vines" },
+  { icon: Youtube, label: "YouTube", href: "https://youtube.com/@SahilDev" },
 ];
 
 const ContactSection = () => {

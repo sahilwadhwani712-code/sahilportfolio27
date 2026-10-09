@@ -131,8 +131,8 @@ const SkillsPage = () => {
                 className="flex flex-wrap gap-3 sm:gap-5"
               >
                 {[
-                  { value: 6, label: "Years Coding", suffix: "+" },
-                  { value: 15, label: "Projects Built", suffix: "+" },
+                  { value: 4, label: "Years of Experience", suffix: "" },
+                  { value: 7, label: "Apps Shipped", suffix: "+" },
                   { value: 10, label: "Lines of Kotlin", suffix: "K+" },
                 ].map((stat) => (
                   <div key={stat.label} className="text-center">

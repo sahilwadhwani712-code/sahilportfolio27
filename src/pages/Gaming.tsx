@@ -56,7 +56,7 @@ const games = [
     playtime: "1000+ hours",
     rating: "9/10",
     genre: "Battle Royale",
-    highlights: ["Conqueror tier reached", "Squad wins: 200+", "K/D ratio: 4.5"],
+    highlights: ["Weekend squad drops", "Friends-only lobbies", "TPP, casual pace"],
     playerId: "5697409495",
     color: "from-yellow-500/30 to-yellow-600/10",
   },
