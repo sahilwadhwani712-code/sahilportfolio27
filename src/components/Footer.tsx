@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import Magnetic from "@/components/fx/Magnetic";
 import { Github, Linkedin, Twitter, Instagram, Youtube, Mail, ArrowUpRight } from "lucide-react";
 
 const Footer = () => {
@@ -33,7 +34,7 @@ const Footer = () => {
             </span>
           </div>
 
-          {/* Socials — icon-only chips */}
+          {/* Socials */}
           <div className="flex items-center gap-1.5">
             {socialLinks.map((social) => (
               <motion.a
@@ -44,9 +45,10 @@ const Footer = () => {
                 whileHover={{ y: -2, scale: 1.08 }}
                 aria-label={social.label}
                 title={social.label}
-                className="w-8 h-8 inline-flex items-center justify-center rounded-full text-foreground/60 hover:text-primary hover:bg-primary/10 border border-border/40 transition-all"
+                className="h-8 px-2.5 inline-flex items-center gap-1.5 rounded-full text-[10px] font-body text-foreground/60 hover:text-primary hover:bg-primary/10 border border-border/40 transition-all"
               >
                 <social.icon className="w-3.5 h-3.5" />
+                <span className="hidden lg:inline">{social.label}</span>
               </motion.a>
             ))}
           </div>
@@ -60,6 +62,7 @@ const Footer = () => {
               <Mail className="w-3 h-3" />
               <span>sahilwadhwani712@gmail.com</span>
             </a>
+            <Magnetic>
             <a
               href={resumeUrl}
               target="_blank"
@@ -69,6 +72,7 @@ const Footer = () => {
               Resume
               <ArrowUpRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </a>
+            </Magnetic>
           </div>
         </div>
 
