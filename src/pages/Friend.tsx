@@ -65,7 +65,7 @@ const Friend = () => {
       </section>
 
       <div className="py-6 sm:py-8 border-y border-border/30 overflow-hidden">
-        <MarqueeText text="MUSIC • FILMS • PHOTOGRAPHY • STORYTELLING • CULTURE" />
+        <MarqueeText variant="italic" reverse text="MUSIC • FILMS • PHOTOGRAPHY • STORYTELLING • CULTURE" />
       </div>
 
       <InterestsSection />
