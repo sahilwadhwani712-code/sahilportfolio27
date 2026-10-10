@@ -1,4 +1,7 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
+import NowStrip from "@/components/NowStrip";
+import Guestbook from "@/components/Guestbook";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -21,6 +24,39 @@ const PERSONA = {
   bg: "https://i.postimg.cc/gk7rBzHF/Friend-Bg.webp",
   png: "https://i.postimg.cc/ncWMwFGJ/Friend.webp",
   accent: "hsl(28 90% 55%)",
+};
+
+const TABS = [
+  { id: "interests", label: "Interests", render: () => <InterestsSection /> },
+  { id: "watch", label: "Watch & Listen", render: () => (<><YouTubeSection /><SpotifySection /></>) },
+  { id: "frames", label: "Frames", render: () => (<><InstagramFeed /><PhotoGallery /></>) },
+  { id: "favourites", label: "Favourites", render: () => <FavouritesSection /> },
+  { id: "guestbook", label: "Guestbook", render: () => <Guestbook /> },
+];
+
+const FriendTabs = () => {
+  const [tab, setTab] = useState(TABS[0].id);
+  const active = TABS.find((t) => t.id === tab)!;
+  return (
+    <div>
+      <div role="tablist" aria-label="About sections" className="sticky top-16 z-30 bg-background/80 backdrop-blur border-y border-border/30">
+        <div className="container mx-auto px-4 sm:px-6 flex gap-1 overflow-x-auto py-2">
+          {TABS.map((t) => (
+            <button key={t.id} role="tab" aria-selected={tab === t.id} onClick={() => setTab(t.id)}
+              className={`relative shrink-0 px-4 py-2 rounded-full font-display text-xs sm:text-sm font-semibold transition-colors ${tab === t.id ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>
+              {tab === t.id && <motion.span layoutId="friend-tab" className="absolute inset-0 rounded-full bg-primary" transition={{ type: "spring", stiffness: 380, damping: 30 }} />}
+              <span className="relative">{t.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+      <AnimatePresence mode="wait">
+        <motion.div key={tab} role="tabpanel" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }}>
+          {active.render()}
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  );
 };
 
 const Friend = () => {
@@ -65,15 +101,11 @@ const Friend = () => {
       </section>
 
       <div className="py-6 sm:py-8 border-y border-border/30 overflow-hidden">
-        <MarqueeText text="MUSIC • FILMS • PHOTOGRAPHY • STORYTELLING • CULTURE" />
+        <MarqueeText variant="italic" reverse text="MUSIC • FILMS • PHOTOGRAPHY • STORYTELLING • CULTURE" />
       </div>
 
-      <InterestsSection />
-      <YouTubeSection />
-      <SpotifySection />
-      <InstagramFeed />
-      <PhotoGallery />
-      <FavouritesSection />
+      <NowStrip />
+      <FriendTabs />
       <ContactSection />
       <Footer />
     </div>

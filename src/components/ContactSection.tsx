@@ -97,10 +97,11 @@ const ContactSection = () => {
                 viewport={{ once: true }}
                 transition={{ delay: 0.4 + index * 0.08 }}
                 whileHover={{ scale: 1.15, y: -5 }}
-                className="inline-flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-strong text-foreground hover:text-primary hover:border-primary/30 transition-all border border-border/50"
+                className="inline-flex items-center gap-2 h-10 sm:h-11 px-4 rounded-full text-xs font-body glass-strong text-foreground hover:text-primary hover:border-primary/30 transition-all border border-border/50"
                 aria-label={social.label}
               >
-                <social.icon className="w-4 h-4 sm:w-5 sm:h-5" />
+                <social.icon className="w-4 h-4" />
+                <span>{social.label}</span>
               </motion.a>
             ))}
           </motion.div>

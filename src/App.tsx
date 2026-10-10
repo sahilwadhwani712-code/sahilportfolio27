@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import Index from "./pages/Index";
+import CommandPalette from "./components/CommandPalette";
+import ScrollProgress from "./components/ScrollProgress";
 const NotFound = lazy(() => import("./pages/NotFound"));
 const YouTubePage = lazy(() => import("./pages/YouTube"));
 const GamingPage = lazy(() => import("./pages/Gaming"));
@@ -22,6 +24,8 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <ScrollProgress />
+        <CommandPalette />
         <Suspense fallback={<div className="min-h-screen bg-background" />}>
         <Routes>
           <Route path="/" element={<Index />} />

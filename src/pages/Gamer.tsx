@@ -171,7 +171,7 @@ const GamerInner = () => {
       </section>
 
       <div className="py-6 sm:py-8 border-y border-border/30 overflow-hidden">
-        <MarqueeText text="BGMI • GTA V • RDR2 • NFS • EFOOTBALL • CONQUEROR" />
+        <MarqueeText variant="solid" text="BGMI • GTA V • RDR2 • NFS • EFOOTBALL • WEEKENDS" />
       </div>
 
       {/* Game library */}

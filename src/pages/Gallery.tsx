@@ -1,26 +1,13 @@
+import { photos } from "@/data/photos";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion";
-import { Camera, X, ChevronLeft, ChevronRight, ArrowLeft, ArrowUpRight } from "lucide-react";
+import { Camera, X, ChevronLeft, ChevronRight, ArrowLeft, ArrowUpRight, LayoutGrid, Film, Shuffle, Share2, Download } from "lucide-react";
+import { toast } from "sonner";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-const photos = [
-  "https://i.postimg.cc/HnxHJTX9/1000325079.jpg",
-  "https://i.postimg.cc/XqJ3Znd8/1000325081.jpg",
-  "https://i.postimg.cc/1XjSwbr0/1000325082.jpg",
-  "https://i.postimg.cc/hv5nTN0K/1000325083.jpg",
-  "https://i.postimg.cc/8zWGfKJ0/1000325084.jpg",
-  "https://i.postimg.cc/QN4h2WZ7/1000325085.jpg",
-  "https://i.postimg.cc/Gh6r2w2x/1000325087.jpg",
-  "https://i.postimg.cc/kXL9434G/1000325088.jpg",
-  "https://i.postimg.cc/fL5DTVtN/1000325090.png",
-  "https://i.postimg.cc/50pbNXHr/1000325102.webp",
-  "https://i.postimg.cc/cHT04vKP/1000326222.jpg",
-  "https://i.postimg.cc/rmgMFDdv/1000326223.jpg",
-  "https://i.postimg.cc/HxTTgwxD/1000326224.jpg",
-];
 
 /** Distribute photos round-robin into N columns so heights stay balanced. */
 const toColumns = (items: string[], count: number) => {
@@ -109,8 +96,31 @@ const Gallery = () => {
     };
   }, [active, close, next, prev]);
 
+  const [mode, setMode] = useState<"masonry" | "film" | "shuffle">("masonry");
+  const [order, setOrder] = useState<string[]>(photos);
+  const pickMode = (m: typeof mode) => {
+    setMode(m);
+    setOrder(m === "shuffle" ? [...photos].sort(() => Math.random() - 0.5) : photos);
+  };
   const columnCount = isMobile ? 2 : 3;
-  const columns = toColumns(photos, columnCount);
+  const columns = toColumns(order, columnCount).map((c) => c.map((it) => ({ ...it, index: photos.indexOf(it.src) })));
+
+  const share = async (src: string) => {
+    try {
+      if (navigator.share) await navigator.share({ title: "Photo by Sahil Wadhwani", url: src });
+      else { await navigator.clipboard.writeText(src); toast.success("Link copied"); }
+    } catch { /* user cancelled */ }
+  };
+  const download = async (src: string, i: number) => {
+    try {
+      const blob = await (await fetch(src)).blob();
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `sahil-frame-${String(i + 1).padStart(2, "0")}.${src.split(".").pop()}`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    } catch { window.open(src, "_blank", "noopener"); }
+  };
   const speeds = isMobile ? [0, -40, 0] : [-70, 60, -110];
 
   // Swipe controls for the lightbox
@@ -166,7 +176,28 @@ const Gallery = () => {
 
       {/* Parallax masonry */}
       <main ref={gridRef} className="container mx-auto px-5 sm:px-8 pb-24 sm:pb-36">
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-5 items-start">
+        <div role="tablist" aria-label="Gallery view" className="mb-6 inline-flex gap-1 rounded-full border border-border/50 bg-card/40 p-1">
+          {([["masonry", "Masonry", LayoutGrid], ["film", "Film strip", Film], ["shuffle", "Shuffle", Shuffle]] as const).map(([m, label, Icon]) => (
+            <button key={m} role="tab" aria-selected={mode === m} onClick={() => pickMode(m)}
+              className={`relative inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-display font-semibold transition-colors ${mode === m ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>
+              {mode === m && <motion.span layoutId="gal-mode" className="absolute inset-0 rounded-full bg-primary" transition={{ type: "spring", stiffness: 380, damping: 30 }} />}
+              <Icon className="relative w-3.5 h-3.5" /><span className="relative">{label}</span>
+            </button>
+          ))}
+        </div>
+        {mode === "film" ? (
+          <div className="-mx-5 sm:-mx-8 px-5 sm:px-8 flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4">
+            {photos.map((src, i) => (
+              <motion.button key={src} type="button" onClick={() => setActive(i)}
+                initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.04 }}
+                className="snap-center shrink-0 h-[60svh] rounded-2xl overflow-hidden border border-border/40 bg-card/30"
+                aria-label={`Open photo ${i + 1}`}>
+                <img src={src} alt={`Gallery photo ${i + 1}`} loading="lazy" decoding="async" className="h-full w-auto object-contain" />
+              </motion.button>
+            ))}
+          </div>
+        ) : (
+        <div key={mode + order[0]} className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-5 items-start">
           {columns.map((col, i) => (
             <ParallaxColumn
               key={i}
@@ -177,6 +208,7 @@ const Gallery = () => {
             />
           ))}
         </div>
+        )}
       </main>
 
       <Footer />
@@ -234,9 +266,13 @@ const Gallery = () => {
               onClick={(e) => e.stopPropagation()}
               className="max-h-[84svh] max-w-[92vw] w-auto h-auto object-contain rounded-xl"
             />
-            <span className="absolute bottom-5 left-1/2 -translate-x-1/2 font-body text-xs text-muted-foreground">
-              {active + 1} / {photos.length}
-            </span>
+            <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
+              <button onClick={() => share(photos[active])} aria-label="Share photo"
+                className="p-2 rounded-full border border-border/50 bg-card/60 text-foreground hover:text-primary transition-colors"><Share2 className="w-4 h-4" /></button>
+              <span className="font-body text-xs text-muted-foreground">{active + 1} / {photos.length}</span>
+              <button onClick={() => download(photos[active], active)} aria-label="Download photo"
+                className="p-2 rounded-full border border-border/50 bg-card/60 text-foreground hover:text-primary transition-colors"><Download className="w-4 h-4" /></button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

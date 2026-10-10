@@ -3,6 +3,8 @@ import { Github, Star, ArrowUpRight, Mail, Rocket, Clock, CheckCircle2, X } from
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useEffect } from "react";
+import TiltCard from "@/components/fx/TiltCard";
+import RevealText from "@/components/fx/RevealText";
 
 const categories = [
   { key: "completed", label: "Completed", icon: CheckCircle2, color: "text-green-400" },
@@ -35,15 +37,12 @@ const ProjectCard = ({ project, index, onOpen }: { project: any; index: number; 
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
     transition={{ duration: 0.4, delay: index * 0.08 }}
-    className="block group w-full text-left"
+    className={`block group w-full h-full text-left ${project.featured ? "sm:col-span-2" : ""}`}
   >
-    <motion.div
-      whileHover={{ y: -6, scale: 1.01 }}
-      className="relative bounce-card"
-    >
+    <TiltCard className="relative h-full">
       <div className={`absolute inset-0 bg-gradient-to-br ${project.color} rounded-2xl blur-xl opacity-0 group-hover:opacity-20 transition-opacity duration-500`} />
       
-      <div className="relative glass-card rounded-2xl p-3 sm:p-5 hover:border-primary/40 transition-all duration-300">
+      <div className={`relative h-full glass-card rounded-2xl hover:border-primary/40 transition-all duration-300 ${project.featured ? "p-5 sm:p-7" : "p-4 sm:p-5"}`}>
         <div className="flex items-start gap-3 sm:gap-4">
           <motion.span 
             className="text-2xl sm:text-3xl flex-shrink-0 mt-0.5 group-hover:scale-110 transition-transform duration-300"
@@ -88,7 +87,7 @@ const ProjectCard = ({ project, index, onOpen }: { project: any; index: number; 
           </div>
         </div>
       </div>
-    </motion.div>
+    </TiltCard>
   </motion.button>
 );
 
@@ -120,8 +119,7 @@ const ProjectsSection = () => {
         >
           <span className="text-primary font-display text-xs sm:text-sm font-semibold uppercase tracking-widest">Portfolio</span>
           <h2 className="font-display text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mt-2">
-            <span className="text-foreground">My </span>
-            <span className="text-gradient">Projects</span>
+            <RevealText><span className="text-foreground">My </span><span className="text-gradient">Projects</span></RevealText>
           </h2>
           <p className="text-muted-foreground font-body text-[11px] sm:text-sm md:text-base max-w-2xl mx-auto mt-2">
             From completed apps to works in progress — here's what I've been building.
@@ -161,7 +159,7 @@ const ProjectsSection = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
-            className="max-w-2xl mx-auto space-y-2.5 sm:space-y-3"
+            className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 auto-rows-fr"
           >
             {filteredProjects.map((project, index) => (
               <ProjectCard key={project.title} project={project} index={index} onOpen={setOpenProject} />

@@ -7,6 +7,7 @@ import ProjectsSection from "@/components/ProjectsSection";
 import SkillsSection from "@/components/SkillsSection";
 import MarqueeText from "@/components/MarqueeText";
 import ContactSection from "@/components/ContactSection";
+import WipTicker from "@/components/WipTicker";
 
 const PERSONA = {
   label: "DEVELOPER",
@@ -68,6 +69,7 @@ const Developer = () => {
               >
                 {PERSONA.description}
               </motion.p>
+              <div className="mt-6"><WipTicker /></div>
             </div>
           </div>
         </div>
