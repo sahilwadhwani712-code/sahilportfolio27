@@ -30,30 +30,25 @@ const Navbar = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      setIsScrolled((current) => current ? window.scrollY > 24 : window.scrollY > 72);
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = isMobileMenuOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    if (!isMobileMenuOpen) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = previous; };
   }, [isMobileMenuOpen]);
 
   const handleNavigate = (to: string) => {
     setIsMobileMenuOpen(false);
-    setTimeout(() => {
-      const [path, hash] = to.split("#");
-      navigate(path);
-      if (hash) {
-        setTimeout(() => {
-          document.getElementById(hash)?.scrollIntoView({ behavior: "smooth" });
-        }, 200);
-      } else {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-    }, 80);
+    if (to === location.pathname && !to.includes("#")) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else navigate(to);
+
   };
 
   const isActive = (to: string) => {
@@ -68,8 +63,8 @@ const Navbar = () => {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5 }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled ? "py-2 sm:py-3 border-b border-border/40 backdrop-blur-xl bg-background/70" : "py-3 sm:py-5"
+        className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 h-16 sm:h-20 flex items-center border-b ${
+          isScrolled ? "border-border/40 bg-background/95" : "border-transparent"
         }`}
       >
         <div className="container mx-auto px-4 sm:px-8">
@@ -101,14 +96,14 @@ const Navbar = () => {
                 ) : (
                   <button
                     key={item.label}
-                    onClick={() => handleNavigate(item.to!)}
+                    onClick={() => handleNavigate(item.to ?? "/")}
                     className={`relative px-3.5 py-1.5 font-body text-[13px] tracking-tight rounded-full transition-colors duration-200 ${
-                      isActive(item.to!)
+                      isActive(item.to ?? "/")
                         ? "text-foreground"
                         : "text-foreground/55 hover:text-foreground"
                     }`}
                   >
-                    {isActive(item.to!) && (
+                    {isActive(item.to ?? "/") && (
                       <motion.span
                         layoutId="nav-pill"
                         aria-hidden
@@ -144,6 +139,8 @@ const Navbar = () => {
 
             {/* Mobile Menu Button */}
             <motion.button
+              aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={isMobileMenuOpen}
               className="md:hidden p-2 text-foreground z-50 relative"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               whileTap={{ scale: 0.9 }}
@@ -208,17 +205,17 @@ const Navbar = () => {
                     ) : (
                       <motion.button
                         key={item.label}
-                        onClick={() => handleNavigate(item.to!)}
+                        onClick={() => handleNavigate(item.to ?? "/")}
                         initial={{ x: 50, opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
                         transition={{ delay: index * 0.05 + 0.1 }}
                         className={`flex items-center gap-3 w-full px-3 py-2.5 rounded-xl transition-all ${
-                          isActive(item.to!)
+                          isActive(item.to ?? "/")
                             ? "text-primary bg-primary/10"
                             : "text-foreground/80 hover:text-foreground hover:bg-primary/10"
                         }`}
                       >
-                        <item.icon className={`w-4 h-4 ${isActive(item.to!) ? "text-primary" : "text-primary/60"}`} />
+                        <item.icon className={`w-4 h-4 ${isActive(item.to ?? "/") ? "text-primary" : "text-primary/60"}`} />
                         <span className="font-display text-sm font-semibold">{item.label}</span>
                       </motion.button>
                     )
