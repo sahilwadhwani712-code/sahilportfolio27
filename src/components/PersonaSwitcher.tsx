@@ -5,6 +5,7 @@ import {
 } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import { ArrowUpRight } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -33,7 +34,7 @@ const CursiveName = ({ text, accent }: { text: string; accent: string }) => {
     const d = document as Document & { fonts?: { load: (s: string) => Promise<unknown>; ready: Promise<unknown> } };
     if (!d.fonts) { setFontReady(true); return; }
     let cancelled = false;
-    d.fonts.load("1em Italianno").then(() => d.fonts!.ready).then(() => {
+    d.fonts.load("1em Italianno").then(() => d.fonts?.ready).then(() => {
       if (!cancelled) setFontReady(true);
     }).catch(() => setFontReady(true));
     return () => { cancelled = true; };
@@ -47,7 +48,7 @@ const CursiveName = ({ text, accent }: { text: string; accent: string }) => {
         fontStyle: "italic",
           fontSize: "clamp(3.2rem, 8.2vw, 8.4rem)",
         textShadow: `0 18px 70px ${accent}66, 0 2px 0 ${accent}22`,
-        letterSpacing: "-0.01em",
+        letterSpacing: "0",
         wordSpacing: "0.12em",
         opacity: fontReady ? 1 : 0,
         transition: "opacity 300ms ease-out",
@@ -126,7 +127,7 @@ const EnterPill = ({
           </AnimatePresence>
         </span>
         <span
-          className="relative z-10 inline-flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full transition-colors group-hover:bg-white/20"
+          className="relative z-10 inline-flex items-center gap-1.5 px-2 h-8 sm:h-9 rounded-full transition-colors group-hover:bg-white/20"
           style={{ background: accent }}
         >
           <ArrowUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white transition-transform duration-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -151,7 +152,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
       requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
     };
     const schedule = w.requestIdleCallback
-      ? (cb: () => void) => w.requestIdleCallback!(cb, { timeout: 1200 })
+      ? (cb: () => void) => w.requestIdleCallback?.(cb, { timeout: 1200 })
       : (cb: () => void) => window.setTimeout(cb, 600);
     const id = schedule(() => setAssetsReady(true));
     return () => {
@@ -161,106 +162,62 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
 
   const go = (n: number) => setIndex(n);
 
-  /* Wheel / touch / key → change persona */
+  /* One intentional gesture per switch; ignore inertial wheel tails and menus. */
   useEffect(() => {
-    const tryAdvance = (delta: number) => {
-      const now = Date.now();
-      if (now - lastSwapRef.current < SCROLL_COOLDOWN) return;
-      if (Math.abs(delta) < 14) return;
-      lastSwapRef.current = now;
-      if (delta > 0) go((index + 1) % personas.length);
-      else go((index - 1 + personas.length) % personas.length);
-    };
-
-    const onWheel = (e: WheelEvent) => {
-      e.preventDefault();
-      tryAdvance(e.deltaY);
-    };
+    let wheelTimer: ReturnType<typeof setTimeout>;
+    let wheelLocked = false;
+    let total = 0;
     let touchStartY = 0;
-    const onTouchStart = (e: TouchEvent) => {
-      touchStartY = e.touches[0].clientY;
+    const blocked = () => document.body.style.overflow === "hidden";
+    const advance = (direction: number) => {
+      if (blocked() || Date.now() - lastSwapRef.current < SCROLL_COOLDOWN) return;
+      lastSwapRef.current = Date.now();
+      setIndex((current) => (current + direction + personas.length) % personas.length);
     };
-    const onTouchMove = (e: TouchEvent) => {
-      const dy = touchStartY - e.touches[0].clientY;
-      if (Math.abs(dy) > 50) {
-        tryAdvance(dy);
-        touchStartY = e.touches[0].clientY;
-      }
+    const onWheel = (e: WheelEvent) => {
+      if (blocked() || e.ctrlKey) return;
+      e.preventDefault();
+      clearTimeout(wheelTimer);
+      wheelTimer = setTimeout(() => { wheelLocked = false; total = 0; }, 180);
+      if (wheelLocked) return;
+      total += e.deltaY;
+      if (Math.abs(total) >= 45) { advance(Math.sign(total)); wheelLocked = true; }
+    };
+    const onTouchStart = (e: TouchEvent) => { touchStartY = e.touches[0]?.clientY ?? 0; };
+    const onTouchEnd = (e: TouchEvent) => {
+      const delta = touchStartY - (e.changedTouches[0]?.clientY ?? touchStartY);
+      if (Math.abs(delta) > 55) advance(Math.sign(delta));
     };
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "ArrowDown" || e.key === "ArrowRight") tryAdvance(1);
-      if (e.key === "ArrowUp" || e.key === "ArrowLeft") tryAdvance(-1);
+      if (e.target instanceof HTMLElement && e.target.closest("input,textarea,button,a,[role=dialog]")) return;
+      if (["ArrowDown", "ArrowRight", "ArrowUp", "ArrowLeft"].includes(e.key)) {
+        e.preventDefault(); advance(["ArrowDown", "ArrowRight"].includes(e.key) ? 1 : -1);
+      }
     };
-
-    window.addEventListener("wheel", onWheel, { passive: false });
-    window.addEventListener("touchstart", onTouchStart, { passive: true });
-    window.addEventListener("touchmove", onTouchMove, { passive: true });
+    const stage = stageRef.current;
+    stage?.addEventListener("wheel", onWheel, { passive: false });
+    stage?.addEventListener("touchstart", onTouchStart, { passive: true });
+    stage?.addEventListener("touchend", onTouchEnd, { passive: true });
     window.addEventListener("keydown", onKey);
     return () => {
-      window.removeEventListener("wheel", onWheel);
-      window.removeEventListener("touchstart", onTouchStart);
-      window.removeEventListener("touchmove", onTouchMove);
+      clearTimeout(wheelTimer);
+      stage?.removeEventListener("wheel", onWheel);
+      stage?.removeEventListener("touchstart", onTouchStart);
+      stage?.removeEventListener("touchend", onTouchEnd);
       window.removeEventListener("keydown", onKey);
     };
-  }, [index, personas.length]);
+  }, [personas.length]);
 
   const stageRef = useRef<HTMLDivElement>(null);
 
   return (
     <section
       ref={stageRef}
-      className="relative w-full h-screen overflow-hidden bg-background"
+      className="relative w-full h-[100svh] overflow-hidden bg-background home-stage"
       aria-label="Persona showcase"
     >
-      {/* Layered backgrounds — heavy blur + dark blend so PNG sits cleanly */}
-      <div className="absolute inset-0">
-        {personas.map((p, i) => {
-          if (!assetsReady && i !== 0) return null;
-          return (
-          <motion.img
-            key={p.id}
-            src={p.bg}
-            alt=""
-            aria-hidden
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{
-              filter: "blur(20px) saturate(1.15) brightness(0.65)",
-              transform: "scale(1.15) translateZ(0)",
-              willChange: "opacity",
-            }}
-            initial={false}
-            animate={{ opacity: i === index ? 1 : 0 }}
-            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            loading={i === 0 ? "eager" : "lazy"}
-            decoding={i === 0 ? "sync" : "async"}
-            // @ts-expect-error fetchpriority is valid HTML but not yet in React types
-            fetchpriority={i === 0 ? "high" : "low"}
-            draggable={false}
-          />
-          );
-        })}
-
-        {/* Accent wash that follows persona */}
-        <motion.div
-          aria-hidden
-          className="absolute inset-0"
-          animate={{
-            background: `radial-gradient(60% 70% at 75% 50%, ${persona.accent}22 0%, transparent 60%), radial-gradient(50% 60% at 15% 30%, ${persona.accentSoft} 0%, transparent 70%)`,
-          }}
-          transition={{ duration: 1.1, ease: "easeInOut" }}
-        />
-
-        {/* Unified blend overlays — lighter so PNG stays visible */}
-        <div className="absolute inset-0 hidden md:block bg-gradient-to-r from-background via-background/45 to-background/5" />
-        <div className="absolute inset-0 md:hidden bg-gradient-to-b from-background/40 via-transparent to-background/70" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-background/20" />
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              "radial-gradient(ellipse at center, transparent 55%, hsl(0 0% 0% / 0.45) 100%)",
-          }}
-        />
+      <div className="absolute inset-0" aria-hidden>
+        {personas.map((p, i) => <motion.div key={p.id} className={`absolute inset-0 persona-backdrop persona-backdrop-${p.id}`} initial={false} animate={{ opacity: i === index ? 1 : 0 }} transition={{ duration: reduce ? 0 : 0.65 }} />)}
       </div>
 
       {/* Vertical persona rail (desktop) */}
@@ -278,15 +235,6 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
       {/* Character layer — dominant on both breakpoints */}
       <div className="absolute inset-0 z-[8] pointer-events-none overflow-hidden">
         <div className="absolute inset-x-0 bottom-0 h-[80svh] portrait:h-[78svh] landscape:h-[94svh] sm:h-[86svh] md:h-[108svh] flex items-end justify-center md:justify-end">
-          <motion.div
-            aria-hidden
-            className="absolute bottom-0 left-1/2 -translate-x-1/2 md:left-auto md:right-[8%] md:translate-x-0 w-[72%] md:w-[48%] h-[46%] rounded-full blur-[70px] md:blur-[110px]"
-            animate={{
-              background: persona.accent,
-              opacity: reduce ? 0.22 : 0.3,
-            }}
-            transition={{ background: { duration: 0.8 } }}
-          />
           {personas.map((p, i) => {
             if (!assetsReady && i !== 0) return null;
             const active = i === index;
@@ -294,12 +242,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
             return (
               <div
                 key={p.id}
-                className={
-                  "absolute bottom-0 h-[92svh] portrait:h-[92svh] landscape:h-[94svh] sm:h-[92svh] md:h-[108svh] flex items-end justify-center pointer-events-none " +
-                  (isFriend
-                    ? "left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-[10%] md:-bottom-[4svh]"
-                    : "left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-[3%]")
-                }
+                className={`home-portrait home-portrait-${p.id}`}
               >
                 <motion.img
                   src={p.png}
@@ -314,11 +257,11 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
                   className="h-full w-auto max-w-none object-contain object-bottom select-none"
                   style={{
                     transformOrigin: "50% 100%",
-                    filter: "drop-shadow(0 30px 50px hsl(0 0% 0% / 0.7))",
+                    
                     willChange: "opacity",
                   }}
                   loading={i === 0 ? "eager" : "lazy"}
-                  decoding={i === 0 ? "sync" : "async"}
+                  decoding="async"
                   // @ts-expect-error fetchpriority is valid HTML but not yet in React types
                   fetchpriority={i === 0 ? "high" : "low"}
                   draggable={false}
@@ -331,11 +274,11 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
       </div>
 
       {/* Content grid — editorial, bottom-left anchored, tight rhythm */}
-      <div className="relative z-20 h-full container mx-auto px-5 sm:px-8 lg:px-16 pt-16 pb-8 sm:pt-20 sm:pb-14 flex items-end md:items-center">
-        <div className="w-full md:max-w-[560px] lg:max-w-[600px] pt-[58svh] portrait:pt-[58svh] landscape:pt-[72svh] sm:pt-[58svh] md:pt-0">
+      <div className="relative z-20 h-full container mx-auto px-5 sm:px-8 lg:px-16 flex items-end md:items-center home-copy">
+        <div className="w-full md:max-w-[560px] lg:max-w-[600px]">
 
           {/* Eyebrow — persona label + tick */}
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="popLayout" initial={false}>
             <motion.div
               key={`eyebrow-${persona.id}`}
               initial={{ opacity: 0, y: 8 }}
@@ -358,9 +301,9 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
           </AnimatePresence>
 
           <div className="relative mb-3 sm:mb-5 min-h-[1.05em]">
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="popLayout" initial={false}>
               <CursiveName
-                key={`title-${persona.id}`}
+                key={`title-${persona.title}`}
                 text={persona.title}
                 accent={persona.accent}
               />
@@ -369,7 +312,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
 
           {/* Description */}
           <div className="mb-5 sm:mb-6 min-h-[4rem]">
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="popLayout" initial={false}>
               <motion.p
                 key={`desc-${persona.id}`}
                 initial={{ opacity: 0, y: 10 }}
@@ -386,14 +329,14 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
           {/* CTA + socials — single row */}
           <div className="flex items-center gap-3 sm:gap-4 flex-wrap mb-5 sm:mb-7">
             <EnterPill to={persona.ctaTo} label={persona.ctaLabel} accent={persona.accent} />
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="popLayout" initial={false}>
               <motion.div
                 key={`pers-socials-${persona.id}`}
                 initial={{ opacity: 0, x: -6 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 6 }}
                 transition={{ duration: 0.35 }}
-                className="flex items-center gap-1.5"
+                className="flex items-center gap-2 flex-wrap"
               >
                 {(persona.socials ?? []).map((s) => (
                   <a
@@ -403,14 +346,14 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
                     rel="noopener noreferrer"
                     aria-label={s.label}
                     title={s.label}
-                    className="group relative inline-flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-foreground/10 hover:border-foreground/30 transition-colors"
+                    className="group relative inline-flex items-center gap-1.5 px-2 h-8 sm:h-9 rounded-full border border-foreground/10 hover:border-foreground/30 transition-colors"
                   >
                     <span
                       aria-hidden
                       className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                       style={{ background: `${persona.accent}1f`, boxShadow: `0 0 22px ${persona.accent}55` }}
                     />
-                    <s.icon className="relative z-10 w-3.5 h-3.5 sm:w-4 sm:h-4 text-foreground/70 group-hover:text-foreground transition-colors" />
+                    <s.icon className="relative z-10 w-3.5 h-3.5 text-foreground/70" /><span className="relative text-[10px] text-foreground/70">{s.label}</span>
                   </a>
                 ))}
               </motion.div>
@@ -418,7 +361,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
           </div>
 
           {/* Meta strip — editorial, no chunky tiles */}
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="popLayout" initial={false}>
             <motion.div
               key={`stats-${persona.id}`}
               initial={{ opacity: 0, y: 10 }}
@@ -466,7 +409,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
           {personas.map((p, i) => {
             const isActive = i === index;
             return (
-              <button
+              <Button variant="ghost" size="icon"
                 key={p.id}
                 onClick={() => go(i)}
                 aria-label={`Go to ${p.label}`}
@@ -481,7 +424,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
                   }}
                   transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                 />
-              </button>
+              </Button>
             );
           })}
         </div>

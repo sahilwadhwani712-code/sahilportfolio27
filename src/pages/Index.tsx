@@ -1,3 +1,4 @@
+import { portraits } from "@/data/portraits";
 import Navbar from "@/components/Navbar";
 import PersonaSwitcher, { Persona } from "@/components/PersonaSwitcher";
 import { Github, Linkedin, Mail, Instagram, Youtube, Music2, Gamepad2, Twitch, Disc3 } from "lucide-react";
@@ -11,7 +12,7 @@ const personas: Persona[] = [
     description:
       "Passionate about AI and building tech that genuinely helps people. I love turning ideas into clean, user-focused Android experiences and exploring how intelligent systems can create real-world impact.",
     bg: "https://i.postimg.cc/VLh5HfWP/Dev-bg.webp",
-    png: "https://i.postimg.cc/wTr3bqQ6/Dev.webp",
+    png: portraits.developer,
     accent: "hsl(0, 85%, 58%)",
     accentSoft: "hsl(0, 85%, 58%, 0.22)",
     ctaLabel: "Enter Dev Mode",
@@ -39,7 +40,7 @@ const personas: Persona[] = [
     description:
       "Off the keyboard, I chase songs on loop, frames worth keeping, and films that stay with me. The quieter, more curious side of who I am.",
     bg: "https://i.postimg.cc/gk7rBzHF/Friend-Bg.webp",
-    png: "https://i.postimg.cc/ncWMwFGJ/Friend.webp",
+    png: portraits.friend,
     accent: "hsl(28, 95%, 58%)",
     accentSoft: "hsl(28, 95%, 58%, 0.22)",
     ctaLabel: "About Me",
@@ -67,7 +68,7 @@ const personas: Persona[] = [
     description:
       "Gaming is my weekend reset — squad drops, slow open-world drives and quick races. Not a grind, just a way to breathe between builds.",
     bg: "https://i.postimg.cc/7YRbQHnw/gamer-bg.webp",
-    png: "https://i.postimg.cc/TYshHdqH/Gamer.webp",
+    png: portraits.gamer,
     accent: "hsl(190, 95%, 55%)",
     accentSoft: "hsl(190, 95%, 55%, 0.22)",
     ctaLabel: "Open Player Card",
@@ -91,7 +92,7 @@ const personas: Persona[] = [
 
 const Index = () => {
   return (
-    <div className="h-screen w-screen bg-background grain overflow-hidden">
+    <div className="h-[100svh] w-full bg-background grain overflow-hidden">
       <Navbar />
       <PersonaSwitcher personas={personas} />
     </div>

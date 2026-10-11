@@ -1,3 +1,4 @@
+import { portraits } from "@/data/portraits";
 import { motion } from "framer-motion";
 import { ArrowLeft, Trophy, Clock, Star, ExternalLink, Users, Gamepad2 } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -13,7 +14,7 @@ const PERSONA = {
   description:
     "Gaming is how I unwind, not how I grind. A few BGMI squad matches with friends, an open-world drive in GTA, a quick race in NFS. This is the playlist of games I keep coming back to.",
   bg: "https://i.postimg.cc/7YRbQHnw/gamer-bg.webp",
-  png: "https://i.postimg.cc/TYshHdqH/Gamer.webp",
+  png: portraits.gamer,
   accent: "hsl(190 90% 55%)",
 };
 
@@ -35,7 +36,7 @@ const GameDeck = ({ games }: { games: any[] }) => {
   const next = () => setI((i + 1) % games.length);
   const prev = () => setI((i - 1 + games.length) % games.length);
   return (
-    <div className="relative max-w-2xl mx-auto h-[480px] sm:h-[520px] select-none">
+    <div className="relative max-w-2xl mx-auto h-[480px] sm:h-[520px] select-none game-deck">
       <div className="relative w-full h-full">
         {games.map((g: any, idx: number) => {
           const offset = (idx - i + games.length) % games.length;
@@ -58,24 +59,22 @@ const GameDeck = ({ games }: { games: any[] }) => {
                 if (info.offset.x < -80) next();
                 else if (info.offset.x > 80) prev();
               }}
-              className="absolute inset-0 cursor-grab active:cursor-grabbing"
+              aria-hidden={!isTop}
+              className={`absolute inset-0 cursor-grab active:cursor-grabbing ${isTop ? "" : "pointer-events-none"}`}
             >
-              <div className="relative h-full glass-card rounded-3xl overflow-hidden border border-border/40">
-                <div className={`absolute inset-0 bg-gradient-to-br ${g.color} opacity-60`} />
-                <img src={g.logo} alt="" className="absolute inset-0 w-full h-full object-cover opacity-30 blur-md scale-110" />
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/20" />
+              <div className="relative h-full collection-card overflow-hidden">
                 <div className="relative h-full flex flex-col p-6 sm:p-8">
                   <div className="flex items-start gap-4 mb-4">
-                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden bg-muted flex-shrink-0 ring-1 ring-border/50">
-                      <img src={g.logo} alt={g.name} className="w-full h-full object-cover"
+                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden bg-muted flex-shrink-0 ring-1 ring-border/50">
+                      <img src={g.logo} alt={g.name} className="w-full h-full object-contain p-2"
                         onError={(e) => { (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="80">🎮</text></svg>'; }} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-display text-2xl sm:text-3xl font-bold text-foreground truncate">{g.name}</h3>
+                      <h3 className="font-display text-xl sm:text-3xl font-bold text-foreground break-words">{g.name}</h3>
                       <span className="text-xs font-display text-muted-foreground px-2 py-0.5 rounded-full bg-muted inline-block mt-1">{g.genre}</span>
                     </div>
                     <div className="text-right flex-shrink-0">
-                      <div className="flex items-center gap-1 text-yellow-500"><Star className="w-4 h-4 fill-current" /><span className="font-display text-sm font-bold">{g.rating}</span></div>
+                      <div className="flex items-center gap-1 text-primary"><Star className="w-4 h-4 fill-current" /><span className="font-display text-sm font-bold">{g.rating}</span></div>
                       <div className="text-xs text-muted-foreground">{g.playtime}</div>
                     </div>
                   </div>
@@ -119,21 +118,18 @@ const GamerInner = () => {
 
       {/* Hero */}
       <section className="relative min-h-[100svh] w-full overflow-hidden flex items-end sm:items-center">
-        <div className="absolute inset-0 bg-gradient-to-br from-background via-[hsl(190_30%_7%)] to-background" />
-        <div className="absolute -top-32 -right-24 w-[60vw] h-[60vw] max-w-[720px] max-h-[720px] rounded-full pointer-events-none blur-[140px]" style={{ background: PERSONA.accent, opacity: 0.22 }} />
-        <div className="absolute -bottom-32 -left-24 w-[55vw] h-[55vw] max-w-[640px] max-h-[640px] rounded-full pointer-events-none blur-[150px]" style={{ background: PERSONA.accent, opacity: 0.14 }} />
-        <div className="absolute inset-0 gradient-blinds opacity-30 pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/30 pointer-events-none" />
+        <div className="absolute inset-0 persona-backdrop persona-backdrop-gamer" aria-hidden />
 
         <img
           src={PERSONA.png}
           alt={PERSONA.title}
-          className="pointer-events-none select-none absolute -bottom-2 sm:-bottom-3 right-0 sm:right-2 md:right-[3%] h-[68svh] sm:h-[82svh] md:h-[92svh] lg:h-[100svh] w-auto object-contain object-bottom z-10"
-          style={{ filter: "drop-shadow(0 30px 60px hsl(0 0% 0% / 0.7))" }}
+          className="persona-portrait persona-portrait-gamer"
+          decoding="async"
+          fetchPriority="high"
           loading="eager" draggable={false}
         />
 
-        <div className="relative z-20 container mx-auto px-5 sm:px-8 lg:px-12 pt-24 pb-10 sm:py-0">
+        <div className="relative z-20 container mx-auto px-5 sm:px-8 lg:px-12 persona-copy">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
             <div className="md:col-span-6 md:col-start-1 md:text-left">
               <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
@@ -146,7 +142,7 @@ const GamerInner = () => {
                 {PERSONA.subtitle}
               </motion.p>
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}
-                className="font-body text-xs sm:text-sm text-muted-foreground md:ml-auto max-w-md leading-relaxed mb-6">
+                className="font-body text-xs sm:text-sm text-muted-foreground max-w-md leading-relaxed mb-6">
                 {PERSONA.description}
               </motion.p>
 
@@ -182,7 +178,7 @@ const GamerInner = () => {
               <span className="text-foreground">My </span>
               <span className="text-gradient">Game Library</span>
             </h2>
-            <p className="text-muted-foreground font-body text-xs sm:text-sm mt-2">Tap to flip — the deck shifts to the next title.</p>
+            <p className="text-muted-foreground font-body text-xs sm:text-sm mt-2">A few favourites to unwind with.</p>
           </motion.div>
 
           <GameDeck games={games} />
