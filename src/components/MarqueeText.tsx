@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 
 interface MarqueeTextProps {
   text: string;
@@ -15,18 +14,7 @@ const MarqueeText = ({ text, className = "", variant = "outline", reverse = fals
 
   return (
     <div className={`overflow-hidden whitespace-nowrap ${className}`}>
-      <motion.div
-        className="inline-flex"
-        animate={{ x: reverse ? ["-50%", "0%"] : ["0%", "-50%"] }}
-        transition={{
-          x: {
-            repeat: Infinity,
-            repeatType: "loop",
-            duration: 40, // Slower speed
-            ease: "linear",
-          },
-        }}
-      >
+      <div className={`inline-flex will-change-transform ${reverse ? "marquee-rev" : "marquee"}`}>
         {items.map((item, index) => (
           <span
             key={index}
@@ -45,7 +33,7 @@ const MarqueeText = ({ text, className = "", variant = "outline", reverse = fals
             {item}
           </span>
         ))}
-      </motion.div>
+      </div>
     </div>
   );
 };

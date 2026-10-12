@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import TiltCard from "@/components/fx/TiltCard";
 import RevealText from "@/components/fx/RevealText";
+import GearShowcase, { ShowcaseProject } from "@/components/GearShowcase";
 
 const categories = [
   { key: "completed", label: "Completed", icon: CheckCircle2, color: "text-green-400" },
@@ -91,10 +92,16 @@ const ProjectCard = ({ project, index, onOpen }: { project: any; index: number; 
   </motion.button>
 );
 
+const HUES: Record<string, number> = { "Utilix": 285, "Dopamine": 160, "Aureo": 340, "Personal": 0, "Election": 245, "PC": 200 };
+
 const ProjectsSection = () => {
   const [activeCategory, setActiveCategory] = useState("completed");
   const [openProject, setOpenProject] = useState<any | null>(null);
-  const filteredProjects = projects.filter(p => p.category === activeCategory);
+  const showcase: ShowcaseProject[] = projects.filter((p) => !p.isUserIdea).map((p) => ({
+    ...p,
+    device: /Portfolio|Election/.test(p.title) ? "laptop" : "phone",
+    hue: HUES[p.title.split(" ")[0]] ?? 0,
+  })) as ShowcaseProject[];
 
   useEffect(() => {
     if (!openProject) return;
@@ -104,7 +111,7 @@ const ProjectsSection = () => {
   }, [openProject]);
 
   return (
-    <section id="projects" className="py-12 sm:py-20 relative overflow-hidden">
+    <section id="projects" className="py-12 sm:py-20 relative overflow-x-clip">
       <div className="absolute inset-0 gradient-blinds opacity-20" />
       <div className="absolute inset-0 bg-gradient-glow opacity-30" />
       
@@ -126,47 +133,9 @@ const ProjectsSection = () => {
           </p>
         </motion.div>
 
-        {/* Horizontal category tabs */}
-        <div className="flex items-center justify-center gap-2 sm:gap-3 mb-5 sm:mb-8">
-          {categories.map((cat) => (
-            <motion.button
-              key={cat.key}
-              onClick={() => setActiveCategory(cat.key)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className={`flex items-center gap-1 sm:gap-2 px-2.5 sm:px-5 py-1.5 sm:py-2.5 rounded-full font-display text-[10px] sm:text-sm font-semibold transition-all duration-300 click-spark ${
-                activeCategory === cat.key
-                  ? "bg-gradient-primary text-primary-foreground shadow-glow"
-                  : "glass-strong text-muted-foreground hover:text-foreground border border-border/50"
-              }`}
-            >
-              <cat.icon className={`w-3 h-3 sm:w-4 sm:h-4 ${activeCategory === cat.key ? "text-primary-foreground" : cat.color}`} />
-              {cat.label}
-              <span className={`text-[9px] sm:text-xs px-1 py-0.5 rounded-full ${
-                activeCategory === cat.key ? "bg-white/20" : "bg-muted/50"
-              }`}>
-                {projects.filter(p => p.category === cat.key).length}
-              </span>
-            </motion.button>
-          ))}
-        </div>
-
-        {/* Vertical project cards */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeCategory}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-            className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 auto-rows-fr"
-          >
-            {filteredProjects.map((project, index) => (
-              <ProjectCard key={project.title} project={project} index={index} onOpen={setOpenProject} />
-            ))}
-          </motion.div>
-        </AnimatePresence>
-
+      </div>
+      <GearShowcase projects={showcase} onOpen={setOpenProject} />
+      <div className="container mx-auto px-4 sm:px-6 relative z-10">
         {/* View all on GitHub */}
         <motion.div
           initial={{ opacity: 0 }}

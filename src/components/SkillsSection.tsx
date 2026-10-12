@@ -31,18 +31,15 @@ const AnimatedCounter = ({ value, suffix = "" }: { value: number; suffix?: strin
   const isInView = useInView(ref, { once: true });
 
   useEffect(() => {
-    if (isInView) {
-      let start = 0;
-      const end = value;
-      const duration = 1500;
-      const increment = end / (duration / 16);
-      const timer = setInterval(() => {
-        start += increment;
-        if (start >= end) { setCount(end); clearInterval(timer); }
-        else { setCount(Math.floor(start)); }
-      }, 16);
-      return () => clearInterval(timer);
-    }
+    if (!isInView) return;
+    let raf = 0; const t0 = performance.now();
+    const tick = (t: number) => {
+      const k = Math.min(1, (t - t0) / 1500);
+      setCount(Math.round(value * (1 - Math.pow(1 - k, 3))));
+      if (k < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
   }, [isInView, value]);
 
   return <span ref={ref}>{count}{suffix}</span>;
