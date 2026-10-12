@@ -692,13 +692,13 @@ body {
 .persona-backdrop-developer { background: var(--persona-developer-gradient); }
 .persona-backdrop-gamer { background: var(--persona-gamer-gradient); }
 .persona-backdrop-friend { background: var(--persona-friend-gradient); }
-.home-stage:has(.home-portrait-friend img[alt="Sahil Wadhwani"]) .home-copy {
+.home-stage[data-persona="friend"] .home-copy {
   --foreground: 24 8% 12%;
 }
 .home-copy { padding-top: 80px; padding-bottom: 48px; }
-.home-portrait { position: absolute; bottom: 0; right: 3%; height: 108svh; display: flex; align-items: flex-end; }
+.home-portrait { position: absolute; bottom: 0; right: 3%; height: min(108svh, 92vw); display: flex; align-items: flex-end; }
 .home-portrait-friend { right: calc(10% - 30px); bottom: -4svh; }
-.persona-portrait { position: absolute; bottom: -8px; right: 3%; height: 100svh; width: auto; max-width: none; object-fit: contain; object-position: bottom; z-index: 10; pointer-events: none; filter: var(--portrait-shadow); }
+.persona-portrait { position: absolute; bottom: -8px; right: 3%; height: min(100svh, 96vw); width: auto; max-width: none; object-fit: contain; object-position: bottom; z-index: 10; pointer-events: none; filter: var(--portrait-shadow); }
 .persona-portrait-friend { right: calc(10% - 30px); height: 98svh; bottom: 0; }
 .persona-copy { padding-top: 96px; padding-bottom: 40px; }
 .persona-copy > div { max-width: 100%; }
@@ -708,14 +708,20 @@ body {
 .viewer-arrow:hover { transform: scale(1.08); border-color: hsl(var(--primary)); }
 .viewer-arrow:active { transform: scale(.92); }
 .gallery-viewer > button { z-index: 30; }
+div:has(> section > .persona-backdrop-friend) > nav,
+div:has(> .home-stage[data-persona="friend"]) > nav { --foreground: 24 8% 12%; }
 @media (max-width: 767px) {
+  .home-stage::after { content: ""; position: absolute; inset: 0; z-index: 12; pointer-events: none; background: linear-gradient(to top, hsl(var(--background) / .9), transparent 80%); }
+  .home-stage[data-persona="friend"]::after { background: linear-gradient(to top, hsl(0 0% 95% / .95), transparent 85%); }
+  section:has(> .persona-portrait)::after { content: ""; position: absolute; inset: 0; z-index: 12; pointer-events: none; background: linear-gradient(to top, hsl(var(--background) / .92), transparent 78%); }
+  section:has(> .persona-portrait-friend)::after { background: linear-gradient(to top, hsl(0 0% 95% / .95), transparent 78%); }
   .home-copy { padding-top: 72px; padding-bottom: 40px; }
   .home-copy h1 { font-size: 64px !important; text-shadow: none !important; }
   .home-copy p { font-size: 12px; line-height: 1.55; max-width: 320px; }
   .home-copy .min-h-\[4rem\] { min-height: 64px; }
-  .home-portrait { left: 50%; right: auto; transform: translateX(-50%); height: 92svh; }
+  .home-portrait { left: 50%; right: auto; transform: translateX(-50%); height: min(92svh, 140vw); }
   .home-portrait-friend { left: calc(50% + 30px); bottom: 0; height: min(88svh, 150vw); }
-  .persona-portrait { right: 0; height: 94svh; }
+  .persona-portrait { right: 0; height: min(94svh, 150vw); }
   .persona-portrait-friend { right: -30px; height: min(94svh, 165vw); }
   .persona-copy { padding-top: 80px; padding-bottom: 24px; }
   .persona-copy > div { gap: 16px; }
