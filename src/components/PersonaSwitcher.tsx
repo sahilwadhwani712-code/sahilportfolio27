@@ -213,6 +213,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
   return (
     <section
       ref={stageRef}
+      data-persona={persona.id}
       className="relative w-full h-[100svh] overflow-hidden bg-background home-stage"
       aria-label="Persona showcase"
     >
@@ -238,7 +239,6 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
           {personas.map((p, i) => {
             if (!assetsReady && i !== 0) return null;
             const active = i === index;
-            const isFriend = p.id === "friend";
             return (
               <div
                 key={p.id}
