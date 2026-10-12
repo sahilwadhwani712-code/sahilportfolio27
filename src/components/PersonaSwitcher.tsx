@@ -168,8 +168,8 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
       if (now - lastSwapRef.current < SCROLL_COOLDOWN) return;
       if (Math.abs(delta) < 14) return;
       lastSwapRef.current = now;
-      if (delta > 0) go((index + 1) % personas.length);
-      else go((index - 1 + personas.length) % personas.length);
+      const len = personas.length;
+      setIndex((i) => (delta > 0 ? (i + 1) % len : (i - 1 + len) % len));
     };
 
     const onWheel = (e: WheelEvent) => {
@@ -202,7 +202,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
       window.removeEventListener("touchmove", onTouchMove);
       window.removeEventListener("keydown", onKey);
     };
-  }, [index, personas.length]);
+  }, [personas.length]);
 
   const stageRef = useRef<HTMLDivElement>(null);
 

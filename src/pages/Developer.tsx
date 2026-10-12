@@ -22,7 +22,7 @@ const PERSONA = {
 
 const Developer = () => {
   return (
-    <div className="min-h-screen bg-background grain overflow-x-hidden">
+    <div className="min-h-screen bg-background grain overflow-x-clip">
       <Navbar />
 
       {/* ── Persona Hero ── */}

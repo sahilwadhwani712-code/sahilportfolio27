@@ -681,3 +681,8 @@ body {
     min-width: 44px;
   }
 }
+
+@keyframes marquee-x { from { transform: translate3d(0,0,0); } to { transform: translate3d(-50%,0,0); } }
+.marquee { animation: marquee-x 40s linear infinite; }
+.marquee-rev { animation: marquee-x 40s linear infinite reverse; }
+@media (prefers-reduced-motion: reduce) { .marquee, .marquee-rev { animation: none; } }

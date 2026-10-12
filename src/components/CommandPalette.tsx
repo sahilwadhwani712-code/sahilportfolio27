@@ -13,6 +13,13 @@ const pages = [
   { label: "YouTube", to: "/youtube", icon: Youtube },
 ];
 
+const sections = [
+  { label: "Projects", to: "/developer", hash: "projects", icon: Code2 },
+  { label: "Technical Skills", to: "/developer", hash: "skills", icon: Wrench },
+  { label: "Contact", to: "/developer", hash: "contact", icon: Mail },
+  { label: "Game Library", to: "/gaming", hash: "gaming", icon: Gamepad2 },
+];
+
 const links = [
   { label: "GitHub", href: "https://github.com/Sahil-dev7", icon: Github },
   { label: "LinkedIn", href: "https://www.linkedin.com/in/sahil-w712", icon: Linkedin },
@@ -43,13 +50,31 @@ const CommandPalette = () => {
         <Command className="w-3 h-3" /> K · Jump
       </button>
       <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput placeholder="Where to? Type a page or link…" />
+        <CommandInput placeholder="Where to? Search pages, sections or links…" />
         <CommandList>
           <CommandEmpty>Nothing found.</CommandEmpty>
           <CommandGroup heading="Pages">
             {pages.map((p) => (
               <CommandItem key={p.to} onSelect={() => { setOpen(false); navigate(p.to); }}>
                 <p.icon className="mr-2 h-4 w-4" /> {p.label}
+              </CommandItem>
+            ))}
+          </CommandGroup>
+          <CommandSeparator />
+          <CommandGroup heading="Sections">
+            {sections.map((s) => (
+              <CommandItem key={s.label} onSelect={() => {
+                setOpen(false);
+                navigate(s.to);
+                let tries = 0;
+                const jump = () => {
+                  const el = document.getElementById(s.hash);
+                  if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+                  else if (tries++ < 20) setTimeout(jump, 100);
+                };
+                setTimeout(jump, 50);
+              }}>
+                <s.icon className="mr-2 h-4 w-4" /> {s.label}
               </CommandItem>
             ))}
           </CommandGroup>

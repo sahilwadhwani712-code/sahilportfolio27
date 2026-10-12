@@ -7,6 +7,8 @@ import { lazy, Suspense } from "react";
 import Index from "./pages/Index";
 import CommandPalette from "./components/CommandPalette";
 import ScrollProgress from "./components/ScrollProgress";
+import RouteSEO from "./components/RouteSEO";
+import { MotionConfig } from "framer-motion";
 const NotFound = lazy(() => import("./pages/NotFound"));
 const YouTubePage = lazy(() => import("./pages/YouTube"));
 const GamingPage = lazy(() => import("./pages/Gaming"));
@@ -23,7 +25,9 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
+      <MotionConfig reducedMotion="user">
       <BrowserRouter>
+        <RouteSEO />
         <ScrollProgress />
         <CommandPalette />
         <Suspense fallback={<div className="min-h-screen bg-background" />}>
@@ -41,6 +45,7 @@ const App = () => (
         </Routes>
         </Suspense>
       </BrowserRouter>
+      </MotionConfig>
     </TooltipProvider>
   </QueryClientProvider>
 );
