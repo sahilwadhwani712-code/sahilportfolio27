@@ -5,22 +5,13 @@ import { useLocation } from "react-router-dom";
 
 /** Top reading-progress line + back-to-top chip. Hidden on the single-screen home. */
 const ScrollProgress = () => {
-  const { pathname, hash } = useLocation();
+  const { pathname } = useLocation();
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.3 });
   const [show, setShow] = useState(false);
 
-  useEffect(() => {
-    const update = () => setShow((current) => current ? window.scrollY > 320 : window.scrollY > 560);
-    update();
-    window.addEventListener("scroll", update, { passive: true });
-    return () => window.removeEventListener("scroll", update);
-  }, [pathname]);
-  useEffect(() => {
-    if (!hash) { window.scrollTo({ top: 0, behavior: "instant" }); return; }
-    const id = window.setTimeout(() => document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: "smooth" }), 350);
-    return () => clearTimeout(id);
-  }, [pathname, hash]);
+  useEffect(() => scrollYProgress.on("change", (v) => setShow(v > 0.15)), [scrollYProgress]);
+  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
 
   if (pathname === "/") return null;
 

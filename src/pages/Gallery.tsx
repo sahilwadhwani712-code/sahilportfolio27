@@ -1,11 +1,9 @@
 import { photos } from "@/data/photos";
 import { useState, useEffect, useCallback, useRef } from "react";
-import { motion, AnimatePresence, useScroll, useTransform, useSpring, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion";
 import { Camera, X, ChevronLeft, ChevronRight, ArrowLeft, ArrowUpRight, LayoutGrid, Film, Shuffle, Share2, Download } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -42,15 +40,15 @@ const ParallaxColumn = ({
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-          className="group relative block w-full overflow-hidden rounded-lg border border-border/40 bg-card/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          className="group relative block w-full overflow-hidden rounded-2xl border border-border/40 bg-card/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           aria-label={`Open photo ${index + 1}`}
         >
           <img
             src={src}
             alt={`Gallery photo ${index + 1}`}
-            loading={index < 3 ? "eager" : "lazy"}
+            loading="lazy"
             decoding="async"
-            className="w-full h-auto object-contain transition-transform duration-700 ease-out group-hover:scale-[1.015]"
+            className="w-full h-auto object-contain transition-transform duration-700 ease-out group-hover:scale-[1.05]"
           />
           <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           <span className="pointer-events-none absolute bottom-3 left-3 flex items-center gap-2 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
@@ -68,8 +66,6 @@ const ParallaxColumn = ({
 const Gallery = () => {
   const [active, setActive] = useState<number | null>(null);
   const isMobile = useIsMobile();
-  const reduce = useReducedMotion();
-  const [direction, setDirection] = useState(1);
   const gridRef = useRef<HTMLDivElement>(null);
 
   const { scrollYProgress } = useScroll({
@@ -79,9 +75,9 @@ const Gallery = () => {
   const progress = useSpring(scrollYProgress, { stiffness: 90, damping: 24, mass: 0.4 });
 
   const close = useCallback(() => setActive(null), []);
-  const next = useCallback(() => { setDirection(1); setActive((i) => (i === null ? i : (i + 1) % photos.length)); }, []);
+  const next = useCallback(() => setActive((i) => (i === null ? i : (i + 1) % photos.length)), []);
   const prev = useCallback(
-    () => { setDirection(-1); setActive((i) => (i === null ? i : (i - 1 + photos.length) % photos.length)); },
+    () => setActive((i) => (i === null ? i : (i - 1 + photos.length) % photos.length)),
     []
   );
 
@@ -93,12 +89,12 @@ const Gallery = () => {
       if (e.key === "ArrowLeft") prev();
     };
     window.addEventListener("keydown", onKey);
-
+    document.body.style.overflow = "hidden";
     return () => {
       window.removeEventListener("keydown", onKey);
-
+      document.body.style.overflow = "";
     };
-  }, [active !== null, close, next, prev]);
+  }, [active, close, next, prev]);
 
   const [mode, setMode] = useState<"masonry" | "film" | "shuffle">("masonry");
   const [order, setOrder] = useState<string[]>(photos);
@@ -125,30 +121,62 @@ const Gallery = () => {
       URL.revokeObjectURL(a.href);
     } catch { window.open(src, "_blank", "noopener"); }
   };
-  const speeds = reduce ? [0, 0, 0] : isMobile ? [0, -16, 0] : [0, 32, -32];
+  const speeds = isMobile ? [0, -40, 0] : [-70, 60, -110];
 
   // Swipe controls for the lightbox
-  const touchStart = useRef<{ x: number; y: number } | null>(null);
-  const swiped = useRef(false);
+  const touchX = useRef<number | null>(null);
 
   return (
     <div className="min-h-screen bg-background grain overflow-x-hidden">
       <Navbar />
 
-      <header className="relative pt-24 sm:pt-28 pb-6 sm:pb-8">
-        <div className="container mx-auto px-5 sm:px-8">
-          <div className="flex items-center justify-between gap-4 mb-5">
-            <Button asChild variant="link" className="p-0 h-auto text-muted-foreground"><Link to="/friend"><ArrowLeft /> About</Link></Button>
-            <span className="font-mono text-xs text-muted-foreground">{String(photos.length).padStart(2, "0")} frames</span>
-          </div>
-          <motion.h1 initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }} className="font-display font-semibold text-4xl sm:text-6xl text-foreground leading-none">Photo <span className="text-muted-foreground">Gallery</span></motion.h1>
-          <div className="mt-5 h-px bg-border" />
+      {/* Header */}
+      <header className="relative pt-28 sm:pt-36 pb-10 sm:pb-16">
+        <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-primary/10 via-transparent to-transparent" />
+        <div className="container mx-auto px-5 sm:px-8 relative z-10">
+          <Link
+            to="/friend"
+            className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm mb-8"
+          >
+            <ArrowLeft className="w-4 h-4" /> Back to About
+          </Link>
+
+          <motion.span
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex items-center gap-2 text-primary font-display text-[11px] sm:text-xs font-semibold uppercase tracking-[0.3em]"
+          >
+            <Camera className="w-3.5 h-3.5" /> Frames I Kept
+          </motion.span>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.08 }}
+            className="font-display font-bold mt-3 leading-[0.95] text-foreground"
+            style={{ fontSize: "clamp(2.4rem, 8vw, 6rem)" }}
+          >
+            Photo <span className="text-gradient">Gallery</span>
+          </motion.h1>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.16 }}
+            className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2 font-body text-xs sm:text-sm text-muted-foreground"
+          >
+            <span>{photos.length} frames</span>
+            <span className="hidden sm:inline text-border">/</span>
+            <span>Shot on phone, kept for the mood</span>
+            <span className="hidden sm:inline text-border">/</span>
+            <span>Tap any frame to view full size</span>
+          </motion.div>
         </div>
       </header>
 
       {/* Parallax masonry */}
       <main ref={gridRef} className="container mx-auto px-5 sm:px-8 pb-24 sm:pb-36">
-        <div role="tablist" aria-label="Gallery view" className="mb-6 inline-flex gap-1 rounded-lg border border-border/50 bg-card p-1">
+        <div role="tablist" aria-label="Gallery view" className="mb-6 inline-flex gap-1 rounded-full border border-border/50 bg-card/40 p-1">
           {([["masonry", "Masonry", LayoutGrid], ["film", "Film strip", Film], ["shuffle", "Shuffle", Shuffle]] as const).map(([m, label, Icon]) => (
             <button key={m} role="tab" aria-selected={mode === m} onClick={() => pickMode(m)}
               className={`relative inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-display font-semibold transition-colors ${mode === m ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>
@@ -185,47 +213,69 @@ const Gallery = () => {
 
       <Footer />
 
-      <Dialog open={active !== null} onOpenChange={(open) => { if (!open) close(); }}>
-        <DialogContent aria-describedby={undefined} className="gallery-viewer fixed inset-0 left-0 top-0 z-[100] max-w-none w-full h-[100dvh] translate-x-0 translate-y-0 rounded-none border-0 bg-background p-4 sm:p-8 gap-0 shadow-none">
-          <DialogTitle className="sr-only">Photo viewer</DialogTitle>
-          {active !== null && <>
-            <div className="absolute left-5 top-5 z-20 font-mono text-xs text-muted-foreground" aria-live="polite">{String(active + 1).padStart(2, "0")} / {photos.length}</div>
-            <div className="flex items-center justify-center w-full h-full pb-16 pt-12 overflow-hidden"
-              onTouchStart={(e) => {
-                swiped.current = false;
-                if (e.touches.length !== 1) { touchStart.current = null; return; }
-                touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-              }}
-              onTouchMove={(e) => { if (e.touches.length > 1) touchStart.current = null; }}
-              onTouchEnd={(e) => {
-                const start = touchStart.current;
-                touchStart.current = null;
-                if (!start) return;
-                const dx = e.changedTouches[0].clientX - start.x;
-                const dy = e.changedTouches[0].clientY - start.y;
-                if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.3) { swiped.current = true; dx < 0 ? next() : prev(); }
-                else if (dy > 100 && dy > Math.abs(dx) * 1.5) close();
-              }}>
-              <AnimatePresence initial={false} mode="popLayout" custom={direction}>
-                <motion.img key={photos[active]} custom={direction}
-                  variants={{ enter: (d: number) => ({ opacity: 0, x: reduce ? 0 : d * 45 }), center: { opacity: 1, x: 0 }, leave: (d: number) => ({ opacity: 0, x: reduce ? 0 : -d * 45 }) }}
-                  initial="enter" animate="center" exit="leave" transition={{ duration: reduce ? 0 : 0.25, ease: [0.22, 1, 0.36, 1] }}
-                  src={photos[active]} alt={`Gallery photo ${active + 1}`} decoding="async" draggable={false}
-                  className="max-h-full max-w-full w-auto h-auto object-contain select-none" />
-              </AnimatePresence>
-            </div>
-            <div className="absolute inset-x-4 bottom-5 sm:inset-x-8 flex items-center justify-between gap-3">
-              <Button variant="outline" size="icon" onClick={prev} aria-label="Previous photo" className="rounded-full viewer-arrow"><ChevronLeft /></Button>
-              <div className="flex items-center gap-3">
-                <Button variant="ghost" size="icon" onClick={() => share(photos[active])} aria-label="Share photo"><Share2 /></Button>
-                <Button variant="ghost" size="icon" onClick={() => download(photos[active], active)} aria-label="Download photo"><Download /></Button>
-              </div>
-              <Button variant="outline" size="icon" onClick={next} aria-label="Next photo" className="rounded-full viewer-arrow"><ChevronRight /></Button>
-            </div>
-          </>}
-        </DialogContent>
-      </Dialog>
+      <AnimatePresence>
+        {active !== null && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-background/95 backdrop-blur-md p-4"
+            onClick={close}
+            onTouchStart={(e) => { touchX.current = e.touches[0].clientX; }}
+            onTouchEnd={(e) => {
+              if (touchX.current === null) return;
+              const dx = e.changedTouches[0].clientX - touchX.current;
+              if (dx < -50) next();
+              if (dx > 50) prev();
+              touchX.current = null;
+            }}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Photo viewer"
+          >
+            <button
+              onClick={close}
+              aria-label="Close viewer"
+              className="absolute top-4 right-4 p-2 rounded-full border border-border/50 bg-card/60 text-foreground hover:text-primary transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <button
+              onClick={(e) => { e.stopPropagation(); prev(); }}
+              aria-label="Previous photo"
+              className="absolute left-2 sm:left-6 p-2 rounded-full border border-border/50 bg-card/60 text-foreground hover:text-primary transition-colors"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button
+              onClick={(e) => { e.stopPropagation(); next(); }}
+              aria-label="Next photo"
+              className="absolute right-2 sm:right-6 p-2 rounded-full border border-border/50 bg-card/60 text-foreground hover:text-primary transition-colors"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
 
+            <motion.img
+              key={photos[active]}
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.25 }}
+              src={photos[active]}
+              alt={`Gallery photo ${active + 1}`}
+              onClick={(e) => e.stopPropagation()}
+              className="max-h-[84svh] max-w-[92vw] w-auto h-auto object-contain rounded-xl"
+            />
+            <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
+              <button onClick={() => share(photos[active])} aria-label="Share photo"
+                className="p-2 rounded-full border border-border/50 bg-card/60 text-foreground hover:text-primary transition-colors"><Share2 className="w-4 h-4" /></button>
+              <span className="font-body text-xs text-muted-foreground">{active + 1} / {photos.length}</span>
+              <button onClick={() => download(photos[active], active)} aria-label="Download photo"
+                className="p-2 rounded-full border border-border/50 bg-card/60 text-foreground hover:text-primary transition-colors"><Download className="w-4 h-4" /></button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

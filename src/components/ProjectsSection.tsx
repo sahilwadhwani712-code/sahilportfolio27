@@ -42,10 +42,10 @@ const ProjectCard = ({ project, index, onOpen }: { project: any; index: number; 
     <TiltCard className="relative h-full">
       <div className={`absolute inset-0 bg-gradient-to-br ${project.color} rounded-2xl blur-xl opacity-0 group-hover:opacity-20 transition-opacity duration-500`} />
       
-      <div className={`relative h-full collection-card hover:border-primary/40 transition-all duration-300 ${project.featured ? "p-5 sm:p-7" : "p-4 sm:p-5"}`}>
+      <div className={`relative h-full glass-card rounded-2xl hover:border-primary/40 transition-all duration-300 ${project.featured ? "p-5 sm:p-7" : "p-4 sm:p-5"}`}>
         <div className="flex items-start gap-3 sm:gap-4">
           <motion.span 
-            className="text-2xl sm:text-3xl flex-shrink-0 w-12 h-12 rounded-lg bg-muted flex items-center justify-center group-hover:scale-110 transition-transform duration-300"
+            className="text-2xl sm:text-3xl flex-shrink-0 mt-0.5 group-hover:scale-110 transition-transform duration-300"
             whileHover={{ rotate: [0, -10, 10, 0] }}
           >
             {project.image}
@@ -53,7 +53,7 @@ const ProjectCard = ({ project, index, onOpen }: { project: any; index: number; 
           
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
-              <h3 className="font-display text-sm sm:text-base font-bold text-foreground group-hover:text-primary transition-colors break-words">
+              <h3 className="font-display text-sm sm:text-base font-bold text-foreground group-hover:text-primary transition-colors truncate">
                 {project.title}
               </h3>
               {project.featured && (
