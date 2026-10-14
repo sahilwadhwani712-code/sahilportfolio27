@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { ArrowLeft, Trophy, Clock, Star, ExternalLink, Users, Gamepad2 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import GameShowcase from "@/components/GameShowcase";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import MarqueeText from "@/components/MarqueeText";
@@ -12,7 +12,6 @@ const PERSONA = {
   subtitle: "Casual gamer — weekends only",
   description:
     "Gaming is how I unwind, not how I grind. A few BGMI squad matches with friends, an open-world drive in GTA, a quick race in NFS. This is the playlist of games I keep coming back to.",
-  bg: "https://i.postimg.cc/7YRbQHnw/gamer-bg.webp",
   png: "https://i.postimg.cc/TYshHdqH/Gamer.webp",
   accent: "hsl(190 90% 55%)",
 };
@@ -30,88 +29,6 @@ const Gamer = () => {
   return <GamerInner />;
 };
 
-const GameDeck = ({ games }: { games: any[] }) => {
-  const [i, setI] = useState(0);
-  const next = () => setI((i + 1) % games.length);
-  const prev = () => setI((i - 1 + games.length) % games.length);
-  return (
-    <div className="relative max-w-2xl mx-auto h-[480px] sm:h-[520px] select-none">
-      <div className="relative w-full h-full">
-        {games.map((g: any, idx: number) => {
-          const offset = (idx - i + games.length) % games.length;
-          const isTop = offset === 0;
-          const visible = offset < 4;
-          return (
-            <motion.div
-              key={g.name}
-              animate={{
-                y: offset * 14,
-                scale: 1 - offset * 0.04,
-                opacity: visible ? 1 - offset * 0.2 : 0,
-                rotate: offset === 0 ? 0 : (idx % 2 === 0 ? -1.5 : 1.5) * offset,
-                zIndex: 100 - offset,
-              }}
-              transition={{ type: "spring", stiffness: 220, damping: 26 }}
-              drag={isTop ? "x" : false}
-              dragConstraints={{ left: 0, right: 0 }}
-              onDragEnd={(_, info) => {
-                if (info.offset.x < -80) next();
-                else if (info.offset.x > 80) prev();
-              }}
-              className="absolute inset-0 cursor-grab active:cursor-grabbing"
-            >
-              <div className="relative h-full glass-card rounded-3xl overflow-hidden border border-border/40">
-                <div className={`absolute inset-0 bg-gradient-to-br ${g.color} opacity-60`} />
-                <img src={g.logo} alt="" className="absolute inset-0 w-full h-full object-cover opacity-30 blur-md scale-110" />
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/20" />
-                <div className="relative h-full flex flex-col p-6 sm:p-8">
-                  <div className="flex items-start gap-4 mb-4">
-                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden bg-muted flex-shrink-0 ring-1 ring-border/50">
-                      <img src={g.logo} alt={g.name} className="w-full h-full object-cover"
-                        onError={(e) => { (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="80">🎮</text></svg>'; }} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-display text-2xl sm:text-3xl font-bold text-foreground truncate">{g.name}</h3>
-                      <span className="text-xs font-display text-muted-foreground px-2 py-0.5 rounded-full bg-muted inline-block mt-1">{g.genre}</span>
-                    </div>
-                    <div className="text-right flex-shrink-0">
-                      <div className="flex items-center gap-1 text-yellow-500"><Star className="w-4 h-4 fill-current" /><span className="font-display text-sm font-bold">{g.rating}</span></div>
-                      <div className="text-xs text-muted-foreground">{g.playtime}</div>
-                    </div>
-                  </div>
-                  <p className="font-body text-sm text-muted-foreground mb-4">{g.description}</p>
-                  <div className="space-y-1.5 mb-4">
-                    {g.highlights.map((h: string) => (
-                      <div key={h} className="flex items-center gap-2 text-sm"><Trophy className="w-3 h-3 text-primary flex-shrink-0" /><span className="text-foreground/80">{h}</span></div>
-                    ))}
-                  </div>
-                  <div className="mt-auto flex items-center justify-between gap-3">
-                    {g.playerId ? (
-                      <div className="px-3 py-1.5 rounded-xl bg-primary/10 border border-primary/20 inline-flex items-center gap-2">
-                        <Users className="w-4 h-4 text-primary" />
-                        <span className="font-mono text-xs text-primary font-bold">ID: {g.playerId}</span>
-                      </div>
-                    ) : <span />}
-                    <a href={g.url} target="_blank" rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-xs font-display font-semibold text-primary hover:underline">
-                      Visit <ExternalLink className="w-3 h-3" />
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          );
-        })}
-      </div>
-      <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-3">
-        <button onClick={prev} className="px-3 py-1.5 rounded-full glass border border-border/50 text-xs font-display hover:border-primary/50 transition-colors">Prev</button>
-        <span className="text-xs font-mono text-muted-foreground">{i + 1} / {games.length}</span>
-        <button onClick={next} className="px-3 py-1.5 rounded-full glass border border-border/50 text-xs font-display hover:border-primary/50 transition-colors">Next</button>
-      </div>
-    </div>
-  );
-};
-
 const GamerInner = () => {
   return (
     <div className="min-h-screen bg-background grain overflow-x-hidden">
@@ -119,11 +36,7 @@ const GamerInner = () => {
 
       {/* Hero */}
       <section className="relative min-h-[100svh] w-full overflow-hidden flex items-end sm:items-center">
-        <div className="absolute inset-0 bg-gradient-to-br from-background via-[hsl(190_30%_7%)] to-background" />
-        <div className="absolute -top-32 -right-24 w-[60vw] h-[60vw] max-w-[720px] max-h-[720px] rounded-full pointer-events-none blur-[140px]" style={{ background: PERSONA.accent, opacity: 0.22 }} />
-        <div className="absolute -bottom-32 -left-24 w-[55vw] h-[55vw] max-w-[640px] max-h-[640px] rounded-full pointer-events-none blur-[150px]" style={{ background: PERSONA.accent, opacity: 0.14 }} />
-        <div className="absolute inset-0 gradient-blinds opacity-30 pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/30 pointer-events-none" />
+        <div className="absolute inset-0 persona-gradient-gamer" />
 
         <img
           src={PERSONA.png}
@@ -182,11 +95,10 @@ const GamerInner = () => {
               <span className="text-foreground">My </span>
               <span className="text-gradient">Game Library</span>
             </h2>
-            <p className="text-muted-foreground font-body text-xs sm:text-sm mt-2">Tap to flip — the deck shifts to the next title.</p>
           </motion.div>
 
-          <GameDeck games={games} />
         </div>
+        <GameShowcase games={games} />
       </section>
 
       {/* Squad up */}

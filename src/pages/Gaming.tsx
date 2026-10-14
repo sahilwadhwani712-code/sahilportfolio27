@@ -3,6 +3,7 @@ import { Gamepad2, ExternalLink, ArrowLeft, Trophy, Clock, Star, Users, ChevronD
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import GameShowcase from "@/components/GameShowcase";
 
 const heroImage = "https://i.postimg.cc/J4M53SsL/1000085130.png";
 
@@ -232,74 +233,8 @@ const GamingPage = () => {
             </h2>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-            {games.map((game, index) => (
-              <motion.a
-                key={game.name}
-                href={game.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.08 }}
-                whileHover={{ y: -6, scale: 1.01 }}
-                className="group block"
-              >
-                <div className="relative glass-card rounded-2xl overflow-hidden hover:border-primary/40 transition-all duration-500">
-                  <div className={`absolute inset-0 bg-gradient-to-br ${game.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-                  <div className="relative p-5 sm:p-6">
-                    <div className="flex items-start gap-3 sm:gap-4 mb-4">
-                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden bg-muted flex-shrink-0">
-                        <img
-                          src={game.logo}
-                          alt={game.name}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="80">🎮</text></svg>';
-                          }}
-                        />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-display text-lg sm:text-2xl font-bold text-foreground group-hover:text-primary transition-colors truncate">
-                            {game.name}
-                          </h3>
-                          <ExternalLink className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity text-primary flex-shrink-0" />
-                        </div>
-                        <span className="text-xs font-display text-muted-foreground px-2 py-0.5 rounded-full bg-muted">
-                          {game.genre}
-                        </span>
-                      </div>
-                      <div className="text-right flex-shrink-0">
-                        <div className="flex items-center gap-1 text-yellow-500">
-                          <Star className="w-4 h-4 fill-current" />
-                          <span className="font-display text-sm font-bold">{game.rating}</span>
-                        </div>
-                        <div className="text-xs text-muted-foreground">{game.playtime}</div>
-                      </div>
-                    </div>
-                    <p className="font-body text-sm text-muted-foreground mb-4">{game.description}</p>
-                    <div className="space-y-1.5">
-                      {game.highlights.map((h) => (
-                        <div key={h} className="flex items-center gap-2 text-sm">
-                          <Trophy className="w-3 h-3 text-primary flex-shrink-0" />
-                          <span className="text-foreground/80">{h}</span>
-                        </div>
-                      ))}
-                    </div>
-                    {game.playerId && (
-                      <div className="mt-4 px-4 py-2 rounded-xl bg-primary/10 border border-primary/20 inline-flex items-center gap-2">
-                        <Users className="w-4 h-4 text-primary" />
-                        <span className="font-mono text-sm text-primary font-bold">ID: {game.playerId}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </motion.a>
-            ))}
-          </div>
         </div>
+        <GameShowcase games={games} />
       </section>
 
       {/* Squad Up CTA */}

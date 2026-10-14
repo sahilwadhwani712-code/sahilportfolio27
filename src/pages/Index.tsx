@@ -10,7 +10,7 @@ const personas: Persona[] = [
     subtitle: "",
     description:
       "Passionate about AI and building tech that genuinely helps people. I love turning ideas into clean, user-focused Android experiences and exploring how intelligent systems can create real-world impact.",
-    bg: "https://i.postimg.cc/VLh5HfWP/Dev-bg.webp",
+    gradient: "persona-gradient-developer",
     png: "https://i.postimg.cc/wTr3bqQ6/Dev.webp",
     accent: "hsl(0, 85%, 58%)",
     accentSoft: "hsl(0, 85%, 58%, 0.22)",
@@ -38,7 +38,7 @@ const personas: Persona[] = [
     subtitle: "",
     description:
       "Off the keyboard, I chase songs on loop, frames worth keeping, and films that stay with me. The quieter, more curious side of who I am.",
-    bg: "https://i.postimg.cc/gk7rBzHF/Friend-Bg.webp",
+    gradient: "persona-gradient-friend",
     png: "https://i.postimg.cc/ncWMwFGJ/Friend.webp",
     accent: "hsl(28, 95%, 58%)",
     accentSoft: "hsl(28, 95%, 58%, 0.22)",
@@ -66,7 +66,7 @@ const personas: Persona[] = [
     subtitle: "",
     description:
       "Gaming is my weekend reset — squad drops, slow open-world drives and quick races. Not a grind, just a way to breathe between builds.",
-    bg: "https://i.postimg.cc/7YRbQHnw/gamer-bg.webp",
+    gradient: "persona-gradient-gamer",
     png: "https://i.postimg.cc/TYshHdqH/Gamer.webp",
     accent: "hsl(190, 95%, 55%)",
     accentSoft: "hsl(190, 95%, 55%, 0.22)",
@@ -91,7 +91,7 @@ const personas: Persona[] = [
 
 const Index = () => {
   return (
-    <div className="h-screen w-screen bg-background grain overflow-hidden">
+    <div className="h-[100svh] w-full bg-background grain overflow-hidden">
       <Navbar />
       <PersonaSwitcher personas={personas} />
     </div>
