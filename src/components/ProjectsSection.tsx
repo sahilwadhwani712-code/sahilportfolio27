@@ -1,17 +1,10 @@
-import { motion, AnimatePresence } from "framer-motion";
-import { Github, Star, ArrowUpRight, Mail, Rocket, Clock, CheckCircle2, X } from "lucide-react";
+import { motion } from "framer-motion";
+import { ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { useEffect } from "react";
-import TiltCard from "@/components/fx/TiltCard";
 import RevealText from "@/components/fx/RevealText";
+import ExpandedShowcase from "@/components/ExpandedShowcase";
 import GearShowcase, { ShowcaseProject } from "@/components/GearShowcase";
-
-const categories = [
-  { key: "completed", label: "Completed", icon: CheckCircle2, color: "text-green-400" },
-  { key: "running", label: "In Progress", icon: Rocket, color: "text-primary" },
-  { key: "upcoming", label: "Upcoming", icon: Clock, color: "text-secondary" },
-];
 
 const projects = [
   { title: "Utilix — Premium Toolkit", description: "An all-in-one Android utility suite — multiple everyday tools wrapped in a clean Compose UI. PDF tools, image utilities, unit converters, QR, text utilities and more, packaged like a premium app.", tags: ["Kotlin", "Jetpack Compose", "Multi-tool"], image: "🧰", featured: true, color: "from-violet-500 to-fuchsia-600", github: "https://github.com/Sahil-dev7", category: "completed", details: "Designed as a single home for the small tools people open ten apps for. Modular feature flags, shared design system across every utility, offline-first." },
@@ -23,91 +16,17 @@ const projects = [
   { title: "Your Idea Here?", description: "Got a project idea? Let me know what you want me to build next!", tags: ["Open for ideas"], image: "💡", color: "from-yellow-500 to-amber-600", isUserIdea: true, category: "upcoming" },
 ];
 
-const ProjectCard = ({ project, index, onOpen }: { project: any; index: number; onOpen: (p: any) => void }) => (
-  <motion.button
-    type="button"
-    onClick={(e: React.MouseEvent) => {
-      if (project.isUserIdea) {
-        e.preventDefault();
-        document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-        return;
-      }
-      onOpen(project);
-    }}
-    initial={{ opacity: 0, y: 30 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    transition={{ duration: 0.4, delay: index * 0.08 }}
-    className={`block group w-full h-full text-left ${project.featured ? "sm:col-span-2" : ""}`}
-  >
-    <TiltCard className="relative h-full">
-      <div className={`absolute inset-0 bg-gradient-to-br ${project.color} rounded-2xl blur-xl opacity-0 group-hover:opacity-20 transition-opacity duration-500`} />
-      
-      <div className={`relative h-full glass-card rounded-2xl hover:border-primary/40 transition-all duration-300 ${project.featured ? "p-5 sm:p-7" : "p-4 sm:p-5"}`}>
-        <div className="flex items-start gap-3 sm:gap-4">
-          <motion.span 
-            className="text-2xl sm:text-3xl flex-shrink-0 mt-0.5 group-hover:scale-110 transition-transform duration-300"
-            whileHover={{ rotate: [0, -10, 10, 0] }}
-          >
-            {project.image}
-          </motion.span>
-          
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1">
-              <h3 className="font-display text-sm sm:text-base font-bold text-foreground group-hover:text-primary transition-colors truncate">
-                {project.title}
-              </h3>
-              {project.featured && (
-                <span className="inline-flex items-center gap-0.5 text-[9px] font-display text-primary bg-primary/20 px-1.5 py-0.5 rounded-full flex-shrink-0">
-                  <Star className="w-2 h-2" /> Featured
-                </span>
-              )}
-            </div>
-            
-            <p className="font-body text-muted-foreground text-[10px] sm:text-xs leading-relaxed mb-2 line-clamp-2">
-              {project.description}
-            </p>
-            
-            <div className="flex items-center justify-between">
-              <div className="flex flex-wrap gap-1">
-                {project.tags.map((tag) => (
-                  <span key={tag} className="text-[8px] sm:text-[10px] font-body text-muted-foreground bg-muted/50 px-1.5 py-0.5 rounded-md">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-              
-              <div className="flex-shrink-0 ml-2">
-                {project.isUserIdea ? (
-                  <Mail className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
-                ) : (
-                  <Github className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </TiltCard>
-  </motion.button>
-);
-
 const HUES: Record<string, number> = { "Utilix": 285, "Dopamine": 160, "Aureo": 340, "Personal": 0, "Election": 245, "PC": 200 };
 
 const ProjectsSection = () => {
-  const [activeCategory, setActiveCategory] = useState("completed");
-  const [openProject, setOpenProject] = useState<any | null>(null);
+  const [openProject, setOpenProject] = useState<ShowcaseProject | null>(null);
   const showcase: ShowcaseProject[] = projects.filter((p) => !p.isUserIdea).map((p) => ({
     ...p,
     device: /Portfolio|Election/.test(p.title) ? "laptop" : "phone",
     hue: HUES[p.title.split(" ")[0]] ?? 0,
   })) as ShowcaseProject[];
 
-  useEffect(() => {
-    if (!openProject) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpenProject(null); };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+  return () => window.removeEventListener("keydown", onKey);
   }, [openProject]);
 
   return (
@@ -158,62 +77,7 @@ const ProjectsSection = () => {
         </motion.div>
       </div>
 
-      {/* Project preview popup */}
-      <AnimatePresence>
-        {openProject && (
-          <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4"
-            onClick={() => setOpenProject(null)}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="project-modal-title"
-          >
-            <div className="absolute inset-0 bg-background/80 backdrop-blur-md" />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.92, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              transition={{ type: "spring", stiffness: 280, damping: 26 }}
-              onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-md glass-strong rounded-3xl overflow-hidden border border-primary/30"
-            >
-              <div className={`relative h-32 sm:h-40 bg-gradient-to-br ${openProject.color}`}>
-                <div className="absolute inset-0 flex items-center justify-center text-6xl sm:text-7xl drop-shadow-xl">{openProject.image}</div>
-                <button onClick={() => setOpenProject(null)} aria-label="Close project details"
-                  className="absolute top-3 right-3 w-8 h-8 rounded-full bg-background/60 backdrop-blur flex items-center justify-center hover:bg-background/90 transition-colors">
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-              <div className="p-5 sm:p-6">
-                <div className="flex items-center gap-2 mb-2">
-                  <h3 id="project-modal-title" className="font-display text-lg sm:text-xl font-bold text-foreground">{openProject.title}</h3>
-                  {openProject.featured && (
-                    <span className="inline-flex items-center gap-0.5 text-[9px] font-display text-primary bg-primary/20 px-1.5 py-0.5 rounded-full">
-                      <Star className="w-2 h-2" /> Featured
-                    </span>
-                  )}
-                </div>
-                <p className="font-body text-xs sm:text-sm text-muted-foreground leading-relaxed mb-3">{openProject.description}</p>
-                {openProject.details && (
-                  <p className="font-body text-[11px] sm:text-xs text-foreground/70 leading-relaxed mb-4 italic border-l-2 border-primary/50 pl-3">{openProject.details}</p>
-                )}
-                <div className="flex flex-wrap gap-1.5 mb-4">
-                  {openProject.tags.map((tag: string) => (
-                    <span key={tag} className="text-[10px] font-body text-foreground/70 bg-muted/60 px-2 py-0.5 rounded-md">{tag}</span>
-                  ))}
-                </div>
-                {openProject.github && (
-                  <a href={openProject.github} target="_blank" rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-xs font-display font-semibold text-primary hover:underline">
-                    <Github className="w-3.5 h-3.5" /> View on GitHub <ArrowUpRight className="w-3 h-3" />
-                  </a>
-                )}
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <ExpandedShowcase item={openProject} onClose={() => setOpenProject(null)} />
     </section>
   );
 };

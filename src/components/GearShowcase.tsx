@@ -1,6 +1,8 @@
 import { useRef, useState } from "react";
 import { motion, useScroll, useSpring, useTransform, useMotionValueEvent, useReducedMotion, AnimatePresence } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import type { CSSProperties } from "react";
 
 export type ShowcaseProject = {
   title: string;
@@ -8,13 +10,14 @@ export type ShowcaseProject = {
   tags: string[];
   image: string;
   category: string;
+  artwork?: boolean;
   device: "phone" | "laptop";
   hue: number;
   github?: string;
   details?: string;
 };
 
-const STATUS: Record<string, string> = { completed: "Shipped", running: "In progress", upcoming: "Upcoming" };
+const STATUS: Record<string, string> = { completed: "Shipped", running: "In progress", upcoming: "Upcoming", library: "Game library" };
 
 /** Gear with N teeth drawn as one SVG path. */
 const Gear = ({ teeth = 12, className = "" }: { teeth?: number; className?: string }) => {
@@ -38,9 +41,8 @@ const Gear = ({ teeth = 12, className = "" }: { teeth?: number; className?: stri
 };
 
 const Screen = ({ p }: { p: ShowcaseProject }) => (
-  <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-4 text-center"
-    style={{ background: `linear-gradient(160deg, hsl(${p.hue} 70% 22%), hsl(${p.hue + 30} 60% 8%))` }}>
-    <span className="text-5xl sm:text-6xl drop-shadow-xl">{p.image}</span>
+  <div className="showcase-screen absolute inset-0 flex flex-col items-center justify-center gap-3 p-4 text-center" style={{ "--showcase-hue": p.hue } as CSSProperties}>
+    {p.artwork ? <img src={p.image} alt={p.title} loading="lazy" decoding="async" className="w-full max-h-[65%] object-contain rounded-md" onError={(e) => { e.currentTarget.style.visibility = "hidden"; }} /> : <span className="text-5xl sm:text-6xl drop-shadow-xl">{p.image}</span>}
     <span className="font-display text-xs sm:text-sm font-semibold text-foreground/90">{p.title.split("—")[0].trim()}</span>
     <div className="w-2/3 space-y-1.5">
       <div className="h-1.5 rounded-full bg-foreground/15" />
@@ -49,7 +51,7 @@ const Screen = ({ p }: { p: ShowcaseProject }) => (
   </div>
 );
 
-const Device = ({ p }: { p: ShowcaseProject }) =>
+export const Device = ({ p }: { p: ShowcaseProject }) =>
   p.device === "phone" ? (
     <div className="relative w-[150px] sm:w-[190px] aspect-[9/19] rounded-[2rem] border-[6px] border-foreground/15 bg-background shadow-2xl overflow-hidden">
       <Screen p={p} />
@@ -67,7 +69,7 @@ const Device = ({ p }: { p: ShowcaseProject }) =>
   );
 
 /** Scroll-linked showcase: each scroll step turns the gear and reveals the next project. */
-const GearShowcase = ({ projects, onOpen }: { projects: ShowcaseProject[]; onOpen: (p: ShowcaseProject) => void }) => {
+const GearShowcase = ({ projects, onOpen, kind = "project" }: { projects: ShowcaseProject[]; onOpen: (p: ShowcaseProject) => void; kind?: "project" | "game" }) => {
   const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
   const n = projects.length;
@@ -82,12 +84,13 @@ const GearShowcase = ({ projects, onOpen }: { projects: ShowcaseProject[]; onOpe
   });
   const p = projects[active];
 
+  if (!p) return null;
+
   return (
     <div ref={ref} className="relative" style={{ height: `${n * 80}vh` }}>
       <div className="sticky top-0 h-[100svh] overflow-hidden flex items-center">
         {/* Environment — one layer, colour transitions via CSS */}
-        <div className="absolute inset-0 transition-[background] duration-700 ease-out"
-          style={{ background: `radial-gradient(60% 55% at 70% 50%, hsl(${p.hue} 80% 50% / 0.22), transparent 70%), radial-gradient(40% 40% at 15% 80%, hsl(${p.hue + 40} 80% 50% / 0.12), transparent 70%)` }} />
+        <div className="showcase-environment absolute inset-0" style={{ "--showcase-hue": p.hue } as CSSProperties} />
 
         <div className="relative z-10 container mx-auto px-5 sm:px-8 grid md:grid-cols-2 gap-6 md:gap-10 items-center">
           {/* Text */}
@@ -104,10 +107,7 @@ const GearShowcase = ({ projects, onOpen }: { projects: ShowcaseProject[]; onOpe
                 <div className="flex flex-wrap gap-1.5 mt-4">
                   {p.tags.map((t) => <span key={t} className="text-[10px] font-body text-foreground/70 bg-muted/60 px-2 py-0.5 rounded-md">{t}</span>)}
                 </div>
-                <button onClick={() => onOpen(p)}
-                  className="mt-5 inline-flex items-center gap-1.5 text-xs font-display font-semibold text-primary hover:underline">
-                  View details <ArrowUpRight className="w-3.5 h-3.5" />
-                </button>
+                <Button variant="link" onClick={() => onOpen(p)} className="mt-4 px-0 font-display text-xs">View details <ArrowUpRight /></Button>
               </motion.div>
             </AnimatePresence>
             <div className="flex gap-1.5 mt-6" aria-hidden>
@@ -127,13 +127,13 @@ const GearShowcase = ({ projects, onOpen }: { projects: ShowcaseProject[]; onOpe
               <Gear teeth={9} className="w-full h-full" />
             </motion.div>
             <AnimatePresence mode="wait">
-              <motion.div key={p.title} className="relative"
+              <motion.div key={p.title} className="relative showcase-device"
                 initial={{ opacity: 0, rotate: reduce ? 0 : 18, y: reduce ? 0 : 40 }}
                 animate={{ opacity: 1, rotate: 0, y: 0 }}
                 exit={{ opacity: 0, rotate: reduce ? 0 : -18, y: reduce ? 0 : -40 }}
                 transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                 style={{ transformOrigin: "50% 160%" }}>
-                <Device p={p} />
+                <Button variant="ghost" aria-label={`Expand ${p.title}`} onClick={() => onOpen(p)} className="h-auto p-0 bg-transparent hover:bg-transparent focus-visible:ring-2 rounded-lg"><Device p={p} /></Button>
               </motion.div>
             </AnimatePresence>
           </div>

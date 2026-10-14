@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Gamepad2, ExternalLink, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import GameShowcase from "@/components/GameShowcase";
 import efootballLogo from "@/assets/efootball-logo.png";
 
 const games = [
@@ -76,48 +77,9 @@ const GamingSection = () => {
           </p>
         </motion.div>
 
-        {/* Compact grid: 3 cols on desktop, 2 on mobile, smaller cards */}
-        <div className="grid grid-cols-3 gap-2 sm:gap-3 max-w-3xl mx-auto">
-          {games.map((game, index) => (
-            <motion.a
-              key={game.name}
-              href={game.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: index * 0.06 }}
-              whileHover={{ y: -4, scale: 1.03 }}
-              className="group relative block"
-            >
-              <div className={`absolute inset-0 bg-gradient-to-br ${game.color} rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-              
-              <div className="relative glass-card rounded-xl overflow-hidden hover:border-primary/40 transition-all duration-300">
-                <div className="relative aspect-square overflow-hidden">
-                  <img
-                    src={game.logo}
-                    alt={game.name}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    loading="lazy"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="80">🎮</text></svg>';
-                    }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                  
-                  <div className="absolute bottom-0 left-0 right-0 p-1.5 sm:p-2.5">
-                    <h3 className="font-display text-[9px] sm:text-xs font-bold text-white flex items-center gap-0.5">
-                      {game.name}
-                      <ExternalLink className="w-2 h-2 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </h3>
-                  </div>
-                </div>
-              </div>
-            </motion.a>
-          ))}
-        </div>
-
+      </div>
+      <GameShowcase games={games} />
+      <div className="container mx-auto px-4 sm:px-6 relative z-10">
         {/* BGMI ID + CTA */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

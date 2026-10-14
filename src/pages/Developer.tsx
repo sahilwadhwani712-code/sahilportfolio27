@@ -15,7 +15,6 @@ const PERSONA = {
   subtitle: "Android engineer building human-first products",
   description:
     "Passionate about AI and shipping tech that genuinely helps people. I turn ideas into clean, user-focused Android apps and explore how intelligent systems can create real-world impact.",
-  bg: "https://i.postimg.cc/VLh5HfWP/Dev-bg.webp",
   png: "https://i.postimg.cc/wTr3bqQ6/Dev.webp",
   accent: "hsl(0 85% 55%)",
 };
@@ -28,17 +27,7 @@ const Developer = () => {
       {/* ── Persona Hero ── */}
       <section className="relative min-h-[100svh] w-full overflow-hidden flex items-end sm:items-center">
         {/* Clean cinematic backdrop — no bg image, no giant faded label */}
-        <div className="absolute inset-0 bg-gradient-to-br from-background via-[hsl(0_30%_6%)] to-background" />
-        <div
-          className="absolute -top-32 -right-24 w-[60vw] h-[60vw] max-w-[720px] max-h-[720px] rounded-full pointer-events-none blur-[140px]"
-          style={{ background: PERSONA.accent, opacity: 0.22 }}
-        />
-        <div
-          className="absolute -bottom-32 -left-24 w-[55vw] h-[55vw] max-w-[640px] max-h-[640px] rounded-full pointer-events-none blur-[150px]"
-          style={{ background: PERSONA.accent, opacity: 0.14 }}
-        />
-        <div className="absolute inset-0 gradient-blinds opacity-30 pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/30 pointer-events-none" />
+        <div className="absolute inset-0 persona-gradient-developer" />
 
         {/* Hero PNG — center anchored, text overlaps */}
         <img
