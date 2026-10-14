@@ -26,9 +26,6 @@ const ProjectsSection = () => {
     hue: HUES[p.title.split(" ")[0]] ?? 0,
   })) as ShowcaseProject[];
 
-  return () => window.removeEventListener("keydown", onKey);
-  }, [openProject]);
-
   return (
     <section id="projects" className="py-12 sm:py-20 relative overflow-x-clip">
       <div className="absolute inset-0 gradient-blinds opacity-20" />
