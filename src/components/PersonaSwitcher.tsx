@@ -14,7 +14,7 @@ export type Persona = {
   title: string;
   subtitle: string;
   description: string;
-  bg: string;
+  gradient: string;
   png: string;
   accent: string;
   accentSoft: string;
@@ -27,54 +27,7 @@ export type Persona = {
 
 /* Cursive name — single line, viral feel */
 const CursiveName = ({ text, accent }: { text: string; accent: string }) => {
-  const letters = Array.from(text);
-  const [fontReady, setFontReady] = useState(false);
-  useEffect(() => {
-    const d = document as Document & { fonts?: { load: (s: string) => Promise<unknown>; ready: Promise<unknown> } };
-    if (!d.fonts) { setFontReady(true); return; }
-    let cancelled = false;
-    d.fonts.load("1em Italianno").then(() => d.fonts!.ready).then(() => {
-      if (!cancelled) setFontReady(true);
-    }).catch(() => setFontReady(true));
-    return () => { cancelled = true; };
-  }, []);
-  return (
-    <h1
-      className="leading-[0.9] text-foreground md:whitespace-nowrap"
-      style={{
-        fontFamily: "'Italianno', 'Caveat', cursive",
-        fontWeight: 400,
-        fontStyle: "italic",
-          fontSize: "clamp(3.2rem, 8.2vw, 8.4rem)",
-        textShadow: `0 18px 70px ${accent}66, 0 2px 0 ${accent}22`,
-        letterSpacing: "-0.01em",
-        wordSpacing: "0.12em",
-        opacity: fontReady ? 1 : 0,
-        transition: "opacity 300ms ease-out",
-      }}
-    >
-      <span className="sr-only">{text}</span>
-      <span aria-hidden className="inline-block">
-        {letters.map((ch, i) => (
-          <motion.span
-            key={i}
-            className="inline-block"
-            initial={{ y: "55%", opacity: 0, rotate: -6, filter: "blur(6px)" }}
-            animate={{ y: "0%", opacity: 1, rotate: 0, filter: "blur(0px)" }}
-            exit={{ y: "-25%", opacity: 0, filter: "blur(6px)" }}
-            transition={{
-              duration: 0.6,
-              delay: 0.06 + i * 0.03,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-            style={{ transformOrigin: "50% 100%" }}
-          >
-            {ch === " " ? "\u00A0" : ch}
-          </motion.span>
-        ))}
-      </span>
-    </h1>
-  );
+  return <h1 className="persona-name leading-[0.9] text-foreground md:whitespace-nowrap">{text}</h1>;
 };
 
 /* Minimal "Enter" pill */
@@ -112,7 +65,7 @@ const EnterPill = ({
           style={{ background: accent }}
         />
         <span className="relative z-10 transition-colors group-hover:text-white">
-          <AnimatePresence mode="wait" initial={false}>
+          <AnimatePresence mode="sync" initial={false}>
             <motion.span
               key={label}
               initial={{ y: 14, opacity: 0 }}
@@ -143,23 +96,32 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
   const reduce = useReducedMotion();
   const persona = personas[index];
   const lastSwapRef = useRef(0);
-  // Progressive mount: render only the first persona's heavy assets on first paint,
-  // then hydrate the rest during idle time so the LCP stays snappy.
-  const [assetsReady, setAssetsReady] = useState(false);
+  const decoded = useRef(new Map<string, Promise<void>>());
+  const requested = useRef(0);
+  const decodePortrait = (src: string) => {
+    const existing = decoded.current.get(src);
+    if (existing) return existing;
+    const image = new Image();
+    image.src = src;
+    const ready = image.decode().catch(() => undefined);
+    decoded.current.set(src, ready);
+    return ready;
+  };
   useEffect(() => {
-    const w = window as unknown as {
-      requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
-    };
-    const schedule = w.requestIdleCallback
-      ? (cb: () => void) => w.requestIdleCallback!(cb, { timeout: 1200 })
-      : (cb: () => void) => window.setTimeout(cb, 600);
-    const id = schedule(() => setAssetsReady(true));
-    return () => {
-      if (typeof id === "number") clearTimeout(id);
-    };
-  }, []);
-
-  const go = (n: number) => setIndex(n);
+    const timer = window.setTimeout(() => {
+      personas.forEach((p) => { void decodePortrait(p.png); });
+    }, 300);
+    return () => window.clearTimeout(timer);
+  }, [personas]);
+  const go = (n: number) => {
+    const target = (n + personas.length) % personas.length;
+    requested.current = target;
+    const next = personas[target];
+    if (!next) return;
+    void decodePortrait(next.png).then(() => {
+      if (requested.current === target) setIndex(target);
+    });
+  };
 
   /* Wheel / touch / key → change persona */
   useEffect(() => {
@@ -169,27 +131,29 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
       if (Math.abs(delta) < 14) return;
       lastSwapRef.current = now;
       const len = personas.length;
-      setIndex((i) => (delta > 0 ? (i + 1) % len : (i - 1 + len) % len));
+      go(delta > 0 ? requested.current + 1 : requested.current - 1);
     };
 
     const onWheel = (e: WheelEvent) => {
+      if ((e.target as Element).closest("[role=dialog], nav, input, textarea")) return;
       e.preventDefault();
       tryAdvance(e.deltaY);
     };
     let touchStartY = 0;
     const onTouchStart = (e: TouchEvent) => {
-      touchStartY = e.touches[0].clientY;
+      touchStartY = e.touches[0]?.clientY ?? 0;
     };
     const onTouchMove = (e: TouchEvent) => {
-      const dy = touchStartY - e.touches[0].clientY;
+      const dy = touchStartY - (e.touches[0]?.clientY ?? 0);
       if (Math.abs(dy) > 50) {
         tryAdvance(dy);
-        touchStartY = e.touches[0].clientY;
+        touchStartY = e.touches[0]?.clientY ?? 0;
       }
     };
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "ArrowDown" || e.key === "ArrowRight") tryAdvance(1);
-      if (e.key === "ArrowUp" || e.key === "ArrowLeft") tryAdvance(-1);
+      if ((e.target as Element).closest("input, textarea, [role=dialog], nav")) return;
+      if (e.key === "ArrowDown" || e.key === "ArrowRight") tryAdvance(50);
+      if (e.key === "ArrowUp" || e.key === "ArrowLeft") tryAdvance(-50);
     };
 
     window.addEventListener("wheel", onWheel, { passive: false });
@@ -209,58 +173,16 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
   return (
     <section
       ref={stageRef}
-      className="relative w-full h-screen overflow-hidden bg-background"
+      className="relative w-full h-[100svh] overflow-hidden bg-background"
       aria-label="Persona showcase"
     >
-      {/* Layered backgrounds — heavy blur + dark blend so PNG sits cleanly */}
-      <div className="absolute inset-0">
-        {personas.map((p, i) => {
-          if (!assetsReady && i !== 0) return null;
-          return (
-          <motion.img
-            key={p.id}
-            src={p.bg}
-            alt=""
-            aria-hidden
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{
-              filter: "blur(20px) saturate(1.15) brightness(0.65)",
-              transform: "scale(1.15) translateZ(0)",
-              willChange: "opacity",
-            }}
-            initial={false}
-            animate={{ opacity: i === index ? 1 : 0 }}
-            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            loading={i === 0 ? "eager" : "lazy"}
-            decoding={i === 0 ? "sync" : "async"}
-            // @ts-expect-error fetchpriority is valid HTML but not yet in React types
-            fetchpriority={i === 0 ? "high" : "low"}
-            draggable={false}
-          />
-          );
-        })}
-
-        {/* Accent wash that follows persona */}
-        <motion.div
-          aria-hidden
-          className="absolute inset-0"
-          animate={{
-            background: `radial-gradient(60% 70% at 75% 50%, ${persona.accent}22 0%, transparent 60%), radial-gradient(50% 60% at 15% 30%, ${persona.accentSoft} 0%, transparent 70%)`,
-          }}
-          transition={{ duration: 1.1, ease: "easeInOut" }}
-        />
-
-        {/* Unified blend overlays — lighter so PNG stays visible */}
-        <div className="absolute inset-0 hidden md:block bg-gradient-to-r from-background via-background/45 to-background/5" />
-        <div className="absolute inset-0 md:hidden bg-gradient-to-b from-background/40 via-transparent to-background/70" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-background/20" />
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              "radial-gradient(ellipse at center, transparent 55%, hsl(0 0% 0% / 0.45) 100%)",
-          }}
-        />
+      <div className="absolute inset-0" aria-hidden>
+        {personas.map((p, i) => (
+          <motion.div key={p.id} className={`absolute inset-0 ${p.gradient}`}
+            initial={false} animate={{ opacity: i === index ? 1 : 0 }}
+            transition={{ duration: reduce ? 0 : 0.55 }} />
+        ))}
+        <div className="absolute inset-0 persona-readability" />
       </div>
 
       {/* Vertical persona rail (desktop) */}
@@ -278,17 +200,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
       {/* Character layer — dominant on both breakpoints */}
       <div className="absolute inset-0 z-[8] pointer-events-none overflow-hidden">
         <div className="absolute inset-x-0 bottom-0 h-[80svh] portrait:h-[78svh] landscape:h-[94svh] sm:h-[86svh] md:h-[108svh] flex items-end justify-center md:justify-end">
-          <motion.div
-            aria-hidden
-            className="absolute bottom-0 left-1/2 -translate-x-1/2 md:left-auto md:right-[8%] md:translate-x-0 w-[72%] md:w-[48%] h-[46%] rounded-full blur-[70px] md:blur-[110px]"
-            animate={{
-              background: persona.accent,
-              opacity: reduce ? 0.22 : 0.3,
-            }}
-            transition={{ background: { duration: 0.8 } }}
-          />
           {personas.map((p, i) => {
-            if (!assetsReady && i !== 0) return null;
             const active = i === index;
             const isFriend = p.id === "friend";
             return (
@@ -307,18 +219,15 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
                   initial={false}
                   animate={{
                     opacity: active ? 1 : 0,
-                    x: active ? 0 : i < index ? -28 : 28,
-                    scale: active ? 1 : 0.99,
                   }}
-                  transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{ duration: reduce ? 0 : 0.55, ease: [0.22, 1, 0.36, 1] }}
                   className="h-full w-auto max-w-none object-contain object-bottom select-none"
                   style={{
                     transformOrigin: "50% 100%",
-                    filter: "drop-shadow(0 30px 50px hsl(0 0% 0% / 0.7))",
                     willChange: "opacity",
                   }}
                   loading={i === 0 ? "eager" : "lazy"}
-                  decoding={i === 0 ? "sync" : "async"}
+                  decoding="async"
                   // @ts-expect-error fetchpriority is valid HTML but not yet in React types
                   fetchpriority={i === 0 ? "high" : "low"}
                   draggable={false}
@@ -335,7 +244,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
         <div className="w-full md:max-w-[560px] lg:max-w-[600px] pt-[58svh] portrait:pt-[58svh] landscape:pt-[72svh] sm:pt-[58svh] md:pt-0">
 
           {/* Eyebrow — persona label + tick */}
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="sync">
             <motion.div
               key={`eyebrow-${persona.id}`}
               initial={{ opacity: 0, y: 8 }}
@@ -358,9 +267,8 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
           </AnimatePresence>
 
           <div className="relative mb-3 sm:mb-5 min-h-[1.05em]">
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="sync">
               <CursiveName
-                key={`title-${persona.id}`}
                 text={persona.title}
                 accent={persona.accent}
               />
@@ -368,15 +276,15 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
           </div>
 
           {/* Description */}
-          <div className="mb-5 sm:mb-6 min-h-[4rem]">
-            <AnimatePresence mode="wait">
+          <div className="relative mb-5 sm:mb-6 h-[6.5rem] sm:h-[5rem]">
+            <AnimatePresence mode="sync">
               <motion.p
                 key={`desc-${persona.id}`}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.45, delay: 0.06 }}
-                className="font-body text-[13px] sm:text-[14.5px] text-foreground/75 max-w-md leading-[1.65] drop-shadow-[0_2px_14px_hsl(0_0%_0%_/_0.85)]"
+                className="absolute inset-x-0 top-0 font-body text-[13px] sm:text-[14.5px] text-foreground/75 max-w-md leading-[1.65] drop-shadow-[0_2px_14px_hsl(0_0%_0%_/_0.85)]"
               >
                 {persona.description}
               </motion.p>
@@ -386,7 +294,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
           {/* CTA + socials — single row */}
           <div className="flex items-center gap-3 sm:gap-4 flex-wrap mb-5 sm:mb-7">
             <EnterPill to={persona.ctaTo} label={persona.ctaLabel} accent={persona.accent} />
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="sync">
               <motion.div
                 key={`pers-socials-${persona.id}`}
                 initial={{ opacity: 0, x: -6 }}
@@ -418,7 +326,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
           </div>
 
           {/* Meta strip — editorial, no chunky tiles */}
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="sync">
             <motion.div
               key={`stats-${persona.id}`}
               initial={{ opacity: 0, y: 10 }}
@@ -452,7 +360,7 @@ const PersonaSwitcher = ({ personas }: { personas: Persona[] }) => {
       <div className="absolute bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 z-30 pointer-events-none">
         <motion.span
           className="font-mono text-[9px] sm:text-[10px] tracking-[0.4em] text-foreground/40 uppercase"
-          animate={{ y: [0, 4, 0], opacity: [0.4, 0.7, 0.4] }}
+          animate={reduce ? { opacity: 0.6 } : { y: [0, 4, 0], opacity: [0.4, 0.7, 0.4] }}
           transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
         >
           Scroll to switch

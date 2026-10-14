@@ -686,3 +686,28 @@ body {
 .marquee { animation: marquee-x 40s linear infinite; }
 .marquee-rev { animation: marquee-x 40s linear infinite reverse; }
 @media (prefers-reduced-motion: reduce) { .marquee, .marquee-rev { animation: none; } }
+
+/* Sampled persona environments: shared by Home and its respective page. */
+:root {
+  --persona-developer: radial-gradient(ellipse at 4% 80%, hsl(215 28% 23% / .5), transparent 55%), linear-gradient(125deg, hsl(42 18% 11%) 0%, hsl(340 9% 8%) 42%, hsl(220 17% 6%) 100%);
+  --persona-friend: linear-gradient(0deg, hsl(24 70% 3%) 0%, transparent 34%), radial-gradient(ellipse at 56% 64%, hsl(38 89% 67%) 0%, hsl(30 71% 48%) 25%, transparent 62%), linear-gradient(180deg, hsl(25 32% 12%), hsl(28 54% 29%) 48%, hsl(20 58% 10%));
+  --persona-gamer: radial-gradient(ellipse at 0% 25%, hsl(3 63% 34% / .8), transparent 47%), radial-gradient(ellipse at 18% 78%, hsl(201 30% 18% / .75), transparent 47%), linear-gradient(100deg, hsl(220 20% 7%), hsl(0 0% 1%) 72%);
+  --persona-readability: linear-gradient(90deg, hsl(var(--background) / .7), transparent 75%), linear-gradient(0deg, hsl(var(--background) / .75), transparent 55%);
+  --showcase-environment: radial-gradient(ellipse at 70% 45%, hsl(var(--showcase-hue, 0) 65% 45% / .2), transparent 68%), linear-gradient(145deg, hsl(var(--background)), hsl(var(--card)));
+  --showcase-screen: linear-gradient(160deg, hsl(var(--showcase-hue, 0) 60% 22%), hsl(var(--showcase-hue, 0) 40% 8%));
+}
+.persona-gradient-developer { background: var(--persona-developer); }
+.persona-gradient-friend { background: var(--persona-friend); }
+.persona-gradient-gamer { background: var(--persona-gamer); }
+.persona-readability { background: var(--persona-readability); }
+.persona-name { font-family: 'Italianno', cursive; font-size: 3.5rem; font-weight: 400; letter-spacing: 0; }
+.showcase-environment { background: var(--showcase-environment); }
+.showcase-screen { background: var(--showcase-screen); }
+.showcase-device { transition: filter var(--duration-base); }
+.showcase-device:hover { filter: drop-shadow(0 8px 16px hsl(var(--foreground) / .08)); }
+@media (min-width: 768px) { .persona-name { font-size: 6rem; } }
+@media (min-width: 1200px) { .persona-name { font-size: 8rem; } }
+@media (prefers-reduced-motion: reduce) {
+  .showcase-expanded { animation: none !important; }
+  .showcase-device { transition: none; }
+}
